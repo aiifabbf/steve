@@ -1,6 +1,6 @@
 import { mat4 } from "gl-matrix";
 import * as engine from "./engine.ts";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry } from "./engine";
+import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry } from "./engine";
 
 function main() {
     let canvas = document.querySelector("canvas");
@@ -99,10 +99,20 @@ function main() {
     });
 
     let cube = new Sprite(new CubeGeometry(0.5, 0.5, 0.5), new ColorMaterial([1, 0, 0, 1]));
+    // cube.geometry.mode = WebGL2RenderingContext.LINE_STRIP;
     cube.material.compile(renderer);
     cube.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(cube.geometry.vertexPositions),
     }, {});
+
+    let sphere = new Sprite(new SphereGeometry(0.5, 64, 32), new ColorMaterial([0, 1, 0, 1]));
+    sphere.geometry.mode = WebGL2RenderingContext.LINE_STRIP;
+    sphere.material.compile(renderer);
+    sphere.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(sphere.geometry.vertexPositions),
+    }, {});
+
+    console.log(sphere)
 
     world.add(triangle1);
     triangle1.add(triangle2);
@@ -117,12 +127,17 @@ function main() {
     world.add(cube);
     mat4.rotateX(world.modelViewMatrix, world.modelViewMatrix, 45);
     mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, -45);
+
+    world.add(sphere);
+
     renderer.render(world);
 
     function onDraw() {
+        mat4.rotateZ(triangle1.modelViewMatrix, triangle1.modelViewMatrix, 0.1);
         mat4.rotateZ(triangle2.modelViewMatrix, triangle2.modelViewMatrix, 0.1);
         mat4.rotateZ(tetrahedron.modelViewMatrix, tetrahedron.modelViewMatrix, 0.03);
         let percent = document.querySelector("input[type=range]").value / 100;
+        mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, 0.01);
         mat4.identity(cube.modelViewMatrix);
         mat4.translate(cube.modelViewMatrix, cube.modelViewMatrix, [0, 0, percent]);
         renderer.clear();

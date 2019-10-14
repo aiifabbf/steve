@@ -104,10 +104,38 @@ export class SphereGeometry extends Geometry {
     horizontalSegmentCount: number;
     verticalSegmentCount: number;
 
-    constructor(radius: number, horizontalSegmentCount: number, verticalSegmentCount: number) {
-        super([
+    constructor(radius: number = 1, horizontalSegmentCount: number = 16, verticalSegmentCount: number = 32) {
+        let vertexPositions = [];
+        let deltaPhi = Math.PI / verticalSegmentCount;
+        let deltaTheta = 2 * Math.PI / horizontalSegmentCount;
 
-        ])
+        for (let phiIndex = 0; phiIndex <= verticalSegmentCount - 1; phiIndex++) {
+
+            for (let thetaIndex = 0; thetaIndex <= horizontalSegmentCount; thetaIndex++) {
+                let a = [
+                    radius * Math.cos(thetaIndex * deltaTheta) * Math.sin(phiIndex * deltaPhi),
+                    radius * Math.cos(phiIndex * deltaPhi),
+                    radius * Math.sin(thetaIndex * deltaTheta) * Math.sin(phiIndex * deltaPhi),
+                    1,
+                ];
+                let b = [
+                    radius * Math.cos(thetaIndex * deltaTheta) * Math.sin((phiIndex + 1) * deltaPhi),
+                    radius * Math.cos((phiIndex + 1) * deltaPhi),
+                    radius * Math.sin(thetaIndex * deltaTheta) * Math.sin((phiIndex + 1) * deltaPhi),
+                    1,
+                ];
+                vertexPositions = vertexPositions.concat(a).concat(b);
+            }
+
+        }
+
+        console.log(vertexPositions);
+        super(vertexPositions);
+        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+
+        this.radius = radius;
+        this.horizontalSegmentCount = horizontalSegmentCount;
+        this.verticalSegmentCount = verticalSegmentCount;
     }
 }
 
@@ -332,14 +360,14 @@ export class Renderer {
             gl.drawArrays(sprite.geometry.mode, 0, sprite.geometry.vertexPositions.length / 4);
         }
 
-        sprite.children.forEach(function(child) {
+        sprite.children.forEach(function (child) {
             self.renderWithModelViewMatrix(child, realModelViewMatrix);
         })
     }
 }
 
 export class Animation {
-    
+
 }
 
 export function getShaderProgram(gl: WebGL2RenderingContext, vertexShaderSource: string, fragmentShaderSource: string): WebGLProgram {
