@@ -4,25 +4,18 @@ export class Sprite {
     geometry: Geometry;
     material: Material;
     children: Array<Sprite>;
-    modelMatrix: mat4;
+    modelViewMatrix: mat4;
 
     constructor(geometry: Geometry, material: Material) {
         this.geometry = geometry;
         this.material = material;
 
-        this.modelMatrix = mat4.create();
+        this.children = new Array();
+        this.modelViewMatrix = mat4.create();
     }
 
-    draw(renderer: Renderer) {
-        let gl = renderer.gl;
-
-        gl.uniformMatrix4fv(
-            this.material.programInfo.uniformLocations["uModelViewMatrix"],
-            false,
-            this.modelMatrix,
-        );
-
-        gl.drawArrays(this.geometry.mode, 0, this.geometry.vertexPositions.length / 4);
+    add(child: Sprite) {
+        this.children.push(child);
     }
 }
 
@@ -91,8 +84,12 @@ export class Material {
     compile(renderer: Renderer, attributePlaceholders: Object, uniformPlaceholders: Object) {
         let self = this;
         let gl = renderer.gl;
-        let shaderProgram = getShaderProgram(gl, this.vertexShaderSource, this.fragmentShaderSource);
-        this.programInfo = getProgramInfo(gl, shaderProgram, attributePlaceholders, uniformPlaceholders);
+        if (this.vertexShaderSource && this.fragmentShaderSource) {
+            let shaderProgram = getShaderProgram(gl, this.vertexShaderSource, this.fragmentShaderSource);
+            this.programInfo = getProgramInfo(gl, shaderProgram, attributePlaceholders, uniformPlaceholders);
+        } else {
+            throw new Error("No vertex shader source or fragment shader source.");
+        }
 
         Object.entries(this.programInfo.attributeLocations).forEach(function (item) {
             let k = item[0];
@@ -129,26 +126,61 @@ export class Material {
             gl.enableVertexAttribArray(self.programInfo.attributeLocations[k]);
         });
 
-        // Object.entries(uniformPlaceholderValueMapping).forEach(function (item) {
-        //     let k = item[0];
-        //     let v = item[1];
-        //     gl.bindBuffer(gl.ARRAY_BUFFER, self.buffers.uniforms[k]);
-        //     gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-        //     gl.vertexAttribPointer(
-        //         self.programInfo.uniformLocations[k],
-        //         4,
-        //         gl.FLOAT,
-        //         false,
-        //         0,
-        //         0
-        //     );
-        //     gl.enableVertexAttribArray(self.programInfo.uniformLocations[k]);
-        // });
+        Object.entries(uniformPlaceholderValueMapping).forEach(function (item) {
+            let k = item[0];
+            let v = item[1];
+            gl.bindBuffer(gl.ARRAY_BUFFER, self.buffers.uniforms[k]);
+            gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
+            gl.vertexAttribPointer(
+                self.programInfo.uniformLocations[k],
+                4,
+                gl.FLOAT,
+                false,
+                0,
+                0
+            );
+            gl.enableVertexAttribArray(self.programInfo.uniformLocations[k]);
+        });
     }
+
+    bindGeometry(renderer: Renderer, geometry: Geometry) { }
 }
 
 export class ColorMaterial extends Material {
-    
+    color: Array<number>;
+
+    constructor(color: Array<number>) {
+        super(`
+            attribute vec4 aVertexPosition;
+
+            uniform mat4 uModelViewMatrix;
+
+            void main() {
+                gl_Position = uModelViewMatrix * aVertexPosition;
+            }
+        `, `
+            precision mediump float;
+
+            void main() {
+                gl_FragColor = vec4(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]});
+            }
+        `);
+        this.color = color;
+    }
+
+    compile(renderer: Renderer, attributePlaceholders: Object, uniformPlaceholders: Object) {
+        super.compile(renderer, {
+            aVertexPosition: "aVertexPosition"
+        }, {
+            uModelViewMatrix: "uModelViewMatrix"
+        });
+    }
+
+    bindGeometry(renderer: Renderer, geometry: Geometry) {
+        super.bindPlaceholders(renderer, {
+            aVertexPosition: new Float32Array(geometry.vertexPositions)
+        }, {});
+    }
 }
 
 export class Renderer {
@@ -157,25 +189,50 @@ export class Renderer {
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
-
         let gl = canvas.getContext("webgl2");
-
         if (gl == null) {
             throw new Error("Can't create webgl2 context");
         }
-
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        this.gl = gl;
 
         gl.enable(gl.DEPTH_TEST);
         gl.enable(gl.CULL_FACE);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        this.gl = gl;
+        this.clear();
+    }
+
+    clear(color = [0, 0, 0, 1]) {
+        let gl = this.gl
+        gl.clearColor(color[0], color[1], color[2], color[3]);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
 
     render(world: Sprite) {
-        world.draw(this);
+        this.renderWithModelViewMatrix(world, mat4.create());
+    }
+
+    renderWithModelViewMatrix(sprite: Sprite, modelViewMatrix: mat4) {
+        let self = this;
+        let gl = this.gl;
+        let realModelViewMatrix = mat4.create();
+        mat4.multiply(realModelViewMatrix, modelViewMatrix, sprite.modelViewMatrix);
+
+        if (sprite.material) {
+            gl.useProgram(sprite.material.programInfo.program);
+            gl.uniformMatrix4fv(
+                sprite.material.programInfo.uniformLocations["uModelViewMatrix"],
+                false,
+                realModelViewMatrix,
+            );
+        }
+
+        if (sprite.geometry) {
+            gl.drawArrays(sprite.geometry.mode, 0, sprite.geometry.vertexPositions.length / 4);
+        }
+
+        sprite.children.forEach(function(child) {
+            self.renderWithModelViewMatrix(child, realModelViewMatrix);
+        })
     }
 }
 
