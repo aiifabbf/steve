@@ -50,9 +50,6 @@ function main() {
             1, 0, 0, 1,
             0, 0, 1, 1,
             0, 1, 0, 1,
-            1, 0, 1, 1,
-            1, 0, 0, 1,
-            0, 0, 1, 1,
         ])
     }, {});
 
@@ -69,7 +66,23 @@ function main() {
             1, 0, 0, 1,
             0, 0, 1, 1,
             0, 1, 0, 1,
-            1, 0, 1, 1,
+        ])
+    }, {});
+
+    let tetrahedron = new Sprite(new TetrahedronGeometry(0.5, 0.5, 0.5), new Material(vertexShaderSource, fragmentShaderSource));
+    tetrahedron.material.compile(renderer, {
+        aVertexPosition: "aVertexPosition",
+        aVertexColor: "aVertexColor",
+    }, {
+        uModelViewMatrix: "uModelViewMatrix"
+    });
+    tetrahedron.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(tetrahedron.geometry.vertexPositions),
+        aVertexColor: new Float32Array([
+            1, 0, 0, 1,
+            0, 0, 1, 1,
+            0, 1, 0, 1,
+            1, 1, 0, 1,
             1, 0, 0, 1,
             0, 0, 1, 1,
         ])
@@ -77,16 +90,21 @@ function main() {
 
     world.add(triangle1);
     world.add(triangle2);
+    world.add(tetrahedron);
+
+    renderer.render(world);
+
+    mat4.rotateX(world.modelViewMatrix, world.modelViewMatrix, -45);
+    mat4.translate(triangle1.modelViewMatrix, triangle2.modelViewMatrix, [0.5, 0.5, 0]);
 
     function onDraw() {
-        mat4.rotateZ(triangle2.modelViewMatrix, triangle2.modelViewMatrix, 0.1);
         mat4.rotateZ(world.modelViewMatrix, world.modelViewMatrix, 0.1);
         renderer.clear();
         renderer.render(world);
         requestAnimationFrame(onDraw);
     }
 
-    onDraw();
+    // onDraw();
 }
 
 window.onload = main;

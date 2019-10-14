@@ -236,6 +236,10 @@ export class Renderer {
     }
 }
 
+export class Animation {
+    
+}
+
 export function getShaderProgram(gl: WebGL2RenderingContext, vertexShaderSource: string, fragmentShaderSource: string): WebGLProgram {
     let vertexShader = getShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     let fragmentShader = getShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
