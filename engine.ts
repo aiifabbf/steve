@@ -29,17 +29,28 @@ export class Geometry {
 }
 
 export class TriangleGeometry extends Geometry {
-    constructor(width: number, height: number) {
+    point1: Array<number>;
+    point2: Array<number>;
+    point3: Array<number>;
+
+    constructor(point1: Array<number>, point2: Array<number>, point3: Array<number>) {
         super([
-            width, 0, 0, 1,
-            0, height, 0, 1,
-            0, 0, 0, 1,
+            point1[0], point1[1], point1[2], 1,
+            point2[0], point2[1], point2[2], 1,
+            point3[0], point3[1], point3[2], 1,
         ]);
         this.mode = WebGL2RenderingContext.TRIANGLES;
+        this.point1 = point1;
+        this.point2 = point2;
+        this.point3 = point3;
     }
 }
 
 export class TetrahedronGeometry extends Geometry {
+    width: number;
+    height: number;
+    depth: number;
+
     constructor(width: number, height: number, depth: number) {
         super([
             0, 0, 0, 1,
@@ -50,16 +61,93 @@ export class TetrahedronGeometry extends Geometry {
             0, height, 0, 1,
         ]);
         this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
     }
 }
 
 export class LineGeometry extends Geometry {
+    start: Array<number>;
+    end: Array<number>;
+
     constructor(start: Array<number>, end: Array<number>) {
         super([
             start[0], start[1], start[2], 1,
             end[0], end[1], end[2], 1
         ]);
         this.mode = WebGL2RenderingContext.LINES;
+        this.start = start;
+        this.end = end;
+    }
+}
+
+export class PlaneGeometry extends Geometry {
+    width: number;
+    height: number;
+
+    constructor(width: number, height: number) {
+        super([
+            - width / 2, height / 2, 0, 1,
+            width / 2, height / 2, 0, 1,
+            - width / 2, - height / 2, 0, 1,
+            width / 2, - height / 2, 0, 1
+        ])
+        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+        this.width = width;
+        this.height = height;
+    }
+}
+
+export class SphereGeometry extends Geometry {
+    radius: number;
+    horizontalSegmentCount: number;
+    verticalSegmentCount: number;
+
+    constructor(radius: number, horizontalSegmentCount: number, verticalSegmentCount: number) {
+        super([
+
+        ])
+    }
+}
+
+export class CubeGeometry extends Geometry {
+    width: number;
+    height: number;
+    depth: number;
+
+    constructor(width: number, height: number, depth: number) {
+        let upperA = [width / 2, height / 2, depth / 2];
+        let upperB = [width / 2, height / 2, - depth / 2];
+        let upperC = [- width / 2, height / 2, - depth / 2];
+        let upperD = [- width / 2, height / 2, depth / 2];
+        let lowerA = [width / 2, - height / 2, depth / 2];
+        let lowerB = [width / 2, - height / 2, - depth / 2];
+        let lowerC = [- width / 2, - height / 2, - depth / 2];
+        let lowerD = [- width / 2, - height / 2, depth / 2];
+
+        super([
+            upperC[0], upperC[1], upperC[2], 1,
+            upperB[0], upperB[1], upperB[2], 1,
+            upperD[0], upperD[1], upperD[2], 1,
+            upperA[0], upperA[1], upperA[2], 1,
+            lowerD[0], lowerD[1], lowerD[2], 1,
+            lowerA[0], lowerA[1], lowerA[2], 1,
+            lowerC[0], lowerC[1], lowerC[2], 1,
+            lowerB[0], lowerB[1], lowerB[2], 1,
+            lowerA[0], lowerA[1], lowerA[2], 1,
+            upperA[0], upperA[1], upperA[2], 1,
+            lowerB[0], lowerB[1], lowerB[2], 1,
+            upperB[0], upperB[1], upperB[2], 1,
+            lowerC[0], lowerC[1], lowerC[2], 1,
+            upperC[0], upperC[1], upperC[2], 1,
+            lowerD[0], lowerD[1], lowerD[2], 1,
+            upperD[0], upperD[1], upperD[1], 1,
+        ]);
+        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
     }
 }
 
@@ -207,7 +295,7 @@ export class Renderer {
         this.gl = gl;
 
         gl.enable(gl.DEPTH_TEST);
-        gl.enable(gl.CULL_FACE);
+        // gl.enable(gl.CULL_FACE);
         // gl.cullFace(gl.FRONT_AND_BACK);
 
         this.clear();

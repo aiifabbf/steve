@@ -1,6 +1,6 @@
 import { mat4 } from "gl-matrix";
 import * as engine from "./engine.ts";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial } from "./engine";
+import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry } from "./engine";
 
 function main() {
     let canvas = document.querySelector("canvas");
@@ -37,7 +37,7 @@ function main() {
     let renderer = new Renderer(canvas);
 
     let world = new Sprite(null, null);
-    let triangle1 = new Sprite(new TriangleGeometry(0.5, 0.5), new Material(vertexShaderSource, fragmentShaderSource));
+    let triangle1 = new Sprite(new TriangleGeometry([0.5, 0, 0], [0, 0.1, 0], [0, 0, 0]), new Material(vertexShaderSource, fragmentShaderSource));
     triangle1.material.compile(renderer, {
         aVertexPosition: "aVertexPosition",
         aVertexColor: "aVertexColor"
@@ -53,7 +53,7 @@ function main() {
         ])
     }, {});
 
-    let triangle2 = new Sprite(new TriangleGeometry(0.5, 0.5), new Material(vertexShaderSource, fragmentShaderSource))
+    let triangle2 = new Sprite(new TriangleGeometry([0.5, 0, 0], [0, 0.1, 0], [0, 0, 0]), new Material(vertexShaderSource, fragmentShaderSource))
     triangle2.material.compile(renderer, {
         aVertexPosition: "aVertexPosition",
         aVertexColor: "aVertexColor"
@@ -69,7 +69,7 @@ function main() {
         ])
     }, {});
 
-    let tetrahedron = new Sprite(new TetrahedronGeometry(0.5, 0.5, 0.5), new Material(vertexShaderSource, fragmentShaderSource));
+    let tetrahedron = new Sprite(new TetrahedronGeometry(0.5, 0.1, 0.5), new Material(vertexShaderSource, fragmentShaderSource));
     tetrahedron.material.compile(renderer, {
         aVertexPosition: "aVertexPosition",
         aVertexColor: "aVertexColor",
@@ -98,23 +98,33 @@ function main() {
         }, {});
     });
 
+    let cube = new Sprite(new CubeGeometry(0.5, 0.5, 0.5), new ColorMaterial([1, 0, 0, 1]));
+    cube.material.compile(renderer);
+    cube.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(cube.geometry.vertexPositions),
+    }, {});
+
     world.add(triangle1);
-    world.add(triangle2);
-    world.add(tetrahedron);
+    triangle1.add(triangle2);
+    mat4.translate(triangle2.modelViewMatrix, triangle2.modelViewMatrix, [0.5, 0, 0]);
+    triangle2.add(tetrahedron);
+    mat4.translate(tetrahedron.modelViewMatrix, tetrahedron.modelViewMatrix, [0.5, 0, 0]);
 
     world.add(xAxis);
     world.add(yAxis);
     world.add(zAxis);
 
-    mat4.rotateX(world.modelViewMatrix, world.modelViewMatrix, -45);
-    mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, 45);
-    mat4.translate(triangle1.modelViewMatrix, triangle2.modelViewMatrix, [0.5, 0.5, 0]);
-
+    world.add(cube);
+    mat4.rotateX(world.modelViewMatrix, world.modelViewMatrix, 45);
+    mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, -45);
     renderer.render(world);
 
     function onDraw() {
-        mat4.rotateY(tetrahedron.modelViewMatrix, tetrahedron.modelViewMatrix, 0.1);
-        mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, 0.01);
+        mat4.rotateZ(triangle2.modelViewMatrix, triangle2.modelViewMatrix, 0.1);
+        mat4.rotateZ(tetrahedron.modelViewMatrix, tetrahedron.modelViewMatrix, 0.03);
+        let percent = document.querySelector("input[type=range]").value / 100;
+        mat4.identity(cube.modelViewMatrix);
+        mat4.translate(cube.modelViewMatrix, cube.modelViewMatrix, [0, 0, percent]);
         renderer.clear();
         renderer.render(world);
         requestAnimationFrame(onDraw);
