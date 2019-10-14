@@ -69,13 +69,22 @@ export class Material {
     fragmentShaderSource: string;
     buffers: {
         attributes: {},
-        uniforms: {}
+        uniforms: {},
+    };
+    placeholderValueMapping: {
+        attributes: {},
+        uniforms: {},
     };
 
     constructor(vertexShaderSource: string, fragmentShaderSource: string) {
         this.vertexShaderSource = vertexShaderSource;
         this.fragmentShaderSource = fragmentShaderSource;
+
         this.buffers = {
+            attributes: {},
+            uniforms: {},
+        };
+        this.placeholderValueMapping = {
             attributes: {},
             uniforms: {},
         };
@@ -107,6 +116,8 @@ export class Material {
     bindPlaceholders(renderer: Renderer, attributePlaceholderValueMapping: Object, uniformPlaceholderValueMapping: Object) {
         let self = this;
         let gl = renderer.gl;
+        this.placeholderValueMapping.attributes = attributePlaceholderValueMapping;
+        this.placeholderValueMapping.uniforms = uniformPlaceholderValueMapping;
 
         gl.useProgram(this.programInfo.program);
 
@@ -197,6 +208,7 @@ export class Renderer {
 
         gl.enable(gl.DEPTH_TEST);
         gl.enable(gl.CULL_FACE);
+        // gl.cullFace(gl.FRONT_AND_BACK);
 
         this.clear();
     }
@@ -219,6 +231,7 @@ export class Renderer {
 
         if (sprite.material) {
             gl.useProgram(sprite.material.programInfo.program);
+            sprite.material.bindPlaceholders(self, sprite.material.placeholderValueMapping.attributes, sprite.material.placeholderValueMapping.uniforms);
             gl.uniformMatrix4fv(
                 sprite.material.programInfo.uniformLocations["uModelViewMatrix"],
                 false,
