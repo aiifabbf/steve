@@ -142,7 +142,7 @@ export class CubeGeometry extends Geometry {
             lowerC[0], lowerC[1], lowerC[2], 1,
             upperC[0], upperC[1], upperC[2], 1,
             lowerD[0], lowerD[1], lowerD[2], 1,
-            upperD[0], upperD[1], upperD[1], 1,
+            upperD[0], upperD[1], upperD[2], 1,
         ]);
         this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
         this.width = width;
@@ -295,7 +295,8 @@ export class Renderer {
         this.gl = gl;
 
         gl.enable(gl.DEPTH_TEST);
-        // gl.enable(gl.CULL_FACE);
+        gl.enable(gl.DEPTH_BUFFER_BIT);
+        gl.enable(gl.CULL_FACE);
         // gl.cullFace(gl.FRONT_AND_BACK);
 
         this.clear();
