@@ -167,7 +167,7 @@ export class TorusGeometry extends Geometry {
                     centerPoint[2] + radius2 * Math.sin(phi) * Math.sin(theta),
                     1,
                 ];
-                
+
                 theta = (thetaIndex + 1) * deltaTheta;
                 phi = (phiIndex + 1) * deltaPhi;
                 centerPoint = [
@@ -422,9 +422,149 @@ export class Renderer {
     }
 }
 
-export class Animation {
-
+export interface CurveFunction {
+    (percent: number): number;
 }
+
+export class Animation {
+    keyframes: {
+        number: {
+            T: number
+        }
+    };
+    // `keyframes` looks like CSS @keyframes
+    // {
+    //     0: {
+    //         rotationX: 45,
+    //     },
+    //     100: {
+    //         rotationX: 360,
+    //     },
+    // }
+    duration: number;
+    curve: CurveFunction;
+    delay: number;
+    count: number;
+    keyframePercents: Array<number>;
+
+    private startTime: number;
+    private playing: boolean;
+
+    constructor(keyframes: { number: { T: number } }, duration: number, curve: CurveFunction, delay: number, count: number) {
+        this.keyframes = keyframes;
+        this.duration = duration;
+        this.curve = curve;
+        this.delay = delay;
+        this.count = count;
+
+        this.startTime = null;
+        this.playing = false;
+
+        this.keyframePercents = Object.keys(keyframes).map(Number).sort(function (a, b) { return Number(a) - Number(b) });
+    }
+
+    start() {
+        this.startTime = Date.now() / 1000;
+        this.playing = true;
+    }
+
+    yield() {
+        // let currentTime = Date.now() / 1000;
+        // let currentFrame = deepCopy(this.keyframes[0]);
+        // if (this.startTime) { // started
+        //     if (currentTime - this.startTime < this.delay) { // still in delay
+        //         return currentFrame; // nothing happens
+        //     } else { // passed delay
+        //         this.startTime = this.startTime + this.delay;
+        //         if (this.countLeft != 0) { // no count left
+        //             return this.keyframes[100];
+        //         } else { // 
+        //             let percentage = this.curve((currentTime - this.startTime) / this.duration);
+
+        //             for (let [k, v] of Object.entries(currentFrame)) {
+        //                 let a = currentFrame[0][k];
+        //                 let b = currentFrame[100][k];
+        //                 currentFrame[k] = ((b - a) * percentage + a);
+        //             }
+
+        //             return currentFrame;
+        //         }
+        //     }
+        // } else { // has not started yet
+        //     return currentFrame;
+        // }
+        if (this.playing) {
+            let currentTime = Date.now() / 1000;
+            if (currentTime - this.startTime < this.delay) {
+                return this.keyframes[0];
+            } else {
+                let currentFrame = deepCopy(this.keyframes[0]);
+                if (currentTime < this.startTime + this.delay + this.count * this.duration) {
+                    let timePercentage = (currentTime - this.startTime - this.delay) % this.duration / this.duration;
+                    let index;
+
+                    for (index = 1; index < this.keyframePercents.length; index++) {
+                        if (timePercentage < Number(this.keyframePercents[index])) {
+                            index = index - 1;
+                            break;
+                        }
+                    }
+
+                    let x = (timePercentage - this.keyframePercents[index]) / (this.keyframePercents[Number(index) + 1] - this.keyframePercents[index]);
+                    let y = this.curve(x);
+                    // console.log(y);
+
+                    for (let [k, v] of Object.entries(this.keyframes[0])) {
+                        let a = this.keyframes[this.keyframePercents[index]][k];
+                        let b = this.keyframes[this.keyframePercents[Number(index) + 1]][k];
+                        // console.log([timePercentage, index, a, b, x, y]);
+                        currentFrame[k] = (b - a) * y + a;
+                    }
+                    // console.log(currentFrame);
+                    return currentFrame;
+                } else {
+                    return this.keyframes[0];
+                }
+            }
+        } else {
+            return this.keyframes[0];
+        }
+    }
+
+    stop() { // stop right away, no matter if the animation is underway
+        this.playing = false;
+    }
+}
+
+export function linear(percent: number) {
+    return percent;
+}
+
+export function sin(percent: number) {
+    return Math.sin(Math.PI * percent);
+}
+
+// generate a cubic Bezier curve function
+export function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
+    return function (percent: number) {
+        let x = percent;
+        let t = -(-6 * x1 + 3 * x2) / (3 * (3 * x1 - 3 * x2 + 1)) - (-9 * x1 / (3 * x1 - 3 * x2 + 1) + (-6 * x1 + 3 * x2) ** 2 / (3 * x1 - 3 * x2 + 1) ** 2) / (3 * (-27 * x / (2 * (3 * x1 - 3 * x2 + 1)) - 27 * x1 * (-6 * x1 + 3 * x2) / (2 * (3 * x1 - 3 * x2 + 1) ** 2) + (-6 * x1 + 3 * x2) ** 3 / (3 * x1 - 3 * x2 + 1) ** 3 + Math.sqrt(-4 * (-9 * x1 / (3 * x1 - 3 * x2 + 1) + (-6 * x1 + 3 * x2) ** 2 / (3 * x1 - 3 * x2 + 1) ** 2) ** 3 + (-27 * x / (3 * x1 - 3 * x2 + 1) - 27 * x1 * (-6 * x1 + 3 * x2) / (3 * x1 - 3 * x2 + 1) ** 2 + 2 * (-6 * x1 + 3 * x2) ** 3 / (3 * x1 - 3 * x2 + 1) ** 3) ** 2) / 2) ** (1 / 3)) - (-27 * x / (2 * (3 * x1 - 3 * x2 + 1)) - 27 * x1 * (-6 * x1 + 3 * x2) / (2 * (3 * x1 - 3 * x2 + 1) ** 2) + (-6 * x1 + 3 * x2) ** 3 / (3 * x1 - 3 * x2 + 1) ** 3 + Math.sqrt(-4 * (-9 * x1 / (3 * x1 - 3 * x2 + 1) + (-6 * x1 + 3 * x2) ** 2 / (3 * x1 - 3 * x2 + 1) ** 2) ** 3 + (-27 * x / (3 * x1 - 3 * x2 + 1) - 27 * x1 * (-6 * x1 + 3 * x2) / (3 * x1 - 3 * x2 + 1) ** 2 + 2 * (-6 * x1 + 3 * x2) ** 3 / (3 * x1 - 3 * x2 + 1) ** 3) ** 2) / 2) ** (1 / 3) / 3
+        // this crazy equation is done by solving the equation for t with respect to x
+        // 3 (1 - t)^2 t x_1 + 3 (1 - t) t^2 x_2 + t^3 = x
+        // it has 3 roots, choose the root that makes y(t) a real number, and this is that root.
+
+        return 3 * (1 - t) ** 2 * t * y1 + 3 * (1 - t) * t ** 2 * y2 + t ** 3;
+    };
+}
+// see also https://en.wikipedia.org/wiki/Cubic_equation#General_cubic_formula
+
+// some convenient aliases
+export let ease = cubicBezier(0.25, 0.1, 0.25, 1.0);
+export let easeIn = cubicBezier(0.42, 0, 1.0, 1.0);
+export let easeOut = cubicBezier(0, 0, 0.58, 1.0);
+export let easeInOut = cubicBezier(0.42, 0, 0.58, 1.0);
+
+// see also https://drafts.csswg.org/css-easing-1/#cubic-bzier-easing-function
 
 export function getShaderProgram(gl: WebGL2RenderingContext, vertexShaderSource: string, fragmentShaderSource: string): WebGLProgram {
     let vertexShader = getShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
@@ -478,4 +618,8 @@ export function getProgramInfo(gl: WebGL2RenderingContext, shaderProgram: WebGLP
         attributeLocations: attributeLocations,
         uniformLocations: uniformLocations,
     };
+}
+
+export function deepCopy(x: Object): Object {
+    return JSON.parse(JSON.stringify(x));
 }

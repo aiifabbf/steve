@@ -1,5 +1,5 @@
 import { mat4 } from "gl-matrix";
-import * as engine from "./engine.ts";
+import * as engine from "./engine";
 import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry } from "./engine";
 
 // for mouse movement
@@ -212,12 +212,46 @@ function main() {
     mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, -45);
     renderer.render(world);
 
+    // animations
+    let walkAnimation = new engine.Animation({
+        0: {
+            rotation: 0,
+        },
+        0.25: {
+            rotation: 0.8,
+        },
+        0.50: {
+            rotation: 0,
+        },
+        0.75: {
+            rotation: -0.8,
+        },
+        1: {
+            rotation: 0,
+        }
+    }, 0.75, engine.linear, 0, Infinity);
+
+    let jumpAnimation = new engine.Animation({
+        0: {
+            translate: 0,
+        },
+        0.5: {
+            translate: 0.3,
+        },
+        1: {
+            translate: 0,
+        },
+    }, 0.3, engine.ease, 0, 1);
+
     // controls
     let isDragging = false;
     let worldRotationY = -45; // deg
     let worldRotationX = -45; // deg
     let worldScale = 1;
     let lastMousePosition;
+    let stevePosition = [0, 0, 0];
+    let steveWalking = false;
+    let steveWalkingDirection = "+z";
 
     // start dragging
     canvas.addEventListener("mousedown", function (event) {
@@ -249,6 +283,8 @@ function main() {
         } else {
             worldScale /= 0.5 * event.deltaY;
         }
+
+        worldScale = Math.max(Math.min(worldScale, 20), 0.01);
     })
 
     // press shift to bend
@@ -262,6 +298,17 @@ function main() {
             mat4.identity(headJoint.modelViewMatrix);
             mat4.translate(headJoint.modelViewMatrix, headJoint.modelViewMatrix, [0, 0.12, 0]);
             mat4.rotateX(headJoint.modelViewMatrix, headJoint.modelViewMatrix, 0.4);
+        } else if (event.code === "KeyW" && event.repeat === false) { // it turns out that keydown is not really keydown: it triggers multiple times when you hold the key down
+            steveWalking = true;
+            steveWalkingDirection = "-z";
+            walkAnimation.start();
+        } else if (event.code === "KeyS" && event.repeat === false) {
+            steveWalking = true;
+            steveWalkingDirection = "+z";
+            walkAnimation.start();
+        } else if (event.code === "Space" && event.repeat === false) {
+            event.preventDefault();
+            jumpAnimation.start();
         }
     });
 
@@ -270,6 +317,9 @@ function main() {
             mat4.identity(bodyJoint.modelViewMatrix);
             mat4.identity(headJoint.modelViewMatrix);
             mat4.translate(headJoint.modelViewMatrix, headJoint.modelViewMatrix, [0, 0.12, 0]);
+        } else if (event.code === "KeyW" || event.code === "KeyS") {
+            steveWalking = false;
+            walkAnimation.stop();
         }
     })
 
@@ -283,15 +333,26 @@ function main() {
         mat4.scale(world.modelViewMatrix, world.modelViewMatrix, [worldScale, worldScale, worldScale]);
 
         // body position
-        let percent = document.querySelector("input[id=bodyPosition]").value / 100;
+        if (steveWalking) {
+            if (steveWalkingDirection === "-z") {
+                stevePosition[2] -= 0.02;
+            } else if (steveWalkingDirection === "+z") {
+                stevePosition[2] += 0.02;
+            }
+        }
+
+        stevePosition[1] = jumpAnimation.yield()["translate"];
+
         mat4.identity(hip.modelViewMatrix);
-        mat4.translate(hip.modelViewMatrix, hip.modelViewMatrix, [0, 0, percent]);
+        mat4.translate(hip.modelViewMatrix, hip.modelViewMatrix, stevePosition);
 
         // arm rotation
-        let armRotation = document.querySelector("input[id=armPosition]").value / 100;
+        // let armRotation = document.querySelector("input[id=armPosition]").value / 100;
+        let armRotation = walkAnimation.yield()["rotation"];
         mat4.identity(larmJoint.modelViewMatrix);
         mat4.translate(larmJoint.modelViewMatrix, larmJoint.modelViewMatrix, [0.12, 0.08, 0]);
         mat4.rotateX(larmJoint.modelViewMatrix, larmJoint.modelViewMatrix, armRotation);
+
         mat4.identity(rarmJoint.modelViewMatrix);
         mat4.translate(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, [-0.12, 0.08, 0]);
         mat4.rotateX(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, -armRotation);
@@ -300,6 +361,7 @@ function main() {
         mat4.identity(llegJoint.modelViewMatrix);
         mat4.translate(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, [0.04, 0, 0]);
         mat4.rotateX(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, -armRotation);
+
         mat4.identity(rlegJoint.modelViewMatrix);
         mat4.translate(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, [-0.04, 0, 0]);
         mat4.rotateX(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, armRotation);
