@@ -65,6 +65,9 @@ function main() {
         }, {});
     });
 
+    let hip = new Sprite(null, null);
+
+    let bodyJoint = new Sprite(null, null);
     let body = new Sprite(new CubeGeometry(0.16, 0.24, 0.08), new ColorMaterial([0, 0.686, 0.686, 1]));
     body.material.compile(renderer);
     body.material.bindPlaceholders(renderer, {
@@ -153,7 +156,11 @@ function main() {
         }).flat()),
     }, {});
 
-    world.add(body);
+    world.add(hip);
+
+    mat4.translate(body.modelViewMatrix, body.modelViewMatrix, [0, 0.12, 0]);
+    hip.add(bodyJoint);
+    bodyJoint.add(body);
 
     // larm
     mat4.translate(larmJoint.modelViewMatrix, larmJoint.modelViewMatrix, [0.12, 0.08, 0]);
@@ -172,15 +179,15 @@ function main() {
     rarmJoint.add(rarm);
 
     // lleg
-    mat4.translate(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, [-0.04, -0.12, 0]);
+    mat4.translate(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, [-0.04, 0, 0]);
     mat4.translate(lleg.modelViewMatrix, lleg.modelViewMatrix, [0, -0.12, 0]);
-    body.add(llegJoint);
+    hip.add(llegJoint);
     llegJoint.add(lleg);
 
     // rleg
-    mat4.translate(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, [0.04, -0.12, 0]);
+    mat4.translate(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, [0.04, 0, 0]);
     mat4.translate(rleg.modelViewMatrix, rleg.modelViewMatrix, [0, -0.12, 0]);
-    body.add(rlegJoint);
+    hip.add(rlegJoint);
     rlegJoint.add(rleg);
 
     // head
@@ -248,8 +255,8 @@ function main() {
 
         // body position
         let percent = document.querySelector("input[id=bodyPosition]").value / 100;
-        mat4.identity(body.modelViewMatrix);
-        mat4.translate(body.modelViewMatrix, body.modelViewMatrix, [0, 0, percent]);
+        mat4.identity(hip.modelViewMatrix);
+        mat4.translate(hip.modelViewMatrix, hip.modelViewMatrix, [0, 0, percent]);
 
         // arm rotation
         let armRotation = document.querySelector("input[id=armPosition]").value / 100;
@@ -259,6 +266,19 @@ function main() {
         mat4.identity(rarmJoint.modelViewMatrix);
         mat4.translate(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, [-0.12, 0.08, 0]);
         mat4.rotateX(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, -armRotation);
+
+        // leg rotation
+        mat4.identity(llegJoint.modelViewMatrix);
+        mat4.translate(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, [0.04, 0, 0]);
+        mat4.rotateX(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, -armRotation);
+        mat4.identity(rlegJoint.modelViewMatrix);
+        mat4.translate(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, [-0.04, 0, 0]);
+        mat4.rotateX(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, armRotation);
+
+        // bend
+        mat4.identity(bodyJoint.modelViewMatrix);
+        mat4.rotateX(bodyJoint.modelViewMatrix, bodyJoint.modelViewMatrix, -0.4);
+
 
         // cape animation
         let angle = animateSin(-0.12, 200);
