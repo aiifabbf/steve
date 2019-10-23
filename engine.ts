@@ -139,6 +139,64 @@ export class SphereGeometry extends Geometry {
     }
 }
 
+export class TorusGeometry extends Geometry {
+    radius: number;
+    radius2: number;
+    horizontalSegmentCount: number;
+    verticalSegmentCount: number;
+
+    constructor(radius: number, radius2: number, horizontalSegmentCount: number, verticalSegmentCount: number) {
+        let vertexPositions = [];
+
+        let deltaTheta = 2 * Math.PI / horizontalSegmentCount;
+        let deltaPhi = 2 * Math.PI / verticalSegmentCount;
+
+        for (let phiIndex = 0; phiIndex <= verticalSegmentCount; phiIndex++) {
+
+            for (let thetaIndex = 0; thetaIndex <= horizontalSegmentCount; thetaIndex++) {
+                let theta = thetaIndex * deltaTheta;
+                let phi = phiIndex * deltaPhi;
+                let centerPoint = [
+                    radius * Math.cos(theta),
+                    0,
+                    radius * Math.sin(theta),
+                    1,
+                ];
+                let a = [
+                    centerPoint[0] + radius2 * Math.sin(phi) * Math.cos(theta),
+                    centerPoint[1] + radius2 * Math.cos(phi),
+                    centerPoint[2] + radius2 * Math.sin(phi) * Math.sin(theta),
+                    1,
+                ];
+                
+                theta = (thetaIndex + 1) * deltaTheta;
+                phi = (phiIndex + 1) * deltaPhi;
+                centerPoint = [
+                    radius * Math.cos(theta),
+                    0,
+                    radius * Math.sin(theta),
+                    1,
+                ];
+                let b = [
+                    centerPoint[0] + radius2 * Math.sin(phi) * Math.cos(theta),
+                    centerPoint[1] + radius2 * Math.cos(phi),
+                    centerPoint[2] + radius2 * Math.sin(phi) * Math.sin(theta),
+                    1,
+                ];
+                vertexPositions = vertexPositions.concat(a).concat(b);
+            }
+        }
+
+        super(vertexPositions);
+        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+
+        this.radius = radius;
+        this.radius2 = radius2;
+        this.horizontalSegmentCount = horizontalSegmentCount;
+        this.verticalSegmentCount = verticalSegmentCount;
+    }
+}
+
 export class CubeGeometry extends Geometry {
     width: number;
     height: number;
@@ -323,7 +381,6 @@ export class Renderer {
         this.gl = gl;
 
         gl.enable(gl.DEPTH_TEST);
-        gl.enable(gl.DEPTH_BUFFER_BIT);
         gl.enable(gl.CULL_FACE);
         // gl.cullFace(gl.FRONT_AND_BACK);
 
