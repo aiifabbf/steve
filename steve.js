@@ -570,7 +570,7 @@ function main() {
         mat4.rotateX(catRearFootLJoint.modelViewMatrix, catRearFootLJoint.modelViewMatrix, -catWalkArmRotation);
 
         mat4.identity(catRearFootRJoint.modelViewMatrix);
-        mat4.translate(catRearFootRJoint.modelViewMatrix, catRearFootRJoint.modelViewMatrix, [-0.021,-0.04,-0.12]);
+        mat4.translate(catRearFootRJoint.modelViewMatrix, catRearFootRJoint.modelViewMatrix, [0.021,-0.04,-0.12]);
         mat4.rotateX(catRearFootRJoint.modelViewMatrix, catRearFootRJoint.modelViewMatrix, catWalkArmRotation);
 
         // cat tail
