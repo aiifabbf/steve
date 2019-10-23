@@ -2,11 +2,11 @@ import { mat4 } from "gl-matrix";
 import * as engine from "./engine.ts";
 import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry } from "./engine";
 
-// for mouse movement
+// for Mouth movement
 var g_isDrag = false;
-var g_xMclik = 0.0;	 // last mouse button-down position (in CVV coords)
+var g_xMclik = 0.0;	 // last Mouth button-down position (in CVV coords)
 var g_yMclik = 0.0;
-var g_xMdragTot = 0.0;	// total (accumulated) mouse-drag amounts (in CVV coords).
+var g_xMdragTot = 0.0;	// total (accumulated) Mouth-drag amounts (in CVV coords).
 var g_yMdragTot = 0.0;
 let canvas = document.querySelector("canvas");
 
@@ -65,6 +65,11 @@ function main() {
         }, {});
     });
 
+    world.add(xAxis);
+    world.add(yAxis);
+    world.add(zAxis);
+
+    // Start building steve
     let hip = new Sprite(null, null);
 
     let bodyJoint = new Sprite(null, null);
@@ -149,6 +154,7 @@ function main() {
     }, {
         uModelViewMatrix: "uModelViewMatrix"
     })
+
     cape.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(cape.geometry.vertexPositions),
         aVertexColor: new Float32Array(capeNodePositions.map(function (nodePosition) {
@@ -204,9 +210,141 @@ function main() {
     body.add(capeJoint);
     capeJoint.add(cape);
 
-    world.add(xAxis);
-    world.add(yAxis);
-    world.add(zAxis);
+    // End build steve
+
+    // Start build cat
+
+    let catBody = new Sprite(new CubeGeometry(0.08, 0.12, 0.32), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    catBody.material.compile(renderer);
+    catBody.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catBody.geometry.vertexPositions),
+    }, {});
+
+    let catHeadJoint = new Sprite(null, null);
+    let catHead = new Sprite(new CubeGeometry(0.1, 0.08, 0.1), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    catHead.material.compile(renderer);
+    catHead.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catHead.geometry.vertexPositions),
+    }, {});
+
+    let catMouth = new Sprite(new CubeGeometry(0.06, 0.04, 0.02), new ColorMaterial([0.4, 0.4, 0.4, 1]));
+    catMouth.material.compile(renderer);
+    catMouth.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catMouth.geometry.vertexPositions),
+    }, {});
+
+    let catEarL = new Sprite(new CubeGeometry(0.02, 0.02, 0.04), new ColorMaterial([0.3, 0.3, 0.3, 1]));
+    catEarL.material.compile(renderer);
+    catEarL.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catEarL.geometry.vertexPositions),
+    }, {});
+
+    let catEarR = new Sprite(new CubeGeometry(0.02, 0.02, 0.04), new ColorMaterial([0.3, 0.3, 0.3, 1]));
+    catEarR.material.compile(renderer);
+    catEarR.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catEarR.geometry.vertexPositions),
+    }, {});
+
+    let catFrontFootLJoint = new Sprite(null, null);
+    let catFrontFootL = new Sprite(new CubeGeometry(0.04, 0.2, 0.04), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    catFrontFootL.material.compile(renderer);
+    catFrontFootL.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catFrontFootL.geometry.vertexPositions),
+    }, {});
+
+    let catFrontFootRJoint = new Sprite(null, null);
+    let catFrontFootR = new Sprite(new CubeGeometry(0.04, 0.2, 0.04), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    catFrontFootR.material.compile(renderer);
+    catFrontFootR.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catFrontFootR.geometry.vertexPositions),
+    }, {});
+
+    let catRearFootLJoint = new Sprite(null, null);
+    let catRearFootL = new Sprite(new CubeGeometry(0.04, 0.12, 0.04), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    catRearFootL.material.compile(renderer);
+    catRearFootL.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catRearFootL.geometry.vertexPositions),
+    }, {});
+
+    let catRearFootRJoint = new Sprite(null, null);
+    let catRearFootR = new Sprite(new CubeGeometry(0.04, 0.12, 0.04), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    catRearFootR.material.compile(renderer);
+    catRearFootR.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catRearFootR.geometry.vertexPositions),
+    }, {});
+
+    let catTailFrontJoint = new Sprite(null, null);
+    let catTailFront = new Sprite(new CubeGeometry(0.02, 0.02, 0.16), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    catTailFront.material.compile(renderer);
+    catTailFront.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catTailFront.geometry.vertexPositions),
+    }, {});
+
+    let catTailRearJoint = new Sprite(null, null);
+    let catTailRear = new Sprite(new CubeGeometry(0.02, 0.02, 0.16), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    catTailRear.material.compile(renderer);
+    catTailRear.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(catTailRear.geometry.vertexPositions),
+    }, {});
+
+
+    // add cat head
+    mat4.translate(catHeadJoint.modelViewMatrix, catHeadJoint.modelViewMatrix, [0, 0.03, 0.16]);
+    mat4.translate(catHead.modelViewMatrix, catHead.modelViewMatrix, [0, 0.01, 0.05]);
+    mat4.translate(catEarL.modelViewMatrix, catEarL.modelViewMatrix, [0.03, 0.05, -0.03]);
+    mat4.translate(catEarR.modelViewMatrix, catEarR.modelViewMatrix, [-0.03, 0.05, -0.03])
+    mat4.translate(catMouth.modelViewMatrix, catMouth.modelViewMatrix, [0, -0.02, 0.06]);
+    catBody.add(catHeadJoint);
+    catHeadJoint.add(catHead);
+    catHead.add(catEarL);
+    catHead.add(catEarR);
+    catHead.add(catMouth);
+
+    // add Front Left Leg;
+    mat4.translate(catFrontFootLJoint.modelViewMatrix, catFrontFootLJoint.modelViewMatrix, [0, 0.04, 0.1]);
+    mat4.translate(catFrontFootL.modelViewMatrix, catFrontFootL.modelViewMatrix, [-0.021,-0.08, 0]);
+    catBody.add(catFrontFootLJoint);
+    catFrontFootLJoint.add(catFrontFootL);
+
+    // add Front Right Leg;
+    mat4.translate(catFrontFootRJoint.modelViewMatrix, catFrontFootRJoint.modelViewMatrix, [0, 0.04, 0.1]);
+    mat4.translate(catFrontFootR.modelViewMatrix, catFrontFootR.modelViewMatrix, [0.021,-0.08, 0]);
+    catBody.add(catFrontFootRJoint);
+    catFrontFootRJoint.add(catFrontFootR);
+
+    // add Rear Left Leg;
+    mat4.translate(catRearFootLJoint.modelViewMatrix, catRearFootLJoint.modelViewMatrix, [-0.021,-0.04,-0.12]);
+    mat4.translate(catRearFootL.modelViewMatrix, catRearFootL.modelViewMatrix, [0,-0.04,0])
+    catBody.add(catRearFootLJoint);
+    catRearFootLJoint.add(catRearFootL);
+
+    // add Rear Left Leg;
+    mat4.translate(catRearFootRJoint.modelViewMatrix, catRearFootRJoint.modelViewMatrix, [0.021,-0.04,-0.12]);
+    mat4.translate(catRearFootR.modelViewMatrix, catRearFootR.modelViewMatrix, [0,-0.04,0])
+    catBody.add(catRearFootRJoint);
+    catRearFootRJoint.add(catRearFootR);
+
+    // add tail front
+    mat4.translate(catTailFrontJoint.modelViewMatrix, catTailFrontJoint.modelViewMatrix, [0,0.04,-0.16]);
+    mat4.rotateX(catTailFrontJoint.modelViewMatrix, catTailFrontJoint.modelViewMatrix, -0.5);
+    mat4.translate(catTailFront.modelViewMatrix, catTailFront.modelViewMatrix, [0, 0, -0.07]);
+    catBody.add(catTailFrontJoint);
+    catTailFrontJoint.add(catTailFront);
+
+    // add tail Read
+    mat4.translate(catTailRearJoint.modelViewMatrix, catTailRearJoint.modelViewMatrix, [0,0,-0.07]);
+    mat4.rotateX(catTailRearJoint.modelViewMatrix, catTailRearJoint.modelViewMatrix, 0.5);
+    mat4.translate(catTailRear.modelViewMatrix, catTailRear.modelViewMatrix,[0,0,-0.07]);
+    catTailFront.add(catTailRearJoint);
+    catTailRearJoint.add(catTailRear);
+
+    //End Build Cat
+
+    let center = new Sprite(null, null);
+    world.add(center);
+    mat4.translate(catBody.modelViewMatrix, catBody.modelViewMatrix,[0.5,-0.1,0]);
+    center.add(catBody);
+
 
     mat4.rotateX(world.modelViewMatrix, world.modelViewMatrix, 6);
     mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, -45);
@@ -312,6 +450,11 @@ function main() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         renderer.render(world);
         requestAnimationFrame(onDraw);
+
+        // cat Rotation
+        mat4.rotateY(center.modelViewMatrix, center.modelViewMatrix, -0.01)
+
+        // cat walk
     }
 
     onDraw();
