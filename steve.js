@@ -162,6 +162,12 @@ function main() {
         }).flat()),
     }, {});
 
+    let angelRing = new Sprite(new engine.TorusGeometry(0.08, 0.02, 32, 32), new ColorMaterial([1, 1, 0, 1]));
+    angelRing.material.compile(renderer);
+    angelRing.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(angelRing.geometry.vertexPositions),
+    }, {});
+
     world.add(hip);
 
     mat4.translate(body.modelViewMatrix, body.modelViewMatrix, [0, 0.12, 0]);
@@ -209,6 +215,9 @@ function main() {
     capeOriMat = mat4.clone(capeJoint.modelViewMatrix);
     body.add(capeJoint);
     capeJoint.add(cape);
+
+    mat4.translate(angelRing.modelViewMatrix, angelRing.modelViewMatrix, [0, 0.12, 0]);
+    head.add(angelRing);
 
     // End build steve
 
