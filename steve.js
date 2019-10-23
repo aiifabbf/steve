@@ -219,10 +219,13 @@ function main() {
     let worldScale = 1;
     let lastMousePosition;
 
+    // start dragging
     canvas.addEventListener("mousedown", function (event) {
         lastMousePosition = [event.offsetX, event.offsetY];
         isDragging = true;
     });
+
+    // dragging
     document.addEventListener("mousemove", function (event) {
         if (isDragging) {
             let position = [event.offsetX, event.offsetY];
@@ -231,16 +234,42 @@ function main() {
             lastMousePosition = position;
         }
     });
+
+    // stop dragging
     document.addEventListener("mouseup", function (event) {
         isDragging = false;
     });
-    document.addEventListener("wheel", function (event) {
+
+    // mouse wheel to scale
+    canvas.addEventListener("wheel", function (event) {
         event.preventDefault();
 
         if (event.deltaY < 0) {
             worldScale *= (-0.5) * event.deltaY;
         } else {
             worldScale /= 0.5 * event.deltaY;
+        }
+    })
+
+    // press shift to bend
+    document.addEventListener("keydown", function (event) {
+        if (event.code === "ShiftLeft") {
+            // bend body
+            mat4.identity(bodyJoint.modelViewMatrix);
+            mat4.rotateX(bodyJoint.modelViewMatrix, bodyJoint.modelViewMatrix, -0.4);
+
+            // bend head
+            mat4.identity(headJoint.modelViewMatrix);
+            mat4.translate(headJoint.modelViewMatrix, headJoint.modelViewMatrix, [0, 0.12, 0]);
+            mat4.rotateX(headJoint.modelViewMatrix, headJoint.modelViewMatrix, 0.4);
+        }
+    });
+
+    document.addEventListener("keyup", function (event) {
+        if (event.code === "ShiftLeft") {
+            mat4.identity(bodyJoint.modelViewMatrix);
+            mat4.identity(headJoint.modelViewMatrix);
+            mat4.translate(headJoint.modelViewMatrix, headJoint.modelViewMatrix, [0, 0.12, 0]);
         }
     })
 
@@ -274,11 +303,6 @@ function main() {
         mat4.identity(rlegJoint.modelViewMatrix);
         mat4.translate(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, [-0.04, 0, 0]);
         mat4.rotateX(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, armRotation);
-
-        // bend
-        mat4.identity(bodyJoint.modelViewMatrix);
-        mat4.rotateX(bodyJoint.modelViewMatrix, bodyJoint.modelViewMatrix, -0.4);
-
 
         // cape animation
         let angle = animateSin(-0.12, 200);
