@@ -43,9 +43,9 @@ function main() {
         }
     `;
 
-    window.addEventListener("mousedown", myMouseDown);
-    window.addEventListener("mousemove", myMouseMove);
-    window.addEventListener("mouseup", myMouseUp);
+    canvas.addEventListener("mousedown", myMouseDown);
+    canvas.addEventListener("mousemove", myMouseMove);
+    canvas.addEventListener("mouseup", myMouseUp);
 
     let renderer = new Renderer(canvas);
 
@@ -67,88 +67,119 @@ function main() {
         aVertexPosition: new Float32Array(body.geometry.vertexPositions),
     }, {});
 
-    let headJiont = new Sprite(null, null);
+    let headJoint = new Sprite(null, null);
     let head = new Sprite(new CubeGeometry(0.16, 0.16, 0.16), new ColorMaterial([0.702, 0.482, 0.384, 1]));
     head.material.compile(renderer);
     head.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(head.geometry.vertexPositions),
     }, {});
 
-    let larmJiont = new Sprite(null, null);
+    let larmJoint = new Sprite(null, null);
     let larm = new Sprite(new CubeGeometry(0.08, 0.24, 0.08), new ColorMaterial([0.588, 0.372, 0.255, 1]));
     larm.material.compile(renderer);
     larm.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(larm.geometry.vertexPositions),
     }, {});
 
-    let rarmJiont = new Sprite(null, null);
+    let rarmJoint = new Sprite(null, null);
     let rarm = new Sprite(new CubeGeometry(0.08, 0.24, 0.08), new ColorMaterial([0.588, 0.372, 0.255, 1]));
     rarm.material.compile(renderer);
     rarm.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(rarm.geometry.vertexPositions),
     }, {});
 
-    let llegJiont = new Sprite(null, null);
+    let llegJoint = new Sprite(null, null);
     let lleg = new Sprite(new CubeGeometry(0.08, 0.24, 0.08), new ColorMaterial([0.275, 0.228, 0.647, 1]));
     lleg.material.compile(renderer);
     lleg.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(lleg.geometry.vertexPositions),
     }, {});
 
-    let rlegJiont = new Sprite(null, null);
+    let rlegJoint = new Sprite(null, null);
     let rleg = new Sprite(new CubeGeometry(0.08, 0.24, 0.08), new ColorMaterial([0.275, 0.228, 0.5, 1]));
     rleg.material.compile(renderer);
     rleg.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(rleg.geometry.vertexPositions),
     }, {});
 
-    let capeJiont = new Sprite(null, null);
-    let cape = new Sprite(new CubeGeometry(0.16, 0.36, 0.02), new ColorMaterial([0.6, 0, 0, 1]));
-    cape.material.compile(renderer);
+    let capeJoint = new Sprite(null, null);
+    let cape = new Sprite(new CubeGeometry(0.16, 0.36, 0.02), new Material(vertexShaderSource, fragmentShaderSource));
+    let nodePositionColorMapping = {}; // color for each node
+    let capeNodePositions = []; // reshape vertexPositions into (-1, 4)
+
+    for (let i = 0; i < cape.geometry.vertexPositions.length / 4; i ++) {
+        let vertexPosition = cape.geometry.vertexPositions;
+        capeNodePositions.push([
+            vertexPosition[4 * i],
+            vertexPosition[4 * i + 1],
+            vertexPosition[4 * i + 2],
+            vertexPosition[4 * i + 3],
+        ]);
+    }
+
+    capeNodePositions.forEach(function (nodePosition) {
+        if (!(nodePosition in nodePositionColorMapping)) {
+            nodePositionColorMapping[nodePosition] = [
+                Math.random() > 0.5 ? 1 : 0,
+                Math.random() > 0.5 ? 1 : 0,
+                Math.random() > 0.5 ? 1 : 0,
+                1,
+            ];
+        }
+    });
+
+    cape.material.compile(renderer, {
+        aVertexPosition: "aVertexPosition",
+        aVertexColor: "aVertexColor"
+    }, {
+        uModelViewMatrix: "uModelViewMatrix"
+    })
     cape.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(cape.geometry.vertexPositions),
+        aVertexColor: new Float32Array(capeNodePositions.map(function (nodePosition) {
+            return nodePositionColorMapping[nodePosition];
+        }).flat()),
     }, {});
 
     world.add(body);
 
     // larm
-    mat4.translate(larmJiont.modelViewMatrix, larmJiont.modelViewMatrix, [0.12, 0.08, 0]);
+    mat4.translate(larmJoint.modelViewMatrix, larmJoint.modelViewMatrix, [0.12, 0.08, 0]);
     mat4.translate(larm.modelViewMatrix, larm.modelViewMatrix, [0, -0.08, 0]);
-    body.add(larmJiont);
-    larmJiont.add(larm);
+    body.add(larmJoint);
+    larmJoint.add(larm);
 
     // rarm
-    mat4.translate(rarmJiont.modelViewMatrix, rarmJiont.modelViewMatrix, [-0.12, 0.08, 0]);
+    mat4.translate(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, [-0.12, 0.08, 0]);
     mat4.translate(rarm.modelViewMatrix, rarm.modelViewMatrix, [0, -0.08, 0]);
-    body.add(rarmJiont);
-    rarmJiont.add(rarm);
+    body.add(rarmJoint);
+    rarmJoint.add(rarm);
 
     // lleg
-    mat4.translate(llegJiont.modelViewMatrix, llegJiont.modelViewMatrix, [-0.04, -0.12, 0]);
+    mat4.translate(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, [-0.04, -0.12, 0]);
     mat4.translate(lleg.modelViewMatrix, lleg.modelViewMatrix, [0, -0.12, 0]);
-    body.add(llegJiont);
-    llegJiont.add(lleg);
+    body.add(llegJoint);
+    llegJoint.add(lleg);
 
     // rleg
-    mat4.translate(rlegJiont.modelViewMatrix, rlegJiont.modelViewMatrix, [0.04, -0.12, 0]);
+    mat4.translate(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, [0.04, -0.12, 0]);
     mat4.translate(rleg.modelViewMatrix, rleg.modelViewMatrix, [0, -0.12, 0]);
-    body.add(rlegJiont);
-    rlegJiont.add(rleg);
+    body.add(rlegJoint);
+    rlegJoint.add(rleg);
 
     // head
-    mat4.translate(headJiont.modelViewMatrix, headJiont.modelViewMatrix, [0, 0.12, 0]);
+    mat4.translate(headJoint.modelViewMatrix, headJoint.modelViewMatrix, [0, 0.12, 0]);
     mat4.translate(head.modelViewMatrix, head.modelViewMatrix, [0, 0.08, 0]);
-    body.add(headJiont);
-    headJiont.add(head);
+    body.add(headJoint);
+    headJoint.add(head);
 
     // cape
-    mat4.translate(capeJiont.modelViewMatrix, capeJiont.modelViewMatrix, [0, 0.12, 0.04]);
-    //mat4.rotateX(capeJiont.modelViewMatrix,capeJiont.modelViewMatrix, -0.24);
+    mat4.translate(capeJoint.modelViewMatrix, capeJoint.modelViewMatrix, [0, 0.12, 0.04]);
+    //mat4.rotateX(capeJoint.modelViewMatrix,capeJoint.modelViewMatrix, -0.24);
     mat4.translate(cape.modelViewMatrix, cape.modelViewMatrix, [0, -0.18, 0.01]);
-    capeOriMat = mat4.clone(capeJiont.modelViewMatrix);
-    body.add(capeJiont);
-    capeJiont.add(cape);
-
+    capeOriMat = mat4.clone(capeJoint.modelViewMatrix);
+    body.add(capeJoint);
+    capeJoint.add(cape);
 
     world.add(xAxis);
     world.add(yAxis);
@@ -171,16 +202,16 @@ function main() {
 
         // arm rotation
         let armRotation = document.querySelector("input[id=armPosition]").value / 100;
-        mat4.identity(larmJiont.modelViewMatrix);
-        mat4.translate(larmJiont.modelViewMatrix, larmJiont.modelViewMatrix, [0.12, 0.08, 0]);
-        mat4.rotateX(larmJiont.modelViewMatrix, larmJiont.modelViewMatrix, armRotation);
-        mat4.identity(rarmJiont.modelViewMatrix);
-        mat4.translate(rarmJiont.modelViewMatrix, rarmJiont.modelViewMatrix, [-0.12, 0.08, 0]);
-        mat4.rotateX(rarmJiont.modelViewMatrix, rarmJiont.modelViewMatrix, -armRotation);
+        mat4.identity(larmJoint.modelViewMatrix);
+        mat4.translate(larmJoint.modelViewMatrix, larmJoint.modelViewMatrix, [0.12, 0.08, 0]);
+        mat4.rotateX(larmJoint.modelViewMatrix, larmJoint.modelViewMatrix, armRotation);
+        mat4.identity(rarmJoint.modelViewMatrix);
+        mat4.translate(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, [-0.12, 0.08, 0]);
+        mat4.rotateX(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, -armRotation);
 
         // cape animation
         let angle = animateSin(-0.12, 200);
-        mat4.rotateX(capeJiont.modelViewMatrix, capeOriMat, angle);
+        mat4.rotateX(capeJoint.modelViewMatrix, capeOriMat, angle);
 
         renderer.clear();
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
