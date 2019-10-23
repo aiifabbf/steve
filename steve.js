@@ -203,7 +203,7 @@ function main() {
         lastMousePosition = [event.offsetX, event.offsetY];
         isDragging = true;
     });
-    canvas.addEventListener("mousemove", function (event) {
+    document.addEventListener("mousemove", function (event) {
         if (isDragging) {
             let position = [event.offsetX, event.offsetY];
             worldRotationY += - (position[0] - lastMousePosition[0]) / 2;
@@ -211,7 +211,7 @@ function main() {
             lastMousePosition = position;
         }
     });
-    canvas.addEventListener("mouseup", function (event) {
+    document.addEventListener("mouseup", function (event) {
         isDragging = false;
     });
 
