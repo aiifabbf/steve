@@ -10,6 +10,14 @@ var g_xMdragTot = 0.0;	// total (accumulated) mouse-drag amounts (in CVV coords)
 var g_yMdragTot = 0.0;
 let canvas = document.querySelector("canvas");
 
+function deg2rad(deg) {
+    return deg / 360 * 2 * Math.PI;
+}
+
+function rad2deg(rad) {
+    return rad / (2 * Math.PI) * 360;
+}
+
 function main() {
     
     let gl = canvas.getContext("webgl2");
@@ -42,10 +50,6 @@ function main() {
             gl_FragColor = vVertexColor;
         }
     `;
-
-    canvas.addEventListener("mousedown", myMouseDown);
-    canvas.addEventListener("mousemove", myMouseMove);
-    canvas.addEventListener("mouseup", myMouseUp);
 
     let renderer = new Renderer(canvas);
 
@@ -189,12 +193,34 @@ function main() {
     mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, -45);
     renderer.render(world);
 
+    // controls
+    let isDragging = false;
+    let worldRotationY = -45; // deg
+    let worldRotationX = -45; // deg
+    let lastMousePosition;
+
+    canvas.addEventListener("mousedown", function (event) {
+        lastMousePosition = [event.offsetX, event.offsetY];
+        isDragging = true;
+    });
+    canvas.addEventListener("mousemove", function (event) {
+        if (isDragging) {
+            let position = [event.offsetX, event.offsetY];
+            worldRotationY += - (position[0] - lastMousePosition[0]) / 2;
+            worldRotationX += - (position[1] - lastMousePosition[1]) / 2;
+            lastMousePosition = position;
+        }
+    });
+    canvas.addEventListener("mouseup", function (event) {
+        isDragging = false;
+    });
+
     function onDraw() {
         // world rotation
-        mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, -g_xMdragTot);
-        g_xMdragTot = 0;
-        mat4.rotateX(world.modelViewMatrix,world.modelViewMatrix, -g_yMdragTot);
-        g_yMdragTot = 0;
+        mat4.identity(world.modelViewMatrix);
+        mat4.rotateX(world.modelViewMatrix, world.modelViewMatrix, deg2rad(worldRotationX));
+        mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, deg2rad(worldRotationY));
+
         // body position
         let percent = document.querySelector("input[id=bodyPosition]").value / 100;
         mat4.identity(body.modelViewMatrix);
@@ -218,6 +244,7 @@ function main() {
         renderer.render(world);
         requestAnimationFrame(onDraw);
     }
+
     onDraw();
 }
 
@@ -231,64 +258,5 @@ function animateSin(limit, speed) {
     //if (newAngle < -180.0) newAngle = newAngle + 360.0;
     return newAngle;
 }
-
-function myMouseMove(ev) {
-
-    if (g_isDrag == false) return;
-    // Create right-handed 'pixel' coords with origin at WebGL canvas LOWER left;
-    var rect = ev.target.getBoundingClientRect();	    // get canvas corners in pixels
-
-    var xp = ev.clientX - rect.left;					// x==0 at canvas left edge
-    var yp = canvas.height - (ev.clientY - rect.top);	// y==0 at canvas bottom edge
-
-    // Convert to Canonical View Volume (CVV) coordinates too:
-    var x = (xp - canvas.width / 2) / 		// move origin to center of canvas and
-        (canvas.width / 2);			// normalize canvas to -1 <= x < +1,
-    var y = (yp - canvas.height / 2) /		//										 -1 <= y < +1.
-        (canvas.height / 2);
-
-    // find how far we dragged the mouse:
-    g_xMdragTot += (x - g_xMclik);					// Accumulate change-in-mouse-position,&
-    g_yMdragTot += (y - g_yMclik);
-    // Report new mouse position & how far we moved on webpage:
-
-    g_xMclik = x;
-    g_yMclik = y;
-};
-
-function myMouseUp(ev) {
-    // Create right-handed 'pixel' coords with origin at WebGL canvas LOWER left;
-    var rect = ev.target.getBoundingClientRect();	// get canvas corners in pixels
-    var xp = ev.clientX - rect.left;				// x==0 at canvas left edge
-    var yp = canvas.height - (ev.clientY - rect.top);	// y==0 at canvas bottom edge
-
-    // Convert to Canonical View Volume (CVV) coordinates too:
-    var x = (xp - canvas.width / 2) / 		// move origin to center of canvas and
-        (canvas.width / 2);					// normalize canvas to -1 <= x < +1,
-    var y = (yp - canvas.height / 2) /		// -1 <= y < +1.
-        (canvas.height / 2);
-
-    g_isDrag = false;	// CLEAR our mouse-dragging flag, and
-    // accumulate any final bit of mouse-dragging we did:
-    g_xMdragTot += (x - g_xMclik);
-    g_yMdragTot += (y - g_yMclik);
-};
-
-function myMouseDown(ev) {
-    // Create right-handed 'pixel' coords with origin at WebGL canvas LOWER left;
-    var rect = ev.target.getBoundingClientRect();	// get canvas corners in pixels
-    var xp = ev.clientX - rect.left;									// x==0 at canvas left edge
-    var yp = canvas.height - (ev.clientY - rect.top);	// y==0 at canvas bottom edge
-
-    // Convert to Canonical View Volume (CVV) coordinates too:
-    var x = (xp - canvas.width / 2) / 		// move origin to center of canvas and
-        (canvas.width / 2);			// normalize canvas to -1 <= x < +1,
-    var y = (yp - canvas.height / 2) /		//										 -1 <= y < +1.
-        (canvas.height / 2);
-
-    g_isDrag = true;	// set our mouse-dragging flag
-    g_xMclik = x;		// record where mouse-dragging began
-    g_yMclik = y;
-};
 
 window.onload = main;
