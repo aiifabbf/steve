@@ -1,6 +1,6 @@
 import { mat4 } from "gl-matrix";
 import * as engine from "./engine.ts";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry } from "./engine";
+import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry } from "./engine";
 
 // for mouse movement
 var g_isDrag = false;
@@ -19,7 +19,7 @@ function rad2deg(rad) {
 }
 
 function main() {
-    
+
     let gl = canvas.getContext("webgl2");
     let capeOriMat = null;
 
@@ -85,6 +85,14 @@ function main() {
         aVertexPosition: new Float32Array(larm.geometry.vertexPositions),
     }, {});
 
+    // sphere on left hand
+    let sphere = new Sprite(new SphereGeometry(0.05, 32, 16), new ColorMaterial([1, 0, 0, 1]));
+    sphere.material.compile(renderer);
+    sphere.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(sphere.geometry.vertexPositions)
+    }, {});
+    sphere.geometry.mode = WebGL2RenderingContext.LINE_STRIP;
+
     let rarmJoint = new Sprite(null, null);
     let rarm = new Sprite(new CubeGeometry(0.08, 0.24, 0.08), new ColorMaterial([0.588, 0.372, 0.255, 1]));
     rarm.material.compile(renderer);
@@ -111,7 +119,7 @@ function main() {
     let nodePositionColorMapping = {}; // color for each node
     let capeNodePositions = []; // reshape vertexPositions into (-1, 4)
 
-    for (let i = 0; i < cape.geometry.vertexPositions.length / 4; i ++) {
+    for (let i = 0; i < cape.geometry.vertexPositions.length / 4; i++) {
         let vertexPosition = cape.geometry.vertexPositions;
         capeNodePositions.push([
             vertexPosition[4 * i],
@@ -152,6 +160,10 @@ function main() {
     mat4.translate(larm.modelViewMatrix, larm.modelViewMatrix, [0, -0.08, 0]);
     body.add(larmJoint);
     larmJoint.add(larm);
+
+    // sphere on left hand
+    mat4.translate(sphere.modelViewMatrix, sphere.modelViewMatrix, [0, -0.15, -0.03]);
+    larm.add(sphere);
 
     // rarm
     mat4.translate(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, [-0.12, 0.08, 0]);
@@ -197,6 +209,7 @@ function main() {
     let isDragging = false;
     let worldRotationY = -45; // deg
     let worldRotationX = -45; // deg
+    let worldScale = 1;
     let lastMousePosition;
 
     canvas.addEventListener("mousedown", function (event) {
@@ -214,12 +227,24 @@ function main() {
     document.addEventListener("mouseup", function (event) {
         isDragging = false;
     });
+    document.addEventListener("wheel", function (event) {
+        event.preventDefault();
+
+        if (event.deltaY < 0) {
+            worldScale *= (-0.5) * event.deltaY;
+        } else {
+            worldScale /= 0.5 * event.deltaY;
+        }
+    })
 
     function onDraw() {
         // world rotation
         mat4.identity(world.modelViewMatrix);
         mat4.rotateX(world.modelViewMatrix, world.modelViewMatrix, deg2rad(worldRotationX));
         mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, deg2rad(worldRotationY));
+
+        // world scale
+        mat4.scale(world.modelViewMatrix, world.modelViewMatrix, [worldScale, worldScale, worldScale]);
 
         // body position
         let percent = document.querySelector("input[id=bodyPosition]").value / 100;

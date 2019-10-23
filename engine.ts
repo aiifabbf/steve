@@ -129,7 +129,6 @@ export class SphereGeometry extends Geometry {
 
         }
 
-        console.log(vertexPositions);
         super(vertexPositions);
         this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
 
