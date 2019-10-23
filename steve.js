@@ -381,6 +381,45 @@ function main() {
         },
     }, 0.3, engine.ease, 0, 1);
 
+    let catWalkAnimation = new engine.Animation({
+        0: {
+            rotation: 0,
+        },
+        0.25: {
+            rotation: 0.8,
+        },
+        0.50: {
+            rotation: 0,
+        },
+        0.75: {
+            rotation: -0.8,
+        },
+        1: {
+            rotation: 0,
+        }
+    }, 0.5, engine.linear, 0, Infinity);
+
+    let catTailAnimation = new engine.Animation({
+        0: {
+            rotation: 0,
+        },
+        0.25: {
+            rotation: 0.8,
+        },
+        0.50: {
+            rotation: 0,
+        },
+        0.75: {
+            rotation: -0.8,
+        },
+        1: {
+            rotation: 0,
+        }
+    }, 0.75, engine.linear, 0, Infinity);
+
+    catWalkAnimation.start();
+    catTailAnimation.start();
+
     // controls
     let isDragging = false;
     let worldRotationY = -45; // deg
@@ -517,6 +556,32 @@ function main() {
         mat4.rotateY(center.modelViewMatrix, center.modelViewMatrix, -0.01)
 
         // cat walk
+        let catWalkArmRotation = catWalkAnimation.yield()["rotation"];
+        mat4.identity(catFrontFootLJoint.modelViewMatrix);
+        mat4.translate(catFrontFootLJoint.modelViewMatrix, catFrontFootLJoint.modelViewMatrix, [0, 0.04, 0.1]);
+        mat4.rotateX(catFrontFootLJoint.modelViewMatrix, catFrontFootLJoint.modelViewMatrix, catWalkArmRotation);
+
+        mat4.identity(catFrontFootRJoint.modelViewMatrix);
+        mat4.translate(catFrontFootRJoint.modelViewMatrix, catFrontFootRJoint.modelViewMatrix, [0, 0.04, 0.1]);
+        mat4.rotateX(catFrontFootRJoint.modelViewMatrix, catFrontFootRJoint.modelViewMatrix, -catWalkArmRotation);
+
+        mat4.identity(catRearFootLJoint.modelViewMatrix);
+        mat4.translate(catRearFootLJoint.modelViewMatrix, catRearFootLJoint.modelViewMatrix, [-0.021,-0.04,-0.12]);
+        mat4.rotateX(catRearFootLJoint.modelViewMatrix, catRearFootLJoint.modelViewMatrix, -catWalkArmRotation);
+
+        mat4.identity(catRearFootRJoint.modelViewMatrix);
+        mat4.translate(catRearFootRJoint.modelViewMatrix, catRearFootRJoint.modelViewMatrix, [-0.021,-0.04,-0.12]);
+        mat4.rotateX(catRearFootRJoint.modelViewMatrix, catRearFootRJoint.modelViewMatrix, catWalkArmRotation);
+
+        // cat tail
+        let catTailRotation = catTailAnimation.yield()["rotation"];
+        mat4.identity(catTailFrontJoint.modelViewMatrix);
+        mat4.translate(catTailFrontJoint.modelViewMatrix, catTailFrontJoint.modelViewMatrix, [0,0.04,-0.16]);
+        mat4.rotateX(catTailFrontJoint.modelViewMatrix, catTailFrontJoint.modelViewMatrix, -catTailRotation);
+
+        mat4.identity(catTailRearJoint.modelViewMatrix);
+        mat4.translate(catTailRearJoint.modelViewMatrix, catTailRearJoint.modelViewMatrix, [0,0,-0.07]);
+        mat4.rotateX(catTailRearJoint.modelViewMatrix, catTailRearJoint.modelViewMatrix, catTailRotation);
     }
 
     onDraw();
