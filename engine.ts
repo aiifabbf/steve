@@ -469,30 +469,6 @@ export class Animation {
     }
 
     yield() {
-        // let currentTime = Date.now() / 1000;
-        // let currentFrame = deepCopy(this.keyframes[0]);
-        // if (this.startTime) { // started
-        //     if (currentTime - this.startTime < this.delay) { // still in delay
-        //         return currentFrame; // nothing happens
-        //     } else { // passed delay
-        //         this.startTime = this.startTime + this.delay;
-        //         if (this.countLeft != 0) { // no count left
-        //             return this.keyframes[100];
-        //         } else { // 
-        //             let percentage = this.curve((currentTime - this.startTime) / this.duration);
-
-        //             for (let [k, v] of Object.entries(currentFrame)) {
-        //                 let a = currentFrame[0][k];
-        //                 let b = currentFrame[100][k];
-        //                 currentFrame[k] = ((b - a) * percentage + a);
-        //             }
-
-        //             return currentFrame;
-        //         }
-        //     }
-        // } else { // has not started yet
-        //     return currentFrame;
-        // }
         if (this.playing) {
             let currentTime = Date.now() / 1000;
             if (currentTime - this.startTime < this.delay) {

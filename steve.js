@@ -151,7 +151,7 @@ function main() {
     cape.material.compile(renderer, {
         aVertexPosition: "aVertexPosition",
         aVertexColor: "aVertexColor"
-    }, {
+    }, { 
         uModelViewMatrix: "uModelViewMatrix"
     })
 

@@ -67,7 +67,7 @@ language = None
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'vs'
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -124,13 +124,15 @@ latex_elements = {
     #
     # 'figure_align': 'htbp',
 }
+latex_engine = "xelatex"
+numfig = True
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'steve.tex', 'steve Documentation',
-     'Yuchen Shi, Yifeng Chen', 'manual'),
+    (master_doc, 'steve.tex', 'Project A: steve',
+     'Yuchen Shi ysi5420, Yifeng Chen', 'howto'),
 ]
 
 
