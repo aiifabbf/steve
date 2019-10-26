@@ -310,14 +310,14 @@ function main() {
     catHead.add(catMouth);
 
     // add Front Left Leg;
-    mat4.translate(catFrontFootLJoint.modelViewMatrix, catFrontFootLJoint.modelViewMatrix, [0, 0.04, 0.1]);
-    mat4.translate(catFrontFootL.modelViewMatrix, catFrontFootL.modelViewMatrix, [-0.021,-0.08, 0]);
+    mat4.translate(catFrontFootLJoint.modelViewMatrix, catFrontFootLJoint.modelViewMatrix, [-0.021, 0.04, 0.1]);
+    mat4.translate(catFrontFootL.modelViewMatrix, catFrontFootL.modelViewMatrix, [0,-0.08, 0]);
     catBody.add(catFrontFootLJoint);
     catFrontFootLJoint.add(catFrontFootL);
 
     // add Front Right Leg;
-    mat4.translate(catFrontFootRJoint.modelViewMatrix, catFrontFootRJoint.modelViewMatrix, [0, 0.04, 0.1]);
-    mat4.translate(catFrontFootR.modelViewMatrix, catFrontFootR.modelViewMatrix, [0.021,-0.08, 0]);
+    mat4.translate(catFrontFootRJoint.modelViewMatrix, catFrontFootRJoint.modelViewMatrix, [0.021, 0.04, 0.1]);
+    mat4.translate(catFrontFootR.modelViewMatrix, catFrontFootR.modelViewMatrix, [0,-0.08, 0]);
     catBody.add(catFrontFootRJoint);
     catFrontFootRJoint.add(catFrontFootR);
 
