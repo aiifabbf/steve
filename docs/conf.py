@@ -122,7 +122,7 @@ latex_elements = {
 
     # Latex figure (float) alignment
     #
-    # 'figure_align': 'htbp',
+    'figure_align': 'H',
 }
 latex_engine = "xelatex"
 numfig = True
@@ -132,7 +132,7 @@ numfig = True
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'steve.tex', 'Project A: steve',
-     'Yuchen Shi ysi5420, Yifeng Chen', 'howto'),
+     'Yuchen Shi ysi5420, Yifeng Chen yct2284', 'howto'),
 ]
 
 
