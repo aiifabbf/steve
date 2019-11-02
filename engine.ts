@@ -260,7 +260,7 @@ export class Frustum extends Geometry {
     height: number; // height
     horizontalSegmentCount: number;
 
-    constructor(radius1: number, radius2: number; height: number, horizontalSegmentCount: number) {
+    constructor(radius1: number, radius2: number, height: number, horizontalSegmentCount: number) {
         let vertexPositions = [];
 
         let deltaTheta = 2 * Math.PI / horizontalSegmentCount;
