@@ -32,12 +32,12 @@ function main() {
         attribute vec4 aVertexPosition;
         attribute vec4 aVertexColor;
 
-        uniform mat4 uModelViewMatrix;
+        uniform mat4 uModelViewProjectionMatrix;
 
         varying vec4 vVertexColor;
 
         void main() {
-            gl_Position = uModelViewMatrix * aVertexPosition;
+            gl_Position = uModelViewProjectionMatrix * aVertexPosition;
             vVertexColor = aVertexColor;
         }
     `;
@@ -152,7 +152,7 @@ function main() {
         aVertexPosition: "aVertexPosition",
         aVertexColor: "aVertexColor"
     }, { 
-        uModelViewMatrix: "uModelViewMatrix"
+        uModelViewProjectionMatrix: "uModelViewProjectionMatrix"
     })
 
     cape.material.bindPlaceholders(renderer, {
@@ -170,53 +170,53 @@ function main() {
 
     world.add(hip);
 
-    mat4.translate(body.modelViewMatrix, body.modelViewMatrix, [0, 0.12, 0]);
+    mat4.translate(body.modelMatrix, body.modelMatrix, [0, 0.12, 0]);
     hip.add(bodyJoint);
     bodyJoint.add(body);
 
     // larm
-    mat4.translate(larmJoint.modelViewMatrix, larmJoint.modelViewMatrix, [0.12, 0.08, 0]);
-    mat4.translate(larm.modelViewMatrix, larm.modelViewMatrix, [0, -0.08, 0]);
+    mat4.translate(larmJoint.modelMatrix, larmJoint.modelMatrix, [0.12, 0.08, 0]);
+    mat4.translate(larm.modelMatrix, larm.modelMatrix, [0, -0.08, 0]);
     body.add(larmJoint);
     larmJoint.add(larm);
 
     // sphere on left hand
-    mat4.translate(sphere.modelViewMatrix, sphere.modelViewMatrix, [0, -0.15, -0.03]);
+    mat4.translate(sphere.modelMatrix, sphere.modelMatrix, [0, -0.15, -0.03]);
     larm.add(sphere);
 
     // rarm
-    mat4.translate(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, [-0.12, 0.08, 0]);
-    mat4.translate(rarm.modelViewMatrix, rarm.modelViewMatrix, [0, -0.08, 0]);
+    mat4.translate(rarmJoint.modelMatrix, rarmJoint.modelMatrix, [-0.12, 0.08, 0]);
+    mat4.translate(rarm.modelMatrix, rarm.modelMatrix, [0, -0.08, 0]);
     body.add(rarmJoint);
     rarmJoint.add(rarm);
 
     // lleg
-    mat4.translate(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, [-0.04, 0, 0]);
-    mat4.translate(lleg.modelViewMatrix, lleg.modelViewMatrix, [0, -0.12, 0]);
+    mat4.translate(llegJoint.modelMatrix, llegJoint.modelMatrix, [-0.04, 0, 0]);
+    mat4.translate(lleg.modelMatrix, lleg.modelMatrix, [0, -0.12, 0]);
     hip.add(llegJoint);
     llegJoint.add(lleg);
 
     // rleg
-    mat4.translate(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, [0.04, 0, 0]);
-    mat4.translate(rleg.modelViewMatrix, rleg.modelViewMatrix, [0, -0.12, 0]);
+    mat4.translate(rlegJoint.modelMatrix, rlegJoint.modelMatrix, [0.04, 0, 0]);
+    mat4.translate(rleg.modelMatrix, rleg.modelMatrix, [0, -0.12, 0]);
     hip.add(rlegJoint);
     rlegJoint.add(rleg);
 
     // head
-    mat4.translate(headJoint.modelViewMatrix, headJoint.modelViewMatrix, [0, 0.12, 0]);
-    mat4.translate(head.modelViewMatrix, head.modelViewMatrix, [0, 0.08, 0]);
+    mat4.translate(headJoint.modelMatrix, headJoint.modelMatrix, [0, 0.12, 0]);
+    mat4.translate(head.modelMatrix, head.modelMatrix, [0, 0.08, 0]);
     body.add(headJoint);
     headJoint.add(head);
 
     // cape
-    mat4.translate(capeJoint.modelViewMatrix, capeJoint.modelViewMatrix, [0, 0.12, 0.04]);
+    mat4.translate(capeJoint.modelMatrix, capeJoint.modelMatrix, [0, 0.12, 0.04]);
     //mat4.rotateX(capeJoint.modelViewMatrix,capeJoint.modelViewMatrix, -0.24);
-    mat4.translate(cape.modelViewMatrix, cape.modelViewMatrix, [0, -0.18, 0.01]);
-    capeOriMat = mat4.clone(capeJoint.modelViewMatrix);
+    mat4.translate(cape.modelMatrix, cape.modelMatrix, [0, -0.18, 0.01]);
+    capeOriMat = mat4.clone(capeJoint.modelMatrix);
     body.add(capeJoint);
     capeJoint.add(cape);
 
-    mat4.translate(angelRing.modelViewMatrix, angelRing.modelViewMatrix, [0, 0.12, 0]);
+    mat4.translate(angelRing.modelMatrix, angelRing.modelMatrix, [0, 0.12, 0]);
     head.add(angelRing);
 
     // End build steve
@@ -298,11 +298,11 @@ function main() {
 
 
     // add cat head
-    mat4.translate(catHeadJoint.modelViewMatrix, catHeadJoint.modelViewMatrix, [0, 0.03, 0.16]);
-    mat4.translate(catHead.modelViewMatrix, catHead.modelViewMatrix, [0, 0.01, 0.05]);
-    mat4.translate(catEarL.modelViewMatrix, catEarL.modelViewMatrix, [0.03, 0.05, -0.03]);
-    mat4.translate(catEarR.modelViewMatrix, catEarR.modelViewMatrix, [-0.03, 0.05, -0.03])
-    mat4.translate(catMouth.modelViewMatrix, catMouth.modelViewMatrix, [0, -0.02, 0.06]);
+    mat4.translate(catHeadJoint.modelMatrix, catHeadJoint.modelMatrix, [0, 0.03, 0.16]);
+    mat4.translate(catHead.modelMatrix, catHead.modelMatrix, [0, 0.01, 0.05]);
+    mat4.translate(catEarL.modelMatrix, catEarL.modelMatrix, [0.03, 0.05, -0.03]);
+    mat4.translate(catEarR.modelMatrix, catEarR.modelMatrix, [-0.03, 0.05, -0.03])
+    mat4.translate(catMouth.modelMatrix, catMouth.modelMatrix, [0, -0.02, 0.06]);
     catBody.add(catHeadJoint);
     catHeadJoint.add(catHead);
     catHead.add(catEarL);
@@ -310,40 +310,40 @@ function main() {
     catHead.add(catMouth);
 
     // add Front Left Leg;
-    mat4.translate(catFrontFootLJoint.modelViewMatrix, catFrontFootLJoint.modelViewMatrix, [-0.021, 0.04, 0.1]);
-    mat4.translate(catFrontFootL.modelViewMatrix, catFrontFootL.modelViewMatrix, [0,-0.08, 0]);
+    mat4.translate(catFrontFootLJoint.modelMatrix, catFrontFootLJoint.modelMatrix, [-0.021, 0.04, 0.1]);
+    mat4.translate(catFrontFootL.modelMatrix, catFrontFootL.modelMatrix, [0,-0.08, 0]);
     catBody.add(catFrontFootLJoint);
     catFrontFootLJoint.add(catFrontFootL);
 
     // add Front Right Leg;
-    mat4.translate(catFrontFootRJoint.modelViewMatrix, catFrontFootRJoint.modelViewMatrix, [0.021, 0.04, 0.1]);
-    mat4.translate(catFrontFootR.modelViewMatrix, catFrontFootR.modelViewMatrix, [0,-0.08, 0]);
+    mat4.translate(catFrontFootRJoint.modelMatrix, catFrontFootRJoint.modelMatrix, [0.021, 0.04, 0.1]);
+    mat4.translate(catFrontFootR.modelMatrix, catFrontFootR.modelMatrix, [0,-0.08, 0]);
     catBody.add(catFrontFootRJoint);
     catFrontFootRJoint.add(catFrontFootR);
 
     // add Rear Left Leg;
-    mat4.translate(catRearFootLJoint.modelViewMatrix, catRearFootLJoint.modelViewMatrix, [-0.021,-0.04,-0.12]);
-    mat4.translate(catRearFootL.modelViewMatrix, catRearFootL.modelViewMatrix, [0,-0.04,0])
+    mat4.translate(catRearFootLJoint.modelMatrix, catRearFootLJoint.modelMatrix, [-0.021,-0.04,-0.12]);
+    mat4.translate(catRearFootL.modelMatrix, catRearFootL.modelMatrix, [0,-0.04,0])
     catBody.add(catRearFootLJoint);
     catRearFootLJoint.add(catRearFootL);
 
     // add Rear Left Leg;
-    mat4.translate(catRearFootRJoint.modelViewMatrix, catRearFootRJoint.modelViewMatrix, [0.021,-0.04,-0.12]);
-    mat4.translate(catRearFootR.modelViewMatrix, catRearFootR.modelViewMatrix, [0,-0.04,0])
+    mat4.translate(catRearFootRJoint.modelMatrix, catRearFootRJoint.modelMatrix, [0.021,-0.04,-0.12]);
+    mat4.translate(catRearFootR.modelMatrix, catRearFootR.modelMatrix, [0,-0.04,0])
     catBody.add(catRearFootRJoint);
     catRearFootRJoint.add(catRearFootR);
 
     // add tail front
-    mat4.translate(catTailFrontJoint.modelViewMatrix, catTailFrontJoint.modelViewMatrix, [0,0.04,-0.16]);
-    mat4.rotateX(catTailFrontJoint.modelViewMatrix, catTailFrontJoint.modelViewMatrix, -0.5);
-    mat4.translate(catTailFront.modelViewMatrix, catTailFront.modelViewMatrix, [0, 0, -0.07]);
+    mat4.translate(catTailFrontJoint.modelMatrix, catTailFrontJoint.modelMatrix, [0,0.04,-0.16]);
+    mat4.rotateX(catTailFrontJoint.modelMatrix, catTailFrontJoint.modelMatrix, -0.5);
+    mat4.translate(catTailFront.modelMatrix, catTailFront.modelMatrix, [0, 0, -0.07]);
     catBody.add(catTailFrontJoint);
     catTailFrontJoint.add(catTailFront);
 
     // add tail Read
-    mat4.translate(catTailRearJoint.modelViewMatrix, catTailRearJoint.modelViewMatrix, [0,0,-0.07]);
-    mat4.rotateX(catTailRearJoint.modelViewMatrix, catTailRearJoint.modelViewMatrix, 0.5);
-    mat4.translate(catTailRear.modelViewMatrix, catTailRear.modelViewMatrix,[0,0,-0.07]);
+    mat4.translate(catTailRearJoint.modelMatrix, catTailRearJoint.modelMatrix, [0,0,-0.07]);
+    mat4.rotateX(catTailRearJoint.modelMatrix, catTailRearJoint.modelMatrix, 0.5);
+    mat4.translate(catTailRear.modelMatrix, catTailRear.modelMatrix,[0,0,-0.07]);
     catTailFront.add(catTailRearJoint);
     catTailRearJoint.add(catTailRear);
 
@@ -351,12 +351,12 @@ function main() {
 
     let center = new Sprite(null, null);
     world.add(center);
-    mat4.translate(catBody.modelViewMatrix, catBody.modelViewMatrix,[0.5,-0.1,0]);
+    mat4.translate(catBody.modelMatrix, catBody.modelMatrix,[0.5,-0.1,0]);
     center.add(catBody);
 
 
-    mat4.rotateX(world.modelViewMatrix, world.modelViewMatrix, 6);
-    mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, -45);
+    mat4.rotateX(world.modelMatrix, world.modelMatrix, 6);
+    mat4.rotateY(world.modelMatrix, world.modelMatrix, -45);
     renderer.render(world);
 
     // animations
@@ -477,13 +477,13 @@ function main() {
     document.addEventListener("keydown", function (event) {
         if (event.code === "ShiftLeft") {
             // bend body
-            mat4.identity(bodyJoint.modelViewMatrix);
-            mat4.rotateX(bodyJoint.modelViewMatrix, bodyJoint.modelViewMatrix, -0.4);
+            mat4.identity(bodyJoint.modelMatrix);
+            mat4.rotateX(bodyJoint.modelMatrix, bodyJoint.modelMatrix, -0.4);
 
             // bend head
-            mat4.identity(headJoint.modelViewMatrix);
-            mat4.translate(headJoint.modelViewMatrix, headJoint.modelViewMatrix, [0, 0.12, 0]);
-            mat4.rotateX(headJoint.modelViewMatrix, headJoint.modelViewMatrix, 0.4);
+            mat4.identity(headJoint.modelMatrix);
+            mat4.translate(headJoint.modelMatrix, headJoint.modelMatrix, [0, 0.12, 0]);
+            mat4.rotateX(headJoint.modelMatrix, headJoint.modelMatrix, 0.4);
         } else if (event.code === "KeyW" && event.repeat === false) { // it turns out that keydown is not really keydown: it triggers multiple times when you hold the key down
             steveWalking = true;
             steveWalkingDirection = "-z";
@@ -500,9 +500,9 @@ function main() {
 
     document.addEventListener("keyup", function (event) {
         if (event.code === "ShiftLeft") {
-            mat4.identity(bodyJoint.modelViewMatrix);
-            mat4.identity(headJoint.modelViewMatrix);
-            mat4.translate(headJoint.modelViewMatrix, headJoint.modelViewMatrix, [0, 0.12, 0]);
+            mat4.identity(bodyJoint.modelMatrix);
+            mat4.identity(headJoint.modelMatrix);
+            mat4.translate(headJoint.modelMatrix, headJoint.modelMatrix, [0, 0.12, 0]);
         } else if (event.code === "KeyW" || event.code === "KeyS") {
             steveWalking = false;
             walkAnimation.stop();
@@ -511,12 +511,12 @@ function main() {
 
     function onDraw() {
         // world rotation
-        mat4.identity(world.modelViewMatrix);
-        mat4.rotateX(world.modelViewMatrix, world.modelViewMatrix, deg2rad(worldRotationX));
-        mat4.rotateY(world.modelViewMatrix, world.modelViewMatrix, deg2rad(worldRotationY));
+        mat4.identity(world.modelMatrix);
+        mat4.rotateX(world.modelMatrix, world.modelMatrix, deg2rad(worldRotationX));
+        mat4.rotateY(world.modelMatrix, world.modelMatrix, deg2rad(worldRotationY));
 
         // world scale
-        mat4.scale(world.modelViewMatrix, world.modelViewMatrix, [worldScale, worldScale, worldScale]);
+        mat4.scale(world.modelMatrix, world.modelMatrix, [worldScale, worldScale, worldScale]);
 
         // body position
         if (steveWalking) {
@@ -529,32 +529,32 @@ function main() {
 
         stevePosition[1] = jumpAnimation.yield()["translate"];
 
-        mat4.identity(hip.modelViewMatrix);
-        mat4.translate(hip.modelViewMatrix, hip.modelViewMatrix, stevePosition);
+        mat4.identity(hip.modelMatrix);
+        mat4.translate(hip.modelMatrix, hip.modelMatrix, stevePosition);
 
         // arm rotation
         // let armRotation = document.querySelector("input[id=armPosition]").value / 100;
         let armRotation = walkAnimation.yield()["rotation"];
-        mat4.identity(larmJoint.modelViewMatrix);
-        mat4.translate(larmJoint.modelViewMatrix, larmJoint.modelViewMatrix, [0.12, 0.08, 0]);
-        mat4.rotateX(larmJoint.modelViewMatrix, larmJoint.modelViewMatrix, armRotation);
+        mat4.identity(larmJoint.modelMatrix);
+        mat4.translate(larmJoint.modelMatrix, larmJoint.modelMatrix, [0.12, 0.08, 0]);
+        mat4.rotateX(larmJoint.modelMatrix, larmJoint.modelMatrix, armRotation);
 
-        mat4.identity(rarmJoint.modelViewMatrix);
-        mat4.translate(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, [-0.12, 0.08, 0]);
-        mat4.rotateX(rarmJoint.modelViewMatrix, rarmJoint.modelViewMatrix, -armRotation);
+        mat4.identity(rarmJoint.modelMatrix);
+        mat4.translate(rarmJoint.modelMatrix, rarmJoint.modelMatrix, [-0.12, 0.08, 0]);
+        mat4.rotateX(rarmJoint.modelMatrix, rarmJoint.modelMatrix, -armRotation);
 
         // leg rotation
-        mat4.identity(llegJoint.modelViewMatrix);
-        mat4.translate(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, [0.04, 0, 0]);
-        mat4.rotateX(llegJoint.modelViewMatrix, llegJoint.modelViewMatrix, -armRotation);
+        mat4.identity(llegJoint.modelMatrix);
+        mat4.translate(llegJoint.modelMatrix, llegJoint.modelMatrix, [0.04, 0, 0]);
+        mat4.rotateX(llegJoint.modelMatrix, llegJoint.modelMatrix, -armRotation);
 
-        mat4.identity(rlegJoint.modelViewMatrix);
-        mat4.translate(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, [-0.04, 0, 0]);
-        mat4.rotateX(rlegJoint.modelViewMatrix, rlegJoint.modelViewMatrix, armRotation);
+        mat4.identity(rlegJoint.modelMatrix);
+        mat4.translate(rlegJoint.modelMatrix, rlegJoint.modelMatrix, [-0.04, 0, 0]);
+        mat4.rotateX(rlegJoint.modelMatrix, rlegJoint.modelMatrix, armRotation);
 
         // cape animation
         let angle = animateSin(-0.12, 200);
-        mat4.rotateX(capeJoint.modelViewMatrix, capeOriMat, angle);
+        mat4.rotateX(capeJoint.modelMatrix, capeOriMat, angle);
 
         renderer.clear();
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -562,35 +562,35 @@ function main() {
         requestAnimationFrame(onDraw);
 
         // cat Rotation
-        mat4.rotateY(center.modelViewMatrix, center.modelViewMatrix, -0.01)
+        mat4.rotateY(center.modelMatrix, center.modelMatrix, -0.01)
 
         // cat walk
         let catWalkArmRotation = catWalkAnimation.yield()["rotation"];
-        mat4.identity(catFrontFootLJoint.modelViewMatrix);
-        mat4.translate(catFrontFootLJoint.modelViewMatrix, catFrontFootLJoint.modelViewMatrix, [0, 0.04, 0.1]);
-        mat4.rotateX(catFrontFootLJoint.modelViewMatrix, catFrontFootLJoint.modelViewMatrix, catWalkArmRotation);
+        mat4.identity(catFrontFootLJoint.modelMatrix);
+        mat4.translate(catFrontFootLJoint.modelMatrix, catFrontFootLJoint.modelMatrix, [0, 0.04, 0.1]);
+        mat4.rotateX(catFrontFootLJoint.modelMatrix, catFrontFootLJoint.modelMatrix, catWalkArmRotation);
 
-        mat4.identity(catFrontFootRJoint.modelViewMatrix);
-        mat4.translate(catFrontFootRJoint.modelViewMatrix, catFrontFootRJoint.modelViewMatrix, [0, 0.04, 0.1]);
-        mat4.rotateX(catFrontFootRJoint.modelViewMatrix, catFrontFootRJoint.modelViewMatrix, -catWalkArmRotation);
+        mat4.identity(catFrontFootRJoint.modelMatrix);
+        mat4.translate(catFrontFootRJoint.modelMatrix, catFrontFootRJoint.modelMatrix, [0, 0.04, 0.1]);
+        mat4.rotateX(catFrontFootRJoint.modelMatrix, catFrontFootRJoint.modelMatrix, -catWalkArmRotation);
 
-        mat4.identity(catRearFootLJoint.modelViewMatrix);
-        mat4.translate(catRearFootLJoint.modelViewMatrix, catRearFootLJoint.modelViewMatrix, [-0.021,-0.04,-0.12]);
-        mat4.rotateX(catRearFootLJoint.modelViewMatrix, catRearFootLJoint.modelViewMatrix, -catWalkArmRotation);
+        mat4.identity(catRearFootLJoint.modelMatrix);
+        mat4.translate(catRearFootLJoint.modelMatrix, catRearFootLJoint.modelMatrix, [-0.021,-0.04,-0.12]);
+        mat4.rotateX(catRearFootLJoint.modelMatrix, catRearFootLJoint.modelMatrix, -catWalkArmRotation);
 
-        mat4.identity(catRearFootRJoint.modelViewMatrix);
-        mat4.translate(catRearFootRJoint.modelViewMatrix, catRearFootRJoint.modelViewMatrix, [0.021,-0.04,-0.12]);
-        mat4.rotateX(catRearFootRJoint.modelViewMatrix, catRearFootRJoint.modelViewMatrix, catWalkArmRotation);
+        mat4.identity(catRearFootRJoint.modelMatrix);
+        mat4.translate(catRearFootRJoint.modelMatrix, catRearFootRJoint.modelMatrix, [0.021,-0.04,-0.12]);
+        mat4.rotateX(catRearFootRJoint.modelMatrix, catRearFootRJoint.modelMatrix, catWalkArmRotation);
 
         // cat tail
         let catTailRotation = catTailAnimation.yield()["rotation"];
-        mat4.identity(catTailFrontJoint.modelViewMatrix);
-        mat4.translate(catTailFrontJoint.modelViewMatrix, catTailFrontJoint.modelViewMatrix, [0,0.04,-0.16]);
-        mat4.rotateX(catTailFrontJoint.modelViewMatrix, catTailFrontJoint.modelViewMatrix, -catTailRotation);
+        mat4.identity(catTailFrontJoint.modelMatrix);
+        mat4.translate(catTailFrontJoint.modelMatrix, catTailFrontJoint.modelMatrix, [0,0.04,-0.16]);
+        mat4.rotateX(catTailFrontJoint.modelMatrix, catTailFrontJoint.modelMatrix, -catTailRotation);
 
-        mat4.identity(catTailRearJoint.modelViewMatrix);
-        mat4.translate(catTailRearJoint.modelViewMatrix, catTailRearJoint.modelViewMatrix, [0,0,-0.07]);
-        mat4.rotateX(catTailRearJoint.modelViewMatrix, catTailRearJoint.modelViewMatrix, catTailRotation);
+        mat4.identity(catTailRearJoint.modelMatrix);
+        mat4.translate(catTailRearJoint.modelMatrix, catTailRearJoint.modelMatrix, [0,0,-0.07]);
+        mat4.rotateX(catTailRearJoint.modelMatrix, catTailRearJoint.modelMatrix, catTailRotation);
     }
 
     onDraw();

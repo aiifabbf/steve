@@ -4,14 +4,14 @@ export class Sprite {
     geometry: Geometry;
     material: Material;
     children: Array<Sprite>;
-    modelViewMatrix: mat4;
+    modelMatrix: mat4;
 
     constructor(geometry: Geometry, material: Material) {
         this.geometry = geometry;
         this.material = material;
 
         this.children = new Array();
-        this.modelViewMatrix = mat4.create();
+        this.modelMatrix = mat4.create();
     }
 
     add(child: Sprite) {
@@ -25,6 +25,21 @@ export class Geometry {
 
     constructor(vertexPositions: Array<Number>) {
         this.vertexPositions = vertexPositions;
+    }
+
+    get nodePositions(): Array<Array<number>> {
+        let nodePositions = [];
+
+        for (let i = 0; i < this.vertexPositions.length / 4; i++) {
+            nodePositions.push([
+                this.vertexPositions[i * 4 + 0],
+                this.vertexPositions[i * 4 + 1],
+                this.vertexPositions[i * 4 + 2],
+                this.vertexPositions[i * 4 + 3],
+            ]);
+        }
+
+        return nodePositions;
     }
 }
 
@@ -82,6 +97,7 @@ export class LineGeometry extends Geometry {
     }
 }
 
+// plane centered at origin
 export class PlaneGeometry extends Geometry {
     width: number;
     height: number;
@@ -101,8 +117,8 @@ export class PlaneGeometry extends Geometry {
 
 export class SphereGeometry extends Geometry {
     radius: number;
-    horizontalSegmentCount: number;
-    verticalSegmentCount: number;
+    horizontalSegmentCount: number; // how many line segments to simulate horizontal circle
+    verticalSegmentCount: number; // how many line segments to simulate vertical semi-circle
 
     constructor(radius: number = 1, horizontalSegmentCount: number = 16, verticalSegmentCount: number = 32) {
         let vertexPositions = [];
@@ -139,10 +155,10 @@ export class SphereGeometry extends Geometry {
 }
 
 export class TorusGeometry extends Geometry {
-    radius: number;
-    radius2: number;
-    horizontalSegmentCount: number;
-    verticalSegmentCount: number;
+    radius: number; // toroidal (outer circle) radius
+    radius2: number; // poloidal (inner circle) radius
+    horizontalSegmentCount: number; // how many line segments to simulate the outer circle
+    verticalSegmentCount: number; // how many line segments to simulate the inner circle
 
     constructor(radius: number, radius2: number, horizontalSegmentCount: number, verticalSegmentCount: number) {
         let vertexPositions = [];
@@ -168,8 +184,8 @@ export class TorusGeometry extends Geometry {
                     1,
                 ];
 
-                theta = (thetaIndex + 1) * deltaTheta;
-                phi = (phiIndex + 1) * deltaPhi;
+                theta = (thetaIndex - 1) * deltaTheta;
+                phi = (phiIndex - 1) * deltaPhi;
                 centerPoint = [
                     radius * Math.cos(theta),
                     0,
@@ -196,6 +212,7 @@ export class TorusGeometry extends Geometry {
     }
 }
 
+// cube centered at origin
 export class CubeGeometry extends Geometry {
     width: number;
     height: number;
@@ -233,6 +250,76 @@ export class CubeGeometry extends Geometry {
         this.width = width;
         this.height = height;
         this.depth = depth;
+    }
+}
+
+// frustum centered at origin
+export class Frustum extends Geometry {
+    radius1: number; // bottom circle radius
+    radius2: number; // top circle radius
+    height: number; // height
+    horizontalSegmentCount: number;
+
+    constructor(radius1: number, radius2: number; height: number, horizontalSegmentCount: number) {
+        let vertexPositions = [];
+
+        let deltaTheta = 2 * Math.PI / horizontalSegmentCount;
+
+        for (let thetaIndex = 0; thetaIndex <= horizontalSegmentCount; thetaIndex++) { // bottom circle
+            let a = [
+                0,
+                - height / 2,
+                0,
+                1,
+            ];
+            let b = [
+                radius1 * Math.cos(thetaIndex * deltaTheta),
+                - height / 2,
+                radius1 * Math.sin(thetaIndex * deltaTheta),
+                1,
+            ];
+            vertexPositions = vertexPositions.concat(a).concat(b);
+        }
+
+        for (let thetaIndex = 0; thetaIndex <= horizontalSegmentCount; thetaIndex++) { // side surface between top circle and bottom circle
+            let a = [
+                radius1 * Math.cos(thetaIndex * deltaTheta),
+                - height / 2,
+                radius1 * Math.sin(thetaIndex * deltaTheta),
+                1,
+            ];
+            let b = [
+                radius2 * Math.cos((thetaIndex) * deltaTheta),
+                + height / 2,
+                radius2 * Math.sin((thetaIndex) * deltaTheta),
+                1,
+            ];
+            vertexPositions = vertexPositions.concat(a).concat(b);
+        }
+
+        for (let thetaIndex = 0; thetaIndex <= horizontalSegmentCount; thetaIndex++) { // top circle
+            let a = [
+                radius2 * Math.cos(thetaIndex * deltaTheta),
+                height / 2,
+                radius2 * Math.sin(thetaIndex * deltaTheta),
+                1,
+            ];
+            let b = [
+                0,
+                height / 2,
+                0,
+                1,
+            ];
+            vertexPositions = vertexPositions.concat(a).concat(b);
+        }
+
+        super(vertexPositions);
+        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+
+        this.radius1 = radius1;
+        this.radius2 = radius2;
+        this.height = height;
+        this.horizontalSegmentCount = horizontalSegmentCount;
     }
 }
 
@@ -326,8 +413,6 @@ export class Material {
             gl.enableVertexAttribArray(self.programInfo.uniformLocations[k]);
         });
     }
-
-    bindGeometry(renderer: Renderer, geometry: Geometry) { }
 }
 
 export class ColorMaterial extends Material {
@@ -337,10 +422,10 @@ export class ColorMaterial extends Material {
         super(`
             attribute vec4 aVertexPosition;
 
-            uniform mat4 uModelViewMatrix;
+            uniform mat4 uModelViewProjectionMatrix;
 
             void main() {
-                gl_Position = uModelViewMatrix * aVertexPosition;
+                gl_Position = uModelViewProjectionMatrix * aVertexPosition;
             }
         `, `
             precision mediump float;
@@ -356,14 +441,46 @@ export class ColorMaterial extends Material {
         super.compile(renderer, {
             aVertexPosition: "aVertexPosition"
         }, {
-            uModelViewMatrix: "uModelViewMatrix"
+            uModelViewProjectionMatrix: "uModelViewProjectionMatrix"
         });
     }
+}
 
-    bindGeometry(renderer: Renderer, geometry: Geometry) {
-        super.bindPlaceholders(renderer, {
-            aVertexPosition: new Float32Array(geometry.vertexPositions)
-        }, {});
+export class Camera {
+    viewMatrix: mat4;
+    projectionMatrix: mat4;
+
+    constructor(viewMatrix: mat4, projectionMatrix: mat4) {
+        this.viewMatrix = viewMatrix;
+        this.projectionMatrix = projectionMatrix;
+    }
+}
+
+export class PerspectiveCamera extends Camera {
+    position: Array<number>;
+    lookAt: Array<number>;
+    upVector: Array<number>;
+    fieldOfView: number;
+    aspectRatio: number;
+    zNear: number;
+    zFar: number;
+
+    constructor(position: Array<number>, lookAt: Array<number>, upVector: Array<number>, fieldOfView: number, aspectRatio: number, zNear: number, zFar: number) {
+        let viewMatrix = mat4.create();
+        mat4.lookAt(viewMatrix, position, lookAt, upVector);
+
+        let projectionMatrix = mat4.create();
+        mat4.perspective(projectionMatrix, fieldOfView, aspectRatio, zNear, zFar);
+
+        super(viewMatrix, projectionMatrix);
+
+        this.position = position;
+        this.lookAt = lookAt;
+        this.upVector = upVector;
+        this.fieldOfView = fieldOfView;
+        this.aspectRatio = aspectRatio;
+        this.zNear = zNear;
+        this.zFar = zFar;
     }
 }
 
@@ -392,23 +509,27 @@ export class Renderer {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
 
-    render(world: Sprite) {
-        this.renderWithModelViewMatrix(world, mat4.create());
+    render(world: Sprite, camera: Camera) {
+        let rootMatrix = mat4.create();
+        mat4.multiply(rootMatrix, camera.viewMatrix, rootMatrix);
+        mat4.multiply(rootMatrix, camera.projectionMatrix, rootMatrix);
+        this.renderWithMatrix(world, rootMatrix);
     }
 
-    renderWithModelViewMatrix(sprite: Sprite, modelViewMatrix: mat4) {
+    renderWithMatrix(sprite: Sprite, matrix: mat4) {
         let self = this;
         let gl = this.gl;
-        let realModelViewMatrix = mat4.create();
-        mat4.multiply(realModelViewMatrix, modelViewMatrix, sprite.modelViewMatrix);
+        let realMatrix = mat4.create();
+        mat4.multiply(realMatrix, matrix, sprite.modelMatrix);
 
         if (sprite.material) {
             gl.useProgram(sprite.material.programInfo.program);
+            sprite.material.placeholderValueMapping.attributes.aVertexPosition = new Float32Array(sprite.geometry.vertexPositions);
             sprite.material.bindPlaceholders(self, sprite.material.placeholderValueMapping.attributes, sprite.material.placeholderValueMapping.uniforms);
             gl.uniformMatrix4fv(
-                sprite.material.programInfo.uniformLocations["uModelViewMatrix"],
+                sprite.material.programInfo.uniformLocations["uModelViewProjectionMatrix"],
                 false,
-                realModelViewMatrix,
+                realMatrix,
             );
         }
 
@@ -417,7 +538,7 @@ export class Renderer {
         }
 
         sprite.children.forEach(function (child) {
-            self.renderWithModelViewMatrix(child, realModelViewMatrix);
+            self.renderWithMatrix(child, realMatrix);
         })
     }
 }
@@ -598,4 +719,12 @@ export function getProgramInfo(gl: WebGL2RenderingContext, shaderProgram: WebGLP
 
 export function deepCopy(x: Object): Object {
     return JSON.parse(JSON.stringify(x));
+}
+
+export function radians(degree: number): number {
+    return degree * 2 * Math.PI / 360;
+}
+
+export function degrees(radians: number): number {
+    return radians * 360 / (2 * Math.PI);
 }
