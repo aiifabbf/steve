@@ -52,8 +52,8 @@ function main() {
     `;
 
     let renderer = new Renderer(canvas);
-
     let world = new Sprite(null, null);
+    let camera = new engine.Camera(mat4.create(), mat4.create());
 
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let yAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 1, 0]), new ColorMaterial([0, 1, 0, 1]));
@@ -354,10 +354,8 @@ function main() {
     mat4.translate(catBody.modelMatrix, catBody.modelMatrix,[0.5,-0.1,0]);
     center.add(catBody);
 
-
     mat4.rotateX(world.modelMatrix, world.modelMatrix, 6);
     mat4.rotateY(world.modelMatrix, world.modelMatrix, -45);
-    renderer.render(world);
 
     // animations
     let walkAnimation = new engine.Animation({
@@ -558,7 +556,7 @@ function main() {
 
         renderer.clear();
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        renderer.render(world);
+        renderer.render(world, camera);
         requestAnimationFrame(onDraw);
 
         // cat Rotation
