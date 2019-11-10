@@ -87,14 +87,14 @@ function main() {
 
     // Start building ground
 
-    for(let i = 0; i < 101; i++){
+    for (let i = 0; i < 101; i++) {
         let xGround = new Sprite(new LineGeometry([-50, -50 + i, 0], [50, -50 + i, 0]), new ColorMaterial([0.5, 0.5, 0.5, 1]));
         xGround.material.compile(renderer);
         xGround.material.bindPlaceholders(renderer, {
             aVertexPosition: new Float32Array(xGround.geometry.vertexPositions)
         }, {});
 
-        let yGround = new Sprite(new LineGeometry([-50 + i , -50, 0], [-50 + i, 50 , 0]), new ColorMaterial([0.5, 0.5, 0.5, 1]));
+        let yGround = new Sprite(new LineGeometry([-50 + i, -50, 0], [-50 + i, 50, 0]), new ColorMaterial([0.5, 0.5, 0.5, 1]));
         yGround.material.compile(renderer);
         yGround.material.bindPlaceholders(renderer, {
             aVertexPosition: new Float32Array(yGround.geometry.vertexPositions)
@@ -103,6 +103,15 @@ function main() {
         world.add(xGround);
         world.add(yGround);
     }
+
+    // Sky
+
+    let sky = new Sprite(new SphereGeometry(100, 32, 16), new ColorMaterial([0.528, 0.803, 0.921, 1]));
+    sky.material.compile(renderer);
+    sky.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(sky.geometry.vertexPositions)
+    }, {});
+    world.add(sky);
 
     // Start building steve
     let hip = new Sprite(null, null);
@@ -203,7 +212,7 @@ function main() {
         aVertexPosition: new Float32Array(angelRing.geometry.vertexPositions),
     }, {});
 
-    mat4.translate(hip.modelMatrix, hip.modelMatrix, [0,0,0.72]);
+    mat4.translate(hip.modelMatrix, hip.modelMatrix, [0, 0, 0.72]);
     world.add(hip);
 
     mat4.translate(body.modelMatrix, body.modelMatrix, [0, 0, 0.36]);
@@ -333,7 +342,7 @@ function main() {
         aVertexPosition: new Float32Array(catTailRear.geometry.vertexPositions),
     }, {});
 
-
+    mat4.translate(catBody.modelMatrix, catBody.modelMatrix, [0, 0, 0.7]);
     // add cat head
     mat4.translate(catHeadJoint.modelMatrix, catHeadJoint.modelMatrix, [0, 0.48, 0.09]);
     mat4.translate(catHead.modelMatrix, catHead.modelMatrix, [0, 0.15, 0.03]);
@@ -413,13 +422,13 @@ function main() {
 
     let jumpAnimation = new engine.Animation({
         0: {
-            translate: 0,
+            translate: 0.72,
         },
         0.5: {
             translate: 1.25219,
         },
         1: {
-            translate: 0,
+            translate: 0.72,
         },
     }, 0.3, engine.ease, 0, 1);
 
@@ -465,7 +474,7 @@ function main() {
     // controls
     let isDragging = false;
     let lastMousePosition;
-    let stevePosition = [0, 0, 0];
+    let stevePosition = [0, 0, 0.72];
     let steveWalking = false;
     let steveWalkingDirection = "+y";
     let isPressed = Object();
@@ -650,9 +659,9 @@ function main() {
         // body position
         if (steveWalking) {
             if (steveWalkingDirection === "-y") {
-                stevePosition[1] -= 0.1;
+                stevePosition[1] -= 0.05;
             } else if (steveWalkingDirection === "+y") {
-                stevePosition[1] += 0.1;
+                stevePosition[1] += 0.05;
             }
         }
 
