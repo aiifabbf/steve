@@ -517,6 +517,12 @@ export class PerspectiveCamera implements Camera {
 export class Renderer {
     canvas: HTMLCanvasElement;
     gl: WebGL2RenderingContext;
+    viewport: {
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+    }
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -531,6 +537,12 @@ export class Renderer {
         // gl.cullFace(gl.FRONT_AND_BACK);
 
         this.clear();
+        this.viewport = {
+            x: 0,
+            y: 0,
+            width: window.innerWidth,
+            height: window.innerHeight,
+        };
     }
 
     clear(color = [0, 0, 0, 1]) {
@@ -540,6 +552,7 @@ export class Renderer {
     }
 
     render(world: Sprite, camera: Camera) {
+        this.gl.viewport(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
         let rootMatrix = mat4.create();
         mat4.multiply(rootMatrix, camera.viewMatrix, rootMatrix);
         mat4.multiply(rootMatrix, camera.projectionMatrix, rootMatrix);

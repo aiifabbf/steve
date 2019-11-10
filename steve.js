@@ -3,6 +3,8 @@ import * as engine from "./engine";
 import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry, Camera, PerspectiveCamera, radians, degrees } from "./engine";
 
 let canvas = document.querySelector("canvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 function deg2rad(deg) {
     return deg / 360 * 2 * Math.PI;
@@ -47,7 +49,7 @@ function main() {
         [0, 0, 0],
         [0, 0, 1],
         radians(42),
-        1,
+        canvas.width / canvas.height,
         0.1,
         10000,
     );
@@ -63,7 +65,7 @@ function main() {
         [0, 0, 0],
         [0, 0, 1],
         radians(60),
-        1,
+        canvas.width / canvas.height,
         0.1,
         10000,
     );
@@ -698,6 +700,19 @@ function main() {
         mat4.translate(catTailRearJoint.modelMatrix, catTailRearJoint.modelMatrix, [0, -0.21, 0]);
         mat4.rotateX(catTailRearJoint.modelMatrix, catTailRearJoint.modelMatrix, catTailRotation);
     }
+
+    window.addEventListener("resize", function (event) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // reset camera aspect ratio
+        thirdPersonCamera.aspectRatio = canvas.width / canvas.height;
+        freeCamera.aspectRatio = canvas.width / canvas.height;
+
+        // update gl.viewport
+        renderer.viewport.width = canvas.width;
+        renderer.viewport.height = canvas.height;
+    });
 
     onDraw();
 }
