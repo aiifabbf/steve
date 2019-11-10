@@ -1,4 +1,4 @@
-import { mat4 } from "gl-matrix";
+import { mat4, vec3 } from "gl-matrix";
 import * as engine from "./engine";
 import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry, Camera, PerspectiveCamera, radians, degrees } from "./engine";
 
@@ -42,7 +42,6 @@ function main() {
     let thirdPersonCameraTheta = 45;
     let thirdPersonCameraPhi = 45;
     let thirdPersonCameraRadius = 10;
-
     let thirdPersonCamera = new PerspectiveCamera(
         [5, 5, 5],
         [0, 0, 0],
@@ -50,17 +49,24 @@ function main() {
         radians(42),
         1,
         0.1,
-        10000
-    );
-    thirdPersonCamera.position = PerspectiveCamera.getPositionFromSphere(
-        thirdPersonCamera.lookAt,
-        radians(thirdPersonCameraTheta),
-        radians(thirdPersonCameraPhi),
-        thirdPersonCameraRadius
+        10000,
     );
 
     let firstPersonCamera = new Camera(mat4.create(), mat4.create());
-    let freeCamera = new Camera(mat4.create(), mat4.create());
+
+    let freeCameraPosition = [5, 5, 5];
+    let freeCameraTheta = 45;
+    let freeCameraPhi = 45;
+    let freeCameraRadius = 10;
+    let freeCamera = new PerspectiveCamera(
+        [5, 5, 5],
+        [0, 0, 0],
+        [0, 0, 1],
+        radians(60),
+        1,
+        0.1,
+        10000,
+    );
     let camera = thirdPersonCamera;
 
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
@@ -440,6 +446,7 @@ function main() {
     let stevePosition = [0, 0, 0];
     let steveWalking = false;
     let steveWalkingDirection = "+y";
+    let isPressed = Object();
 
     // start dragging
     canvas.addEventListener("mousedown", function (event) {
@@ -455,9 +462,12 @@ function main() {
                 thirdPersonCameraTheta += - (position[0] - lastMousePosition[0]) / 2;
                 thirdPersonCameraPhi += - (position[1] - lastMousePosition[1]) / 2;
                 thirdPersonCameraPhi = Math.min(Math.max(thirdPersonCameraPhi, 1), 179) % 360;
+            } else if (camera === freeCamera) {
+                freeCameraTheta -= - (position[0] - lastMousePosition[0]) / 4;
+                freeCameraPhi -= - (position[1] - lastMousePosition[1]) / 4;
+                thirdPersonCameraPhi = Math.min(Math.max(thirdPersonCameraPhi, 1), 179) % 360;
             }
-            // worldRotationY += - (position[0] - lastMousePosition[0]) / 2;
-            // worldRotationX += - (position[1] - lastMousePosition[1]) / 2;
+
             lastMousePosition = position;
         }
     });
@@ -486,30 +496,59 @@ function main() {
 
     // press shift to bend
     document.addEventListener("keydown", function (event) {
+        isPressed[event.code] = true;
         if (event.code === "ShiftLeft") {
-            // bend body
-            mat4.identity(bodyJoint.modelMatrix);
-            mat4.rotateX(bodyJoint.modelMatrix, bodyJoint.modelMatrix, -0.4);
+            if (camera === thirdPersonCamera || camera === firstPersonCamera) {
+                // bend body
+                mat4.identity(bodyJoint.modelMatrix);
+                mat4.rotateX(bodyJoint.modelMatrix, bodyJoint.modelMatrix, -0.4);
 
-            // bend head
-            mat4.identity(headJoint.modelMatrix);
-            mat4.translate(headJoint.modelMatrix, headJoint.modelMatrix, [0, 0, 0.36]);
-            mat4.rotateX(headJoint.modelMatrix, headJoint.modelMatrix, 0.4);
+                // bend head
+                mat4.identity(headJoint.modelMatrix);
+                mat4.translate(headJoint.modelMatrix, headJoint.modelMatrix, [0, 0, 0.36]);
+                mat4.rotateX(headJoint.modelMatrix, headJoint.modelMatrix, 0.4);
+            } else { // free camera
+                // freeCameraPosition[2] += 0.1;
+                // cannot do anything here, because this requires the key BEING pressed
+                // move to onDraw()
+            }
+        } else if (event.code === "ControlLeft") {
+            if (camera === freeCamera) {
+                // freeCameraPosition[2] -= 0.1;
+                // cannot do anything here
+            }
         } else if (event.code === "KeyW" && event.repeat === false) { // it turns out that keydown is not really keydown: it triggers multiple times when you hold the key down
-            steveWalking = true;
-            steveWalkingDirection = "-y";
-            walkAnimation.start();
+            if (camera === thirdPersonCamera || camera === firstPersonCamera) {
+                steveWalking = true;
+                steveWalkingDirection = "-y";
+                walkAnimation.start();
+            } else {
+                //
+            }
         } else if (event.code === "KeyS" && event.repeat === false) {
-            steveWalking = true;
-            steveWalkingDirection = "+y";
-            walkAnimation.start();
+            if (camera === thirdPersonCamera || camera === firstPersonCamera) {
+                steveWalking = true;
+                steveWalkingDirection = "+y";
+                walkAnimation.start();
+            } else { // free camera
+                // freeCameraPosition[1] -= 0.1
+            }
         } else if (event.code === "Space" && event.repeat === false) {
             event.preventDefault();
             jumpAnimation.start();
+        } else if (event.code === "KeyA" && event.repeat === false) {
+            if (camera === thirdPersonCamera || camera === firstPersonCamera) {
+                // 
+            } else {
+                // 
+            }
+        } else if (event.code === "KeyD" && event.repeat === false) {
+            // 
         }
     });
 
     document.addEventListener("keyup", function (event) {
+        isPressed[event.code] = false;
         if (event.code === "ShiftLeft") {
             mat4.identity(bodyJoint.modelMatrix);
             mat4.identity(headJoint.modelMatrix);
@@ -539,6 +578,51 @@ function main() {
             radians(thirdPersonCameraTheta),
             radians(thirdPersonCameraPhi),
             thirdPersonCameraRadius,
+        );
+
+        if (camera === freeCamera) {
+            let facingVector = [ // lookAt - position
+                freeCamera.lookAt[0] - freeCamera.position[0],
+                freeCamera.lookAt[1] - freeCamera.position[1],
+                freeCamera.lookAt[2] - freeCamera.position[2]
+            ];
+            let leftVector = vec3.create();
+            vec3.cross(leftVector, [0, 0, 1], facingVector); // get a vector perpendicular to facing vector
+
+            if (isPressed["KeyW"]) { // fly towards facing vector
+                freeCameraPosition[0] += 0.04 * facingVector[0];
+                freeCameraPosition[1] += 0.04 * facingVector[1];
+                freeCameraPosition[2] += 0.04 * facingVector[2];
+            }
+            if (isPressed["KeyS"]) { // fly towards inverse facing vector
+                freeCameraPosition[0] -= 0.04 * facingVector[0];
+                freeCameraPosition[1] -= 0.04 * facingVector[1];
+                freeCameraPosition[2] -= 0.04 * facingVector[2];
+            }
+            if (isPressed["KeyA"]) { // fly left, do not change height
+                freeCameraPosition[0] += 0.04 * leftVector[0];
+                freeCameraPosition[1] += 0.04 * leftVector[1];
+                // freeCameraPosition[2] += 0.04 * facingVector[2];
+            }
+            if (isPressed["KeyD"]) { // fly right, do not change height
+                freeCameraPosition[0] -= 0.04 * leftVector[0];
+                freeCameraPosition[1] -= 0.04 * leftVector[1];
+                // freeCameraPosition[2] += 0.04 * facingVector[2];
+            }
+            if (isPressed["ShiftLeft"]) { // fly upward
+                freeCameraPosition[2] += 0.2;
+            }
+            if (isPressed["ControlLeft"]) { // fly downward
+                freeCameraPosition[2] -= 0.2;
+            }
+        }
+
+        freeCamera.position = freeCameraPosition;
+        freeCamera.lookAt = PerspectiveCamera.getLookAtFromSphere(
+            freeCamera.position,
+            radians(freeCameraTheta),
+            radians(freeCameraPhi),
+            freeCameraRadius,
         );
 
         // body position

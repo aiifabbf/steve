@@ -504,6 +504,14 @@ export class PerspectiveCamera implements Camera {
         position[2] = lookAt[2] + radius * Math.cos(phi);
         return position;
     }
+
+    static getLookAtFromSphere(position: Array<number>, theta: number, phi: number, radius: number) {
+        let lookAt = [0, 0, 0];
+        lookAt[0] = position[0] - radius * Math.sin(phi) * Math.cos(theta);
+        lookAt[1] = position[1] - radius * Math.sin(phi) * Math.sin(theta);
+        lookAt[2] = position[2] - radius * Math.cos(phi);
+        return lookAt;
+    }
 }
 
 export class Renderer {
