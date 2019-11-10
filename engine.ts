@@ -446,7 +446,13 @@ export class ColorMaterial extends Material {
     }
 }
 
-export class Camera {
+
+export interface Camera {
+    viewMatrix: mat4;
+    projectionMatrix: mat4;
+}
+
+export class Camera implements Camera {
     viewMatrix: mat4;
     projectionMatrix: mat4;
 
@@ -456,7 +462,7 @@ export class Camera {
     }
 }
 
-export class PerspectiveCamera extends Camera {
+export class PerspectiveCamera implements Camera {
     position: Array<number>;
     lookAt: Array<number>;
     upVector: Array<number>;
@@ -466,14 +472,7 @@ export class PerspectiveCamera extends Camera {
     zFar: number;
 
     constructor(position: Array<number>, lookAt: Array<number>, upVector: Array<number>, fieldOfView: number, aspectRatio: number, zNear: number, zFar: number) {
-        let viewMatrix = mat4.create();
-        mat4.lookAt(viewMatrix, position, lookAt, upVector);
-
-        let projectionMatrix = mat4.create();
-        mat4.perspective(projectionMatrix, fieldOfView, aspectRatio, zNear, zFar);
-
-        super(viewMatrix, projectionMatrix);
-
+        // super(mat4.create(), mat4.create());
         this.position = position;
         this.lookAt = lookAt;
         this.upVector = upVector;
@@ -481,6 +480,29 @@ export class PerspectiveCamera extends Camera {
         this.aspectRatio = aspectRatio;
         this.zNear = zNear;
         this.zFar = zFar;
+    }
+
+    get viewMatrix() {
+        let viewMatrix = mat4.create();
+        mat4.lookAt(viewMatrix, this.position, this.lookAt, this.upVector);
+        return viewMatrix;
+    }
+
+    get projectionMatrix() {
+        let projectionMatrix = mat4.create();
+        mat4.perspective(projectionMatrix, this.fieldOfView, this.aspectRatio, this.zNear, this.zFar);
+        return projectionMatrix;
+    }
+
+    // get camera position from look-at vector and spherical parameters
+    // theta is radians on xy plane, from +x axis
+    // phi is radians from +z axis
+    static getPositionFromSphere(lookAt: Array<number>, theta: number, phi: number, radius: number) {
+        let position = [0, 0, 0];
+        position[0] = lookAt[0] + radius * Math.sin(phi) * Math.cos(theta);
+        position[1] = lookAt[1] + radius * Math.sin(phi) * Math.sin(theta);
+        position[2] = lookAt[2] + radius * Math.cos(phi);
+        return position;
     }
 }
 

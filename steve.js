@@ -1,13 +1,7 @@
 import { mat4 } from "gl-matrix";
 import * as engine from "./engine";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry } from "./engine";
+import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry, Camera, PerspectiveCamera, radians, degrees } from "./engine";
 
-// for Mouth movement
-var g_isDrag = false;
-var g_xMclik = 0.0;	 // last Mouth button-down position (in CVV coords)
-var g_yMclik = 0.0;
-var g_xMdragTot = 0.0;	// total (accumulated) Mouth-drag amounts (in CVV coords).
-var g_yMdragTot = 0.0;
 let canvas = document.querySelector("canvas");
 
 function deg2rad(deg) {
@@ -19,15 +13,6 @@ function rad2deg(rad) {
 }
 
 function main() {
-
-    let gl = canvas.getContext("webgl2");
-    let capeOriMat = null;
-
-    if (gl == null) {
-        alert("can't get webgl context.");
-        return;
-    }
-
     let vertexShaderSource = `
         attribute vec4 aVertexPosition;
         attribute vec4 aVertexColor;
@@ -53,7 +38,30 @@ function main() {
 
     let renderer = new Renderer(canvas);
     let world = new Sprite(null, null);
-    let camera = new engine.Camera(mat4.create(), mat4.create());
+
+    let thirdPersonCameraTheta = 45;
+    let thirdPersonCameraPhi = 45;
+    let thirdPersonCameraRadius = 10;
+
+    let thirdPersonCamera = new PerspectiveCamera(
+        [5, 5, 5],
+        [0, 0, 0],
+        [0, 0, 1],
+        radians(42),
+        1,
+        0.1,
+        10000
+    );
+    thirdPersonCamera.position = PerspectiveCamera.getPositionFromSphere(
+        thirdPersonCamera.lookAt,
+        radians(thirdPersonCameraTheta),
+        radians(thirdPersonCameraPhi),
+        thirdPersonCameraRadius
+    );
+
+    let firstPersonCamera = new Camera(mat4.create(), mat4.create());
+    let freeCamera = new Camera(mat4.create(), mat4.create());
+    let camera = thirdPersonCamera;
 
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let yAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 1, 0]), new ColorMaterial([0, 1, 0, 1]));
@@ -94,7 +102,7 @@ function main() {
     }, {});
 
     // sphere on left hand
-    let sphere = new Sprite(new SphereGeometry(0.15, 96, 48), new ColorMaterial([1, 0, 0, 1]));
+    let sphere = new Sprite(new SphereGeometry(0.15, 32, 16), new ColorMaterial([1, 0, 0, 1]));
     sphere.material.compile(renderer);
     sphere.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(sphere.geometry.vertexPositions)
@@ -162,7 +170,7 @@ function main() {
         }).flat()),
     }, {});
 
-    let angelRing = new Sprite(new engine.TorusGeometry(0.24, 0.06, 96, 96), new ColorMaterial([1, 1, 0, 1]));
+    let angelRing = new Sprite(new engine.TorusGeometry(0.24, 0.06, 32, 32), new ColorMaterial([1, 1, 0, 1]));
     angelRing.material.compile(renderer);
     angelRing.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(angelRing.geometry.vertexPositions),
@@ -212,7 +220,7 @@ function main() {
     mat4.translate(capeJoint.modelMatrix, capeJoint.modelMatrix, [0, 0.12, 0.36]);
     //mat4.rotateX(capeJoint.modelViewMatrix,capeJoint.modelViewMatrix, -0.24);
     mat4.translate(cape.modelMatrix, cape.modelMatrix, [0, 0.03, -0.54]);
-    capeOriMat = mat4.clone(capeJoint.modelMatrix);
+    let capeOriMat = mat4.clone(capeJoint.modelMatrix);
     body.add(capeJoint);
     capeJoint.add(cape);
 
@@ -380,7 +388,7 @@ function main() {
             translate: 0,
         },
         0.5: {
-            translate: 0.3,
+            translate: 1.25219,
         },
         1: {
             translate: 0,
@@ -428,13 +436,10 @@ function main() {
 
     // controls
     let isDragging = false;
-    let worldRotationY = -45; // deg
-    let worldRotationX = -45; // deg
-    let worldScale = 1;
     let lastMousePosition;
     let stevePosition = [0, 0, 0];
     let steveWalking = false;
-    let steveWalkingDirection = "+z";
+    let steveWalkingDirection = "+y";
 
     // start dragging
     canvas.addEventListener("mousedown", function (event) {
@@ -446,8 +451,13 @@ function main() {
     document.addEventListener("mousemove", function (event) {
         if (isDragging) {
             let position = [event.offsetX, event.offsetY];
-            worldRotationY += - (position[0] - lastMousePosition[0]) / 2;
-            worldRotationX += - (position[1] - lastMousePosition[1]) / 2;
+            if (camera === thirdPersonCamera) {
+                thirdPersonCameraTheta += - (position[0] - lastMousePosition[0]) / 2;
+                thirdPersonCameraPhi += - (position[1] - lastMousePosition[1]) / 2;
+                thirdPersonCameraPhi = Math.min(Math.max(thirdPersonCameraPhi, 1), 179) % 360;
+            }
+            // worldRotationY += - (position[0] - lastMousePosition[0]) / 2;
+            // worldRotationX += - (position[1] - lastMousePosition[1]) / 2;
             lastMousePosition = position;
         }
     });
@@ -462,12 +472,16 @@ function main() {
         event.preventDefault();
 
         if (event.deltaY < 0) {
-            worldScale *= (-0.5) * event.deltaY;
+            if (camera === thirdPersonCamera) {
+                thirdPersonCameraRadius *= (-0.25) * event.deltaY;
+            }
         } else {
-            worldScale /= 0.5 * event.deltaY;
+            if (camera === thirdPersonCamera) {
+                thirdPersonCameraRadius /= 0.25 * event.deltaY;
+            }
         }
 
-        worldScale = Math.max(Math.min(worldScale, 20), 0.01);
+        thirdPersonCameraRadius = Math.max(Math.min(thirdPersonCameraRadius, 20), 0.01);
     })
 
     // press shift to bend
@@ -483,11 +497,11 @@ function main() {
             mat4.rotateX(headJoint.modelMatrix, headJoint.modelMatrix, 0.4);
         } else if (event.code === "KeyW" && event.repeat === false) { // it turns out that keydown is not really keydown: it triggers multiple times when you hold the key down
             steveWalking = true;
-            steveWalkingDirection = "-z";
+            steveWalkingDirection = "-y";
             walkAnimation.start();
         } else if (event.code === "KeyS" && event.repeat === false) {
             steveWalking = true;
-            steveWalkingDirection = "+z";
+            steveWalkingDirection = "+y";
             walkAnimation.start();
         } else if (event.code === "Space" && event.repeat === false) {
             event.preventDefault();
@@ -503,28 +517,40 @@ function main() {
         } else if (event.code === "KeyW" || event.code === "KeyS") {
             steveWalking = false;
             walkAnimation.stop();
+        } else if (event.code === "KeyV") {
+            if (camera === thirdPersonCamera) {
+                camera = firstPersonCamera;
+            } else if (camera === firstPersonCamera) {
+                camera = freeCamera;
+            } else {
+                camera = thirdPersonCamera;
+            }
         }
-    })
+    });
 
     function onDraw() {
         // world rotation
         mat4.identity(world.modelMatrix);
-        mat4.rotateX(world.modelMatrix, world.modelMatrix, deg2rad(worldRotationX));
-        mat4.rotateY(world.modelMatrix, world.modelMatrix, deg2rad(worldRotationY));
 
-        // world scale
-        mat4.scale(world.modelMatrix, world.modelMatrix, [worldScale, worldScale, worldScale]);
+        // set third person camera
+        thirdPersonCamera.lookAt = stevePosition;
+        thirdPersonCamera.position = PerspectiveCamera.getPositionFromSphere(
+            thirdPersonCamera.lookAt,
+            radians(thirdPersonCameraTheta),
+            radians(thirdPersonCameraPhi),
+            thirdPersonCameraRadius,
+        );
 
         // body position
         if (steveWalking) {
-            if (steveWalkingDirection === "-z") {
-                stevePosition[2] -= 0.02;
-            } else if (steveWalkingDirection === "+z") {
-                stevePosition[2] += 0.02;
+            if (steveWalkingDirection === "-y") {
+                stevePosition[1] -= 0.1;
+            } else if (steveWalkingDirection === "+y") {
+                stevePosition[1] += 0.1;
             }
         }
 
-        stevePosition[1] = jumpAnimation.yield()["translate"];
+        stevePosition[2] = jumpAnimation.yield()["translate"];
 
         mat4.identity(hip.modelMatrix);
         mat4.translate(hip.modelMatrix, hip.modelMatrix, stevePosition);
@@ -554,7 +580,6 @@ function main() {
         mat4.rotateX(capeJoint.modelMatrix, capeOriMat, angle);
 
         renderer.clear();
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         renderer.render(world, camera);
         requestAnimationFrame(onDraw);
 
