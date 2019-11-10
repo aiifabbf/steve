@@ -465,9 +465,9 @@ function main() {
                 thirdPersonCameraPhi += - (position[1] - lastMousePosition[1]) / 2;
                 thirdPersonCameraPhi = Math.min(Math.max(thirdPersonCameraPhi, 1), 179) % 360;
             } else if (camera === freeCamera) {
-                freeCameraTheta -= - (position[0] - lastMousePosition[0]) / 4;
-                freeCameraPhi -= - (position[1] - lastMousePosition[1]) / 4;
-                thirdPersonCameraPhi = Math.min(Math.max(thirdPersonCameraPhi, 1), 179) % 360;
+                freeCameraTheta -= - (position[0] - lastMousePosition[0]) / 8;
+                freeCameraPhi -= - (position[1] - lastMousePosition[1]) / 8;
+                freeCameraPhi = Math.min(Math.max(freeCameraPhi, 1), 179) % 360;
             }
 
             lastMousePosition = position;
@@ -602,13 +602,13 @@ function main() {
                 freeCameraPosition[2] -= 0.04 * facingVector[2];
             }
             if (isPressed["KeyA"]) { // fly left, do not change height
-                freeCameraPosition[0] += 0.04 * leftVector[0];
-                freeCameraPosition[1] += 0.04 * leftVector[1];
+                freeCameraPosition[0] += 0.02 * leftVector[0];
+                freeCameraPosition[1] += 0.02 * leftVector[1];
                 // freeCameraPosition[2] += 0.04 * facingVector[2];
             }
             if (isPressed["KeyD"]) { // fly right, do not change height
-                freeCameraPosition[0] -= 0.04 * leftVector[0];
-                freeCameraPosition[1] -= 0.04 * leftVector[1];
+                freeCameraPosition[0] -= 0.02 * leftVector[0];
+                freeCameraPosition[1] -= 0.02 * leftVector[1];
                 // freeCameraPosition[2] += 0.04 * facingVector[2];
             }
             if (isPressed["ShiftLeft"]) { // fly upward
