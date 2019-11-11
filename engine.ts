@@ -446,7 +446,6 @@ export class ColorMaterial extends Material {
     }
 }
 
-
 export interface Camera {
     viewMatrix: mat4;
     projectionMatrix: mat4;
@@ -514,6 +513,42 @@ export class PerspectiveCamera implements Camera {
     }
 }
 
+export class OrthogonalCamera implements Camera {
+    position: Array<number>;
+    lookAt: Array<number>;
+    upVector: Array<number>;
+    left: number;
+    right: number;
+    bottom: number;
+    top: number;
+    near: number;
+    far: number;
+
+    constructor(position: Array<number>, lookAt: Array<number>, upVector: Array<number>, left: number, right: number, bottom: number, top: number, near: number, far: number) {
+        this.position = position;
+        this.lookAt = lookAt;
+        this.upVector = upVector;
+        this.left = left;
+        this.right = right;
+        this.bottom = bottom;
+        this.top = top;
+        this.near = near;
+        this.far = far;
+    }
+
+    get viewMatrix() {
+        let viewMatrix = mat4.create();
+        mat4.lookAt(viewMatrix, this.position, this.lookAt, this.upVector);
+        return viewMatrix;
+    }
+
+    get projectionMatrix() {
+        let projectionMatrix = mat4.create();
+        mat4.ortho(projectionMatrix, this.left, this.right, this.bottom, this.top, this.near, this.far);
+        return projectionMatrix;
+    }
+}
+
 export class Renderer {
     canvas: HTMLCanvasElement;
     gl: WebGL2RenderingContext;
@@ -534,9 +569,9 @@ export class Renderer {
 
         gl.enable(gl.DEPTH_TEST);
         gl.enable(gl.CULL_FACE);
+        // gl.enable(gl.SCISSOR_TEST);
         // gl.cullFace(gl.FRONT_AND_BACK);
 
-        this.clear();
         this.viewport = {
             x: 0,
             y: 0,
@@ -553,6 +588,7 @@ export class Renderer {
 
     render(world: Sprite, camera: Camera) {
         this.gl.viewport(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
+        // this.gl.scissor(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
         let rootMatrix = mat4.create();
         mat4.multiply(rootMatrix, camera.viewMatrix, rootMatrix);
         mat4.multiply(rootMatrix, camera.projectionMatrix, rootMatrix);

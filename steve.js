@@ -1,6 +1,6 @@
 import { mat4, vec3 } from "gl-matrix";
+import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy } from "./engine";
 import * as engine from "./engine";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry, Camera, PerspectiveCamera, radians, degrees } from "./engine";
 
 let canvas = document.querySelector("canvas");
 canvas.width = window.innerWidth;
@@ -39,6 +39,14 @@ function main() {
     `;
 
     let renderer = new Renderer(canvas);
+    let miniMapRenderer = new Renderer(canvas);
+    miniMapRenderer.viewport = {
+        x: 0,
+        y: 200,
+        width: 200,
+        height: 200
+    };
+
     let world = new Sprite(null, null);
 
     let thirdPersonCameraTheta = 45;
@@ -54,7 +62,19 @@ function main() {
         10000,
     );
 
-    let firstPersonCamera = new Camera(mat4.create(), mat4.create());
+    let firstPersonCameraPosition = [5, 5, 5];
+    let firstPersonCameraTheta = 90;
+    let firstPersonCameraPhi = 90;
+    let firstPersonCameraRadius = 10;
+    let firstPersonCamera = new PerspectiveCamera(
+        [5, 5, 5],
+        [0, 0, 0],
+        [0, 0, 1],
+        radians(42),
+        canvas.width / canvas.height,
+        0.1,
+        10000,
+    );
 
     let freeCameraPosition = [5, 5, 5];
     let freeCameraTheta = 45;
@@ -70,6 +90,18 @@ function main() {
         10000,
     );
     let camera = thirdPersonCamera;
+
+    let miniMapCamera = new OrthogonalCamera(
+        [0, 0, 10],
+        [0, 0, 0],
+        [0, -1, 0],
+        -10,
+        10,
+        -10,
+        10,
+        0.1,
+        10000,
+    );
 
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let yAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 1, 0]), new ColorMaterial([0, 1, 0, 1]));
@@ -425,7 +457,7 @@ function main() {
             translate: 0.72,
         },
         0.5: {
-            translate: 1.25219,
+            translate: 1.25219 + 0.72,
         },
         1: {
             translate: 0.72,
@@ -474,8 +506,9 @@ function main() {
     // controls
     let isDragging = false;
     let lastMousePosition;
-    let stevePosition = [0, 0, 0.72];
+    let stevePosition = [0, 0, 0];
     let steveWalking = false;
+    let steveBending = false;
     let steveWalkingDirection = "+y";
     let isPressed = Object();
 
@@ -497,6 +530,11 @@ function main() {
                 freeCameraTheta -= - (position[0] - lastMousePosition[0]) / 8;
                 freeCameraPhi -= - (position[1] - lastMousePosition[1]) / 8;
                 freeCameraPhi = Math.min(Math.max(freeCameraPhi, 1), 179) % 360;
+            } else if (camera === firstPersonCamera) {
+                firstPersonCameraTheta -= - (position[0] - lastMousePosition[0]) / 8;
+                firstPersonCameraPhi -= - (position[1] - lastMousePosition[1]) / 8;
+                firstPersonCameraPhi = Math.min(Math.max(firstPersonCameraPhi, 1), 179) % 360;
+                firstPersonCameraTheta = Math.min(Math.max(firstPersonCameraTheta, 1), 179) % 360;
             }
 
             lastMousePosition = position;
@@ -530,6 +568,7 @@ function main() {
         isPressed[event.code] = true;
         if (event.code === "ShiftLeft") {
             if (camera === thirdPersonCamera || camera === firstPersonCamera) {
+                steveBending = true;
                 // bend body
                 mat4.identity(bodyJoint.modelMatrix);
                 mat4.rotateX(bodyJoint.modelMatrix, bodyJoint.modelMatrix, 0.4);
@@ -581,6 +620,7 @@ function main() {
     document.addEventListener("keyup", function (event) {
         isPressed[event.code] = false;
         if (event.code === "ShiftLeft") {
+            steveBending = false;
             mat4.identity(bodyJoint.modelMatrix);
             mat4.identity(headJoint.modelMatrix);
             mat4.translate(headJoint.modelMatrix, headJoint.modelMatrix, [0, 0, 0.36]);
@@ -599,11 +639,21 @@ function main() {
     });
 
     function onDraw() {
+        // body position
+        stevePosition[2] = jumpAnimation.yield()["translate"];
+        if (steveWalking) {
+            if (steveWalkingDirection === "-y") {
+                stevePosition[1] -= 0.1;
+            } else if (steveWalkingDirection === "+y") {
+                stevePosition[1] += 0.1;
+            }
+        }
+
         // world rotation
         mat4.identity(world.modelMatrix);
 
         // set third person camera
-        thirdPersonCamera.lookAt = stevePosition;
+        thirdPersonCamera.lookAt = deepCopy(stevePosition);
         thirdPersonCamera.position = PerspectiveCamera.getPositionFromSphere(
             thirdPersonCamera.lookAt,
             radians(thirdPersonCameraTheta),
@@ -611,6 +661,25 @@ function main() {
             thirdPersonCameraRadius,
         );
 
+        // set first person camera
+        if (!steveBending) {
+            firstPersonCamera.position[0] = stevePosition[0];
+            firstPersonCamera.position[1] = stevePosition[1] - 0.3;
+            firstPersonCamera.position[2] = stevePosition[2] - 0.72 + 1.7;
+        } else {
+            firstPersonCamera.position[0] = stevePosition[0];
+            firstPersonCamera.position[1] = stevePosition[1] - 0.3 - 0.3;
+            firstPersonCamera.position[2] = stevePosition[2] - 0.72 + 1.7 - 0.1;
+        }
+
+        firstPersonCamera.lookAt = PerspectiveCamera.getLookAtFromSphere(
+            firstPersonCamera.position,
+            radians(firstPersonCameraTheta),
+            radians(firstPersonCameraPhi),
+            firstPersonCameraRadius,
+        );
+
+        // set free camera
         if (camera === freeCamera) {
             let facingVector = [ // lookAt - position
                 freeCamera.lookAt[0] - freeCamera.position[0],
@@ -631,13 +700,13 @@ function main() {
                 freeCameraPosition[2] -= 0.04 * facingVector[2];
             }
             if (isPressed["KeyA"]) { // fly left, do not change height
-                freeCameraPosition[0] += 0.02 * leftVector[0];
-                freeCameraPosition[1] += 0.02 * leftVector[1];
+                freeCameraPosition[0] += 0.04 * leftVector[0];
+                freeCameraPosition[1] += 0.04 * leftVector[1];
                 // freeCameraPosition[2] += 0.04 * facingVector[2];
             }
             if (isPressed["KeyD"]) { // fly right, do not change height
-                freeCameraPosition[0] -= 0.02 * leftVector[0];
-                freeCameraPosition[1] -= 0.02 * leftVector[1];
+                freeCameraPosition[0] -= 0.04 * leftVector[0];
+                freeCameraPosition[1] -= 0.04 * leftVector[1];
                 // freeCameraPosition[2] += 0.04 * facingVector[2];
             }
             if (isPressed["ShiftLeft"]) { // fly upward
@@ -656,16 +725,9 @@ function main() {
             freeCameraRadius,
         );
 
-        // body position
-        if (steveWalking) {
-            if (steveWalkingDirection === "-y") {
-                stevePosition[1] -= 0.05;
-            } else if (steveWalkingDirection === "+y") {
-                stevePosition[1] += 0.05;
-            }
-        }
-
-        stevePosition[2] = jumpAnimation.yield()["translate"];
+        miniMapCamera.lookAt = deepCopy(stevePosition);
+        miniMapCamera.position = deepCopy(stevePosition);
+        miniMapCamera.position[2] = 10;
 
         mat4.identity(hip.modelMatrix);
         mat4.translate(hip.modelMatrix, hip.modelMatrix, stevePosition);
@@ -696,10 +758,14 @@ function main() {
 
         renderer.clear();
         renderer.render(world, camera);
+
+        // miniMapRenderer.clear();
+        miniMapRenderer.render(world, miniMapCamera);
+
         requestAnimationFrame(onDraw);
 
         // cat Rotation
-        mat4.rotateZ(center.modelMatrix, center.modelMatrix, 0.01)
+        mat4.rotateZ(center.modelMatrix, center.modelMatrix, 0.02);
 
         // cat walk
         let catWalkArmRotation = catWalkAnimation.yield()["rotation"];
