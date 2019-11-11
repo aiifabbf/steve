@@ -136,6 +136,56 @@ function main() {
         world.add(yGround);
     }
 
+    // random grass block
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 20; j++) {
+            let random = Math.floor(Math.random() * 10);
+            if (i < 9 || i > 11) {
+                if (random < 3) {
+                    let grass = new Sprite(new CubeGeometry(1, 1, 1), new ColorMaterial([0.702, 0.482, 0.384, 1]));
+                    grass.material.compile(renderer);
+                    grass.material.bindPlaceholders(renderer, {
+                        aVertexPosition: new Float32Array(grass.geometry.vertexPositions),
+                    }, {});
+                    mat4.translate(grass.modelMatrix, grass.modelMatrix, [-10.5 + i, -10.5 + j, 0.5]);
+                    world.add(grass);
+                    if(random < 2){
+                        let grass2 = new Sprite(new CubeGeometry(1, 1, 1), new ColorMaterial([0.702, 0.482, 0.384, 1]));
+                        grass2.material.compile(renderer);
+                        grass2.material.bindPlaceholders(renderer, {
+                            aVertexPosition: new Float32Array(grass2.geometry.vertexPositions),
+                        }, {});
+                        mat4.translate(grass2.modelMatrix, grass2.modelMatrix, [-10.5 + i, -10.5 + j, 1.5]);
+                        world.add(grass2);
+                    }
+                }
+            }
+        }
+    }
+
+    // random cloud
+
+    for (let i = 0; i < 100; i++) {
+        for (let j = 0; j < 100; j++) {
+            let random = Math.floor(Math.random() * 70);
+            if (i < 9 || i > 11) {
+                if (random < 1) {
+                    let w = Math.floor(1+Math.random() * 8);
+                    let l = Math.floor(1+Math.random() * 8);
+                    let cloud = new Sprite(new CubeGeometry(w, l, 1), new ColorMaterial([1, 1, 1, 1]));
+                    cloud.material.compile(renderer);
+                    cloud.material.bindPlaceholders(renderer, {
+                        aVertexPosition: new Float32Array(cloud.geometry.vertexPositions),
+                    }, {});
+                    mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [-49.5 + i, -49.5 + j, 10]);
+                    world.add(cloud);
+                }
+            }
+        }
+    }
+
+
+
     // Sky
 
     let sky = new Sprite(new SphereGeometry(100, 32, 16), new ColorMaterial([0.528, 0.803, 0.921, 1]));
