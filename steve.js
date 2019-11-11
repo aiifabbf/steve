@@ -42,9 +42,9 @@ function main() {
     let miniMapRenderer = new Renderer(canvas);
     miniMapRenderer.viewport = {
         x: 0,
-        y: 200,
-        width: 200,
-        height: 200
+        y: 0,
+        width: 300,
+        height: 300
     };
 
     let world = new Sprite(null, null);
@@ -149,7 +149,7 @@ function main() {
                     }, {});
                     mat4.translate(grass.modelMatrix, grass.modelMatrix, [-10.5 + i, -10.5 + j, 0.5]);
                     world.add(grass);
-                    if(random < 2){
+                    if (random < 2) {
                         let grass2 = new Sprite(new CubeGeometry(1, 1, 1), new ColorMaterial([0.702, 0.482, 0.384, 1]));
                         grass2.material.compile(renderer);
                         grass2.material.bindPlaceholders(renderer, {
@@ -164,14 +164,16 @@ function main() {
     }
 
     // random cloud
+    let clouds = [];
+    let cloudAnimations = [];
 
     for (let i = 0; i < 100; i++) {
         for (let j = 0; j < 100; j++) {
             let random = Math.floor(Math.random() * 70);
             if (i < 9 || i > 11) {
                 if (random < 1) {
-                    let w = Math.floor(1+Math.random() * 8);
-                    let l = Math.floor(1+Math.random() * 8);
+                    let w = Math.floor(1 + Math.random() * 8);
+                    let l = Math.floor(1 + Math.random() * 8);
                     let cloud = new Sprite(new CubeGeometry(w, l, 1), new ColorMaterial([1, 1, 1, 1]));
                     cloud.material.compile(renderer);
                     cloud.material.bindPlaceholders(renderer, {
@@ -179,12 +181,29 @@ function main() {
                     }, {});
                     mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [-49.5 + i, -49.5 + j, 10]);
                     world.add(cloud);
+                    clouds.push(cloud);
+                    let cloudAnimation = new engine.Animation(
+                        {
+                            0: {
+                                translateX: -49.5 + i,
+                            },
+                            0.5: {
+                                translateX: -49.5 + i + 100,
+                            },
+                            0.5000000001: { // go back to start point immediately
+                                translateX: -49.5 + i - 100,
+                            },
+                            1.0: {
+                                translateX: -49.5 + i,
+                            }
+                        }, 50 / Math.random(), engine.linear, 0, Infinity
+                    );
+                    cloudAnimation.start();
+                    cloudAnimations.push(cloudAnimation);
                 }
             }
         }
     }
-
-
 
     // Sky
 
@@ -680,10 +699,13 @@ function main() {
         } else if (event.code === "KeyV") {
             if (camera === thirdPersonCamera) {
                 camera = firstPersonCamera;
+                document.querySelector("#which-camera").textContent = "first person";
             } else if (camera === firstPersonCamera) {
                 camera = freeCamera;
+                document.querySelector("#which-camera").textContent = "free fly";
             } else {
                 camera = thirdPersonCamera;
+                document.querySelector("#which-camera").textContent = "third person";
             }
         }
     });
@@ -805,6 +827,15 @@ function main() {
         // cape animation
         let angle = animateSin(0.12, 200);
         mat4.rotateX(capeJoint.modelMatrix, capeOriMat, angle);
+
+        // cloud animation
+        for (let cloudIndex = 0; cloudIndex < clouds.length; cloudIndex++) {
+            let cloud = clouds[cloudIndex];
+            let cloudPosition = vec3.create();
+            mat4.getTranslation(cloudPosition, cloud.modelMatrix);
+            mat4.identity(cloud.modelMatrix);
+            mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [cloudAnimations[cloudIndex].yield()["translateX"], cloudPosition[1], cloudPosition[2]]);
+        }
 
         renderer.clear();
         renderer.render(world, camera);

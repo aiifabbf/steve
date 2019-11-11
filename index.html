@@ -8,6 +8,33 @@
 </head>
 <body>
     <canvas width="500" height="500"></canvas>
+    <div style="position: fixed; top: 0; left: 0; z-index: 1;" id="which-camera"></div>
+    <div style="position: fixed; top: 0; right: 0; z-index: 1;">
+        <span><kbd>v</kbd> to switch camera</span>
+        <div>
+            under third person camera:
+            <ul>
+                <li>mouse wheel to scale</li>
+                <li>mouse dragging to see around</li>
+                <li><kbd>W, S</kbd> to walk</li>
+                <li><kbd>Shift</kbd> to bow</li>
+            </ul>
+        </div>
+        <div>
+            under first person camera:
+            <ul>
+                <li>mouse dragging to see around</li>
+            </ul>
+        </div>
+        <div>
+            under free camera:
+            <ul>
+                <li><kbd>W, S, A, D</kbd> to fly freely</li>
+                <li><kbd>Shift</kbd> to go up</li>
+                <li><kbd>Ctrl</kbd> to go down</li>
+            </ul>
+        </div>
+    </div>
     <style>
         html, body {
             margin: 0;
