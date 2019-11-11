@@ -117,7 +117,7 @@ function main() {
     world.add(yAxis);
     world.add(zAxis);
 
-    // Start building ground
+    // Start building ground grid
 
     for (let i = 0; i < 101; i++) {
         let xGround = new Sprite(new LineGeometry([-50, -50 + i, 0], [50, -50 + i, 0]), new ColorMaterial([0.5, 0.5, 0.5, 1]));
