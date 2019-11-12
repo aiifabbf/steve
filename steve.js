@@ -39,12 +39,18 @@ function main() {
     `;
 
     let renderer = new Renderer(canvas);
+    renderer.viewport = {
+        x: 0,
+        y: 0,
+        width: canvas.width/2,
+        height: canvas.height
+    }
     let miniMapRenderer = new Renderer(canvas);
     miniMapRenderer.viewport = {
-        x: 0,
-        y: 200,
-        width: 200,
-        height: 200
+        x: canvas.width/2,
+        y: 0,
+        width: canvas.width/2,
+        height: canvas.height
     };
 
     let world = new Sprite(null, null);
@@ -57,7 +63,7 @@ function main() {
         [0, 0, 0],
         [0, 0, 1],
         radians(42),
-        canvas.width / canvas.height,
+        canvas.width / canvas.height / 2,
         0.1,
         10000,
     );
@@ -71,7 +77,7 @@ function main() {
         [0, 0, 0],
         [0, 0, 1],
         radians(42),
-        canvas.width / canvas.height,
+        canvas.width / canvas.height / 2,
         0.1,
         10000,
     );
@@ -85,20 +91,21 @@ function main() {
         [0, 0, 0],
         [0, 0, 1],
         radians(60),
-        canvas.width / canvas.height,
+        canvas.width / canvas.height / 2,
         0.1,
         10000,
     );
     let camera = thirdPersonCamera;
 
+
     let miniMapCamera = new OrthogonalCamera(
         [0, 0, 10],
         [0, 0, 0],
-        [0, -1, 0],
+        [0, 0, 1],
         -10,
         10,
-        -10,
-        10,
+        -10 / canvas.width * canvas. height * 2,
+        10 / canvas.width * canvas. height * 2,
         0.1,
         10000,
     );
@@ -183,8 +190,6 @@ function main() {
             }
         }
     }
-
-
 
     // Sky
 
@@ -768,16 +773,19 @@ function main() {
         }
 
         freeCamera.position = freeCameraPosition;
+        miniMapCamera.position = freeCameraPosition;
         freeCamera.lookAt = PerspectiveCamera.getLookAtFromSphere(
             freeCamera.position,
             radians(freeCameraTheta),
             radians(freeCameraPhi),
             freeCameraRadius,
         );
-
-        miniMapCamera.lookAt = deepCopy(stevePosition);
-        miniMapCamera.position = deepCopy(stevePosition);
-        miniMapCamera.position[2] = 10;
+        miniMapCamera.lookAt = PerspectiveCamera.getLookAtFromSphere(
+            freeCamera.position,
+            radians(freeCameraTheta),
+            radians(freeCameraPhi),
+            freeCameraRadius,
+        );
 
         mat4.identity(hip.modelMatrix);
         mat4.translate(hip.modelMatrix, hip.modelMatrix, stevePosition);
@@ -851,12 +859,17 @@ function main() {
         canvas.height = window.innerHeight;
 
         // reset camera aspect ratio
-        thirdPersonCamera.aspectRatio = canvas.width / canvas.height;
-        freeCamera.aspectRatio = canvas.width / canvas.height;
+        thirdPersonCamera.aspectRatio = canvas.width / canvas.height / 2;
+        freeCamera.aspectRatio = canvas.width / canvas.height / 2;
+        firstPersonCamera.aspectRatio = canvas.width / canvas.height / 2;
+        miniMapCamera.aspectRatio = canvas.width / canvas.height / 2;
 
         // update gl.viewport
-        renderer.viewport.width = canvas.width;
+        renderer.viewport.width = canvas.width/2;
         renderer.viewport.height = canvas.height;
+        miniMapRenderer.viewport.width = canvas.width /2;
+        miniMapRenderer.viewport.height = canvas.height;
+        miniMapRenderer.viewport.x = canvas.width / 2;
     });
 
     onDraw();
