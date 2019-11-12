@@ -568,8 +568,7 @@ export class Renderer {
         this.gl = gl;
 
         gl.enable(gl.DEPTH_TEST);
-        gl.enable(gl.CULL_FACE);
-        // gl.enable(gl.SCISSOR_TEST);
+        // gl.enable(gl.CULL_FACE);
         // gl.cullFace(gl.FRONT_AND_BACK);
 
         this.viewport = {
@@ -588,7 +587,6 @@ export class Renderer {
 
     render(world: Sprite, camera: Camera) {
         this.gl.viewport(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
-        // this.gl.scissor(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
         let rootMatrix = mat4.create();
         mat4.multiply(rootMatrix, camera.viewMatrix, rootMatrix);
         mat4.multiply(rootMatrix, camera.projectionMatrix, rootMatrix);
