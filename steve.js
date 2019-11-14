@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy } from "./engine";
+import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, RingGeometry, CylinderGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy } from "./engine";
 import * as engine from "./engine";
 
 let canvas = document.querySelector("canvas");
@@ -42,22 +42,15 @@ function main() {
     renderer.viewport = {
         x: 0,
         y: 0,
-        width: canvas.width/2,
+        width: canvas.width / 2,
         height: canvas.height
     }
     let miniMapRenderer = new Renderer(canvas);
     miniMapRenderer.viewport = {
-<<<<<<< HEAD
-        x: canvas.width/2,
+        x: canvas.width / 2,
         y: 0,
-        width: canvas.width/2,
+        width: canvas.width / 2,
         height: canvas.height
-=======
-        x: 0,
-        y: 0,
-        width: 300,
-        height: 300
->>>>>>> 1e5616aa7dddb829b2621d32c2ecf3f7f5cdc374
     };
 
     let world = new Sprite(null, null);
@@ -72,7 +65,7 @@ function main() {
         radians(42),
         canvas.width / canvas.height / 2,
         0.1,
-        10000,
+        1000,
     );
 
     let firstPersonCameraPosition = [5, 5, 5];
@@ -86,7 +79,7 @@ function main() {
         radians(42),
         canvas.width / canvas.height / 2,
         0.1,
-        10000,
+        1000,
     );
 
     let freeCameraPosition = [5, 5, 5];
@@ -100,10 +93,9 @@ function main() {
         radians(60),
         canvas.width / canvas.height / 2,
         0.1,
-        10000,
+        1000,
     );
     let camera = thirdPersonCamera;
-
 
     let miniMapCamera = new OrthogonalCamera(
         [0, 0, 10],
@@ -111,8 +103,8 @@ function main() {
         [0, 0, 1],
         -10,
         10,
-        -10 / canvas.width * canvas. height * 2,
-        10 / canvas.width * canvas. height * 2,
+        -10 / canvas.width * canvas.height * 2,
+        10 / canvas.width * canvas.height * 2,
         0.1,
         10000,
     );
@@ -149,6 +141,24 @@ function main() {
         world.add(xGround);
         world.add(yGround);
     }
+
+    // alter
+    let ring2 = new Sprite(new RingGeometry(2, 2.5, 1, 32), new ColorMaterial([1, 1, 1, 1]));
+    ring2.material.compile(renderer);
+    ring2.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(ring2.geometry.vertexPositions),
+    }, {});
+    mat4.translate(ring2.modelMatrix, ring2.modelMatrix, [0,15,0.5]);
+    world.add(ring2);
+
+    let cylinder = new Sprite(new CylinderGeometry(0.5,3,16), new ColorMaterial([1, 1, 1, 1]));
+    cylinder.material.compile(renderer);
+    cylinder.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(cylinder.geometry.vertexPositions),
+    }, {});
+    mat4.translate(cylinder.modelMatrix, cylinder.modelMatrix, [0,15,1.5]);
+    world.add(cylinder);
+
 
     // random grass block
     for (let i = 0; i < 20; i++) {
@@ -905,9 +915,9 @@ function main() {
         miniMapCamera.aspectRatio = canvas.width / canvas.height / 2;
 
         // update gl.viewport
-        renderer.viewport.width = canvas.width/2;
+        renderer.viewport.width = canvas.width / 2;
         renderer.viewport.height = canvas.height;
-        miniMapRenderer.viewport.width = canvas.width /2;
+        miniMapRenderer.viewport.width = canvas.width / 2;
         miniMapRenderer.viewport.height = canvas.height;
         miniMapRenderer.viewport.x = canvas.width / 2;
     });
