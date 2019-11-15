@@ -674,7 +674,7 @@ export class Renderer {
         };
     }
 
-    clear(color = [0, 0, 0, 1]) {
+    clear(color = [0.528, 0.803, 0.921, 1]) {
         let gl = this.gl
         gl.clearColor(color[0], color[1], color[2], color[3]);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
