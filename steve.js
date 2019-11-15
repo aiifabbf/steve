@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy } from "./engine";
+import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, RingGeometry, CylinderGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy } from "./engine";
 import * as engine from "./engine";
 
 let canvas = document.querySelector("canvas");
@@ -65,7 +65,7 @@ function main() {
         radians(42),
         canvas.width / canvas.height / 2,
         0.1,
-        10000,
+        1000,
     );
 
     let firstPersonCameraPosition = [5, 5, 5];
@@ -79,7 +79,7 @@ function main() {
         radians(42),
         canvas.width / canvas.height / 2,
         0.1,
-        10000,
+        100,
     );
 
     let freeCameraPosition = [5, 5, 5];
@@ -93,21 +93,21 @@ function main() {
         radians(60),
         canvas.width / canvas.height / 2,
         0.1,
-        10000,
+        100,
     );
     let camera = thirdPersonCamera;
 
-
+    let miniMapCameraTop = (0.1 + (100 - 0.1) / 3) * Math.tan(radians(30));
     let miniMapCamera = new OrthogonalCamera(
         [0, 0, 10],
         [0, 0, 0],
         [0, 0, 1],
-        -10,
-        10,
-        -10 / canvas.width * canvas.height * 2,
-        10 / canvas.width * canvas.height * 2,
+        -miniMapCameraTop,
+        miniMapCameraTop,
+        -miniMapCameraTop / canvas.width * canvas.height * 2,
+        miniMapCameraTop / canvas.width * canvas.height * 2,
         0.1,
-        10000,
+        100,
     );
 
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
@@ -142,6 +142,24 @@ function main() {
         world.add(xGround);
         world.add(yGround);
     }
+
+    // alter
+    let ring2 = new Sprite(new RingGeometry(2, 2.5, 1, 32), new ColorMaterial([1, 1, 1, 1]));
+    ring2.material.compile(renderer);
+    ring2.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(ring2.geometry.vertexPositions),
+    }, {});
+    mat4.translate(ring2.modelMatrix, ring2.modelMatrix, [0,15,0.5]);
+    world.add(ring2);
+
+    let cylinder = new Sprite(new CylinderGeometry(0.5,3,16), new ColorMaterial([1, 1, 1, 1]));
+    cylinder.material.compile(renderer);
+    cylinder.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(cylinder.geometry.vertexPositions),
+    }, {});
+    mat4.translate(cylinder.modelMatrix, cylinder.modelMatrix, [0,15,1.5]);
+    world.add(cylinder);
+
 
     // random grass block
     for (let i = 0; i < 20; i++) {
@@ -212,15 +230,6 @@ function main() {
         }
     }
 
-    // Sky
-
-    let sky = new Sprite(new SphereGeometry(100, 32, 16), new ColorMaterial([0.528, 0.803, 0.921, 1]));
-    sky.material.compile(renderer);
-    sky.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(sky.geometry.vertexPositions)
-    }, {});
-    world.add(sky);
-
     // Start building steve
     let hip = new Sprite(null, null);
 
@@ -244,7 +253,17 @@ function main() {
     larm.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(larm.geometry.vertexPositions),
     }, {});
-
+    
+    let armxAxis = new Sprite(new LineGeometry([0, 0, 0], [0.5, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
+    let armyAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0.5, 0]), new ColorMaterial([0, 1, 0, 1]));
+    let armzAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0, 0.5]), new ColorMaterial([0, 0, 1, 1]));
+    [armxAxis, armyAxis, armzAxis].forEach(function (axis) {
+        axis.material.compile(renderer);
+        axis.material.bindPlaceholders(renderer, {
+            aVertexPosition: new Float32Array(axis.geometry.vertexPositions)
+        }, {});
+        larmJoint.add(axis);
+    });
     // sphere on left hand
     let sphere = new Sprite(new SphereGeometry(0.15, 32, 16), new ColorMaterial([1, 0, 0, 1]));
     sphere.material.compile(renderer);
@@ -382,6 +401,17 @@ function main() {
     catBody.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(catBody.geometry.vertexPositions),
     }, {});
+
+    let catxAxis = new Sprite(new LineGeometry([0, 0, 0], [0.5, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
+    let catyAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 2, 0]), new ColorMaterial([0, 1, 0, 1]));
+    let catzAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0, 0.5]), new ColorMaterial([0, 0, 1, 1]));
+    [catxAxis, catyAxis, catzAxis].forEach(function (axis) {
+        axis.material.compile(renderer);
+        axis.material.bindPlaceholders(renderer, {
+            aVertexPosition: new Float32Array(axis.geometry.vertexPositions)
+        }, {});
+        catBody.add(axis);
+    });
 
     let catHeadJoint = new Sprite(null, null);
     let catHead = new Sprite(new CubeGeometry(0.3, 0.3, 0.24), new ColorMaterial([0.6, 0.6, 0.6, 1]));
@@ -851,7 +881,7 @@ function main() {
         renderer.clear();
         renderer.render(world, camera);
 
-        // miniMapRenderer.clear();
+        //miniMapRenderer.clear();
         miniMapRenderer.render(world, miniMapCamera);
 
         requestAnimationFrame(onDraw);

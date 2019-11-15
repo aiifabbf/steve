@@ -115,6 +115,101 @@ export class PlaneGeometry extends Geometry {
     }
 }
 
+export class RingGeometry extends Geometry {
+    innerRadius: number;
+    outerRadius: number;
+    height: number;
+
+    constructor(innerRadius = 16, outerRadius = 18, height = 1, segment = 16) {
+        let vertexPositions = [];
+        let deltaTheta = 2 * Math.PI / segment;
+        for (let h = -height / 2; h <= height / 2; h += height) {
+            for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
+                let a = [
+                    innerRadius * Math.cos(thetaIndex * deltaTheta),
+                    innerRadius * Math.sin(thetaIndex * deltaTheta),
+                    h,
+                    1
+                ]
+                let b = [
+                    outerRadius * Math.cos(thetaIndex * deltaTheta),
+                    outerRadius * Math.sin(thetaIndex * deltaTheta),
+                    h,
+                    1
+                ]
+                vertexPositions = vertexPositions.concat(a).concat(b);
+            }
+        }
+        for (let r = innerRadius; r <= outerRadius; r += outerRadius - innerRadius) {
+            console.log(r);
+            for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
+                let a = [
+                    r * Math.cos(thetaIndex * deltaTheta),
+                    r * Math.sin(thetaIndex * deltaTheta),
+                    - height / 2,
+                    1
+                ]
+                let b = [
+                    r * Math.cos(thetaIndex * deltaTheta),
+                    r * Math.sin(thetaIndex * deltaTheta),
+                    height / 2,
+                    1
+                ]
+                vertexPositions = vertexPositions.concat(a).concat(b);
+            }
+        }
+        super(vertexPositions);
+        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+        this.innerRadius = innerRadius;
+        this.outerRadius = outerRadius;
+        this.height = height;
+    }
+}
+
+export class CylinderGeometry extends Geometry {
+    radius: number;
+    height: number;
+    segment: number;
+
+    constructor(radius = 1, height = 1, segment = 16) {
+        let vertexPositions = [];
+        let deltaTheta = 2 * Math.PI / segment;
+
+        for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
+            let a = [
+                radius * Math.cos(thetaIndex * deltaTheta),
+                radius * Math.sin(thetaIndex * deltaTheta),
+                - height / 2,
+                1
+            ]
+            let b = [
+                radius * Math.cos(thetaIndex * deltaTheta),
+                radius * Math.sin(thetaIndex * deltaTheta),
+                height / 2,
+                1
+            ]
+            vertexPositions = vertexPositions.concat(a).concat(b);
+        }
+        for (let h = -height / 2; h <= height / 2; h += height) {
+            for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
+                let a = [
+                    radius * Math.cos(thetaIndex * deltaTheta),
+                    radius * Math.sin(thetaIndex * deltaTheta),
+                    h,
+                    1
+                ]
+                let b = [0, 0, h, 1]
+                vertexPositions = vertexPositions.concat(a).concat(b);
+            }
+        }
+        super(vertexPositions);
+        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+        this.radius = radius;
+        this.segment = segment;
+        this.height = height;
+    }
+
+}
 export class SphereGeometry extends Geometry {
     radius: number;
     horizontalSegmentCount: number; // how many line segments to simulate horizontal circle
@@ -579,7 +674,7 @@ export class Renderer {
         };
     }
 
-    clear(color = [0, 0, 0, 1]) {
+    clear(color = [0.528, 0.803, 0.921, 1]) {
         let gl = this.gl
         gl.clearColor(color[0], color[1], color[2], color[3]);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
