@@ -42,22 +42,15 @@ function main() {
     renderer.viewport = {
         x: 0,
         y: 0,
-        width: canvas.width/2,
+        width: canvas.width / 2,
         height: canvas.height
     }
     let miniMapRenderer = new Renderer(canvas);
     miniMapRenderer.viewport = {
-<<<<<<< HEAD
-        x: canvas.width/2,
+        x: canvas.width / 2,
         y: 0,
-        width: canvas.width/2,
+        width: canvas.width / 2,
         height: canvas.height
-=======
-        x: 0,
-        y: 0,
-        width: 300,
-        height: 300
->>>>>>> 1e5616aa7dddb829b2621d32c2ecf3f7f5cdc374
     };
 
     let world = new Sprite(null, null);
@@ -111,8 +104,8 @@ function main() {
         [0, 0, 1],
         -10,
         10,
-        -10 / canvas.width * canvas. height * 2,
-        10 / canvas.width * canvas. height * 2,
+        -10 / canvas.width * canvas.height * 2,
+        10 / canvas.width * canvas.height * 2,
         0.1,
         10000,
     );
@@ -804,13 +797,14 @@ function main() {
         }
 
         freeCamera.position = freeCameraPosition;
-        miniMapCamera.position = freeCameraPosition;
         freeCamera.lookAt = PerspectiveCamera.getLookAtFromSphere(
             freeCamera.position,
             radians(freeCameraTheta),
             radians(freeCameraPhi),
             freeCameraRadius,
         );
+
+        miniMapCamera.position = freeCameraPosition;
         miniMapCamera.lookAt = PerspectiveCamera.getLookAtFromSphere(
             freeCamera.position,
             radians(freeCameraTheta),
@@ -905,9 +899,9 @@ function main() {
         miniMapCamera.aspectRatio = canvas.width / canvas.height / 2;
 
         // update gl.viewport
-        renderer.viewport.width = canvas.width/2;
+        renderer.viewport.width = canvas.width / 2;
         renderer.viewport.height = canvas.height;
-        miniMapRenderer.viewport.width = canvas.width /2;
+        miniMapRenderer.viewport.width = canvas.width / 2;
         miniMapRenderer.viewport.height = canvas.height;
         miniMapRenderer.viewport.x = canvas.width / 2;
     });
