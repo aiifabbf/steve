@@ -170,6 +170,13 @@ function main() {
     mat4.translate(rotaion.modelMatrix, rotaion.modelMatrix, [0,10,0]);
     world.add(rotaion);
 
+    let gyro = new Sprite(new RotationGeometry(0.1, 20, [0.01,0.2,0.4,0.6,0.8,0.6,0.4,0.2,0.1,0.09,0.08,0.07,0.06,0.05,0.04]), new ColorMaterial([1, 0.2, 0.2, 1]));
+    gyro.material.compile(renderer);
+    gyro.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(gyro.geometry.vertexPositions),
+    }, {});
+    mat4.translate(gyro.modelMatrix, gyro.modelMatrix, [0,-10,0]);
+    world.add(gyro);
 
     // random grass block
     for (let i = 0; i < 20; i++) {
