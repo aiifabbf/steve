@@ -838,13 +838,14 @@ function main() {
         }
 
         freeCamera.position = freeCameraPosition;
-        miniMapCamera.position = freeCameraPosition;
         freeCamera.lookAt = PerspectiveCamera.getLookAtFromSphere(
             freeCamera.position,
             radians(freeCameraTheta),
             radians(freeCameraPhi),
             freeCameraRadius,
         );
+
+        miniMapCamera.position = freeCameraPosition;
         miniMapCamera.lookAt = PerspectiveCamera.getLookAtFromSphere(
             freeCamera.position,
             radians(freeCameraTheta),
