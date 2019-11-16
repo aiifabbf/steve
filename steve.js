@@ -162,12 +162,11 @@ function main() {
 
     //
 
-    let rotaion = new Sprite(new RotationGeometry(0.2, 16, [0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,1,0.9,0.8,0.7,0.6,0.5,0.4]), new ColorMaterial([1, 1, 1, 1]));
+    let rotaion = new Sprite(new RotationGeometry(0.2, 16, [0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,1,0.9,0.8,0.7,0.6,0.5,0.4]), new ColorMaterial([0.2, 0.2, 0.2, 1]));
     rotaion.material.compile(renderer);
     rotaion.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(rotaion.geometry.vertexPositions),
     }, {});
-    rotaion.mode = WebGL2RenderingContext.LINE_STRIP;
     mat4.translate(rotaion.modelMatrix, rotaion.modelMatrix, [0,10,0]);
     world.add(rotaion);
 

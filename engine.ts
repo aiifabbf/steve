@@ -262,7 +262,7 @@ export class RotationGeometry extends Geometry {
 
 
         super(vertexPositions);
-        this.mode = WebGL2RenderingContext.LINE_STRIP;
+        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
     }
 }
 
