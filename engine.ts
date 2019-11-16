@@ -210,6 +210,62 @@ export class CylinderGeometry extends Geometry {
     }
 
 }
+
+export class RotationGeometry extends Geometry {
+    constructor(height = 1, segment = 16, define = []) {
+        let vertexPositions = [];
+        let deltaTheta = 2 * Math.PI / segment;
+        let total = define.length;
+        let totalHeight = 0;
+
+        for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
+            let a = [
+                define[0] * Math.cos(thetaIndex * deltaTheta),
+                define[0] * Math.sin(thetaIndex * deltaTheta),
+                0,
+                1
+            ]
+            let b = [0, 0, 0, 1]
+            vertexPositions = vertexPositions.concat(a).concat(b);
+        }
+
+        for (let i = 1; i < total; i++) {
+            for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
+                let a = [
+                    define[i - 1] * Math.cos(thetaIndex * deltaTheta),
+                    define[i - 1] * Math.sin(thetaIndex * deltaTheta),
+                    totalHeight,
+                    1
+                ]
+                let b = [
+                    define[i] * Math.cos(thetaIndex * deltaTheta),
+                    define[i] * Math.sin(thetaIndex * deltaTheta),
+                    totalHeight + height,
+                    1
+                ]
+                console.log(a);
+                vertexPositions = vertexPositions.concat(a).concat(b);
+            }
+            totalHeight += height;
+        }
+
+        for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
+            let a = [
+                define[define.length - 1] * Math.cos(thetaIndex * deltaTheta),
+                define[define.length - 1] * Math.sin(thetaIndex * deltaTheta),
+                totalHeight,
+                1
+            ]
+            let b = [0, 0, totalHeight, 1]
+            vertexPositions = vertexPositions.concat(a).concat(b);
+        }
+
+
+        super(vertexPositions);
+        this.mode = WebGL2RenderingContext.LINE_STRIP;
+    }
+}
+
 export class SphereGeometry extends Geometry {
     radius: number;
     horizontalSegmentCount: number; // how many line segments to simulate horizontal circle

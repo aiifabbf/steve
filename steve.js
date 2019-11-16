@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, RingGeometry, CylinderGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy } from "./engine";
+import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy } from "./engine";
 import * as engine from "./engine";
 
 let canvas = document.querySelector("canvas");
@@ -159,6 +159,17 @@ function main() {
     }, {});
     mat4.translate(cylinder.modelMatrix, cylinder.modelMatrix, [0,15,1.5]);
     world.add(cylinder);
+
+    //
+
+    let rotaion = new Sprite(new RotationGeometry(0.2, 16, [0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,1,0.9,0.8,0.7,0.6,0.5,0.4]), new ColorMaterial([1, 1, 1, 1]));
+    rotaion.material.compile(renderer);
+    rotaion.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(rotaion.geometry.vertexPositions),
+    }, {});
+    rotaion.mode = WebGL2RenderingContext.LINE_STRIP;
+    mat4.translate(rotaion.modelMatrix, rotaion.modelMatrix, [0,10,0]);
+    world.add(rotaion);
 
 
     // random grass block
