@@ -102,10 +102,10 @@ function main() {
         [0, 0, 10],
         [0, 0, 0],
         [0, 0, 1],
+        -miniMapCameraTop / canvas.height * canvas.width / 2,
+        miniMapCameraTop / canvas.height * canvas.width / 2,
         -miniMapCameraTop,
         miniMapCameraTop,
-        -miniMapCameraTop / canvas.width * canvas.height * 2,
-        miniMapCameraTop / canvas.width * canvas.height * 2,
         0.1,
         100,
     );
@@ -936,7 +936,8 @@ function main() {
         thirdPersonCamera.aspectRatio = canvas.width / canvas.height / 2;
         freeCamera.aspectRatio = canvas.width / canvas.height / 2;
         firstPersonCamera.aspectRatio = canvas.width / canvas.height / 2;
-        miniMapCamera.aspectRatio = canvas.width / canvas.height / 2;
+        miniMapCamera.left = -miniMapCameraTop / canvas.height * canvas.width / 2;
+        miniMapCamera.right = miniMapCameraTop / canvas.height * canvas.width / 2;
 
         // update gl.viewport
         renderer.viewport.width = canvas.width / 2;
