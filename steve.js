@@ -1,5 +1,5 @@
-import { mat4, vec3 } from "gl-matrix";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy } from "./engine";
+import { mat4, vec3, quat, vec2 } from "gl-matrix";
+import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy, FrustumGeometry } from "./engine";
 import * as engine from "./engine";
 
 let canvas = document.querySelector("canvas");
@@ -13,6 +13,36 @@ function deg2rad(deg) {
 function rad2deg(rad) {
     return rad / (2 * Math.PI) * 360;
 }
+
+function getRandomNodePositionColorMapping(nodePositions) {
+    let nodePositionColorMapping = {};
+    nodePositions.forEach(function (nodePosition) {
+        if (!(nodePosition in nodePositionColorMapping)) {
+            nodePositionColorMapping[nodePosition] = [
+                Math.random(),
+                Math.random(),
+                Math.random(),
+                1,
+            ];
+        }
+    });
+    return nodePositionColorMapping;
+}
+
+function getRandomColors(nodePositions) {
+    let nodePositionColorMapping = getRandomNodePositionColorMapping(nodePositions);
+    return nodePositions.map(function (nodePosition) {
+        return nodePositionColorMapping[nodePosition];
+    });
+}
+
+let defaultAttributePlaceholders = {
+    aVertexPosition: "aVertexPosition",
+    aVertexColor: "aVertexColor",
+};
+let defaultUniformPlaceholders = {
+    uModelViewProjectionMatrix: "uModelViewProjectionMatrix",
+};
 
 function main() {
     let vertexShaderSource = `
@@ -149,33 +179,37 @@ function main() {
     ring2.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(ring2.geometry.vertexPositions),
     }, {});
-    mat4.translate(ring2.modelMatrix, ring2.modelMatrix, [0,15,0.5]);
+    mat4.translate(ring2.modelMatrix, ring2.modelMatrix, [0, 15, 0.5]);
     world.add(ring2);
 
-    let cylinder = new Sprite(new CylinderGeometry(0.5,3,16), new ColorMaterial([1, 1, 1, 1]));
+    let cylinder = new Sprite(new CylinderGeometry(0.5, 3, 16), new ColorMaterial([1, 1, 1, 1]));
     cylinder.material.compile(renderer);
     cylinder.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(cylinder.geometry.vertexPositions),
     }, {});
-    mat4.translate(cylinder.modelMatrix, cylinder.modelMatrix, [0,15,1.5]);
+    mat4.translate(cylinder.modelMatrix, cylinder.modelMatrix, [0, 15, 1.5]);
     world.add(cylinder);
 
     //
 
-    let rotaion = new Sprite(new RotationGeometry(0.2, 16, [0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,1,0.9,0.8,0.7,0.6,0.5,0.4]), new ColorMaterial([0.2, 0.2, 0.2, 1]));
+    let rotaion = new Sprite(new RotationGeometry(0.2, 16, [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]), new ColorMaterial([0.2, 0.2, 0.2, 1]));
     rotaion.material.compile(renderer);
     rotaion.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(rotaion.geometry.vertexPositions),
     }, {});
-    mat4.translate(rotaion.modelMatrix, rotaion.modelMatrix, [0,10,0]);
+    mat4.translate(rotaion.modelMatrix, rotaion.modelMatrix, [0, 10, 0]);
     world.add(rotaion);
 
-    let gyro = new Sprite(new RotationGeometry(0.1, 20, [0.01,0.2,0.4,0.6,0.8,0.6,0.4,0.2,0.1,0.09,0.08,0.07,0.06,0.05,0.04]), new ColorMaterial([1, 0.2, 0.2, 1]));
-    gyro.material.compile(renderer);
+    // let gyro = new Sprite(new RotationGeometry(0.1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04]), new ColorMaterial([1, 0.2, 0.2, 1]));
+    let gyro = new Sprite(new RotationGeometry(1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04].map(v => 10 * v)), new Material(vertexShaderSource, fragmentShaderSource));
+    gyro.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
     gyro.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(gyro.geometry.vertexPositions),
+        aVertexColor: new Float32Array(getRandomColors(gyro.geometry.nodePositions).flat()),
     }, {});
-    mat4.translate(gyro.modelMatrix, gyro.modelMatrix, [0,-10,0]);
+    let gyroTranslationMatrix = mat4.create();
+    mat4.fromTranslation(gyroTranslationMatrix, [0, -10, 0]);
+    // mat4.translate(gyro.modelMatrix, gyro.modelMatrix, [0, -10, 0]);
     world.add(gyro);
 
     // random grass block
@@ -184,10 +218,12 @@ function main() {
             let random = Math.floor(Math.random() * 10);
             if (i < 9 || i > 11) {
                 if (random < 3) {
-                    let grass = new Sprite(new CubeGeometry(1, 1, 1), new ColorMaterial([0.702, 0.482, 0.384, 1]));
-                    grass.material.compile(renderer);
+                    // let grass = new Sprite(new CubeGeometry(1, 1, 1), new ColorMaterial([0.702, 0.482, 0.384, 1]));
+                    let grass = new Sprite(new CubeGeometry(1, 1, 1), new Material(vertexShaderSource, fragmentShaderSource));
+                    grass.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
                     grass.material.bindPlaceholders(renderer, {
                         aVertexPosition: new Float32Array(grass.geometry.vertexPositions),
+                        aVertexColor: new Float32Array(getRandomColors(grass.geometry.nodePositions).flat()),
                     }, {});
                     mat4.translate(grass.modelMatrix, grass.modelMatrix, [-10.5 + i, -10.5 + j, 0.5]);
                     world.add(grass);
@@ -270,7 +306,7 @@ function main() {
     larm.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(larm.geometry.vertexPositions),
     }, {});
-    
+
     let armxAxis = new Sprite(new LineGeometry([0, 0, 0], [0.5, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let armyAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0.5, 0]), new ColorMaterial([0, 1, 0, 1]));
     let armzAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0, 0.5]), new ColorMaterial([0, 0, 1, 1]));
@@ -282,18 +318,56 @@ function main() {
         larmJoint.add(axis);
     });
     // sphere on left hand
-    let sphere = new Sprite(new SphereGeometry(0.15, 32, 16), new ColorMaterial([1, 0, 0, 1]));
-    sphere.material.compile(renderer);
-    sphere.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(sphere.geometry.vertexPositions)
+    // let sphere = new Sprite(new SphereGeometry(0.15, 32, 16), new ColorMaterial([1, 0, 0, 1]));
+    // sphere.material.compile(renderer);
+    // sphere.material.bindPlaceholders(renderer, {
+    //     aVertexPosition: new Float32Array(sphere.geometry.vertexPositions)
+    // }, {});
+    // sphere.geometry.mode = WebGL2RenderingContext.LINE_STRIP;
+
+    // sword on left hand
+    let handler = new Sprite(new FrustumGeometry(0.01, 0.01, 0.2, 16), new Material(vertexShaderSource, fragmentShaderSource));
+    handler.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
+    handler.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(handler.geometry.vertexPositions),
+        aVertexColor: new Float32Array(getRandomColors(handler.geometry.vertexPositions).flat()),
     }, {});
-    sphere.geometry.mode = WebGL2RenderingContext.LINE_STRIP;
+
+    let bladeBottom = new Sprite(new FrustumGeometry(0.05, 0.05, 0.005, 16), new Material(vertexShaderSource, fragmentShaderSource));
+    bladeBottom.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
+    bladeBottom.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(bladeBottom.geometry.vertexPositions),
+        aVertexColor: new Float32Array(getRandomColors(bladeBottom.geometry.vertexPositions).flat())
+    }, {});
+
+    let blade = new Sprite(new FrustumGeometry(0.02, 0, 1.2, 16), new Material(vertexShaderSource, fragmentShaderSource));
+    blade.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
+    blade.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(blade.geometry.vertexPositions),
+        aVertexColor: new Float32Array(getRandomColors(blade.geometry.nodePositions).flat()),
+    }, {});
+
+    mat4.translate(blade.modelMatrix, blade.modelMatrix, [0, 0.6 + 0.0025 + 0.1, 0]);
+    mat4.translate(bladeBottom.modelMatrix, bladeBottom.modelMatrix, [0, 0.1, 0]);
+
+    let sword = new Sprite(null, null);
+    sword.add(handler);
+    sword.add(bladeBottom);
+    sword.add(blade);
 
     let rarmJoint = new Sprite(null, null);
     let rarm = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), new ColorMaterial([0.588, 0.372, 0.255, 1]));
     rarm.material.compile(renderer);
     rarm.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(rarm.geometry.vertexPositions),
+    }, {});
+
+    // shield on right hand
+    let shield = new Sprite(new SphereGeometry(0.5, 16, 8, 2 * Math.PI, Math.PI / 3), new Material(vertexShaderSource, fragmentShaderSource));
+    shield.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
+    shield.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(shield.geometry.vertexPositions),
+        aVertexColor: new Float32Array(getRandomColors(shield.geometry.nodePositions).flat()),
     }, {});
 
     let llegJoint = new Sprite(null, null);
@@ -370,14 +444,25 @@ function main() {
     larmJoint.add(larm);
 
     // sphere on left hand
-    mat4.translate(sphere.modelMatrix, sphere.modelMatrix, [0, -0.09, -0.45]);
-    larm.add(sphere);
+    // mat4.translate(sphere.modelMatrix, sphere.modelMatrix, [0, -0.09, -0.45]);
+    // larm.add(sphere);
+
+    // sword on left hand
+    mat4.translate(sword.modelMatrix, sword.modelMatrix, [0, -0.09, -0.45 + 0.1]);
+    mat4.rotateX(sword.modelMatrix, sword.modelMatrix, radians(180));
+    larm.add(sword);
 
     // rarm
     mat4.translate(rarmJoint.modelMatrix, rarmJoint.modelMatrix, [-0.36, 0, 0.24]);
     mat4.translate(rarm.modelMatrix, rarm.modelMatrix, [0, 0, -0.24]);
     body.add(rarmJoint);
     rarmJoint.add(rarm);
+
+    // shield on right hand
+    mat4.rotateZ(shield.modelMatrix, shield.modelMatrix, radians(160));
+    // mat4.rotateY(shield.modelMatrix, shield.modelMatrix, radians(20));
+    mat4.translate(shield.modelMatrix, shield.modelMatrix, [0, -0.09, 0]);
+    rarm.add(shield);
 
     // lleg
     mat4.translate(llegJoint.modelMatrix, llegJoint.modelMatrix, [-0.12, 0, 0]);
@@ -634,17 +719,19 @@ function main() {
     let steveBending = false;
     let steveWalkingDirection = "+y";
     let isPressed = Object();
+    let gyroQuaternion = quat.create();
 
     // start dragging
     canvas.addEventListener("mousedown", function (event) {
         lastMousePosition = [event.offsetX, event.offsetY];
         isDragging = true;
+        isPressed[event.button] = true;
     });
 
     // dragging
     document.addEventListener("mousemove", function (event) {
-        if (isDragging) {
-            let position = [event.offsetX, event.offsetY];
+        let position = [event.offsetX, event.offsetY];
+        if (isDragging && isPressed[0]) {
             if (camera === thirdPersonCamera) {
                 thirdPersonCameraTheta += - (position[0] - lastMousePosition[0]) / 2;
                 thirdPersonCameraPhi += - (position[1] - lastMousePosition[1]) / 2;
@@ -660,13 +747,47 @@ function main() {
                 firstPersonCameraTheta = Math.min(Math.max(firstPersonCameraTheta, 1), 179) % 360;
             }
 
-            lastMousePosition = position;
+        } else if (isDragging && isPressed[2]) {
+            // quaternion-based rotation
+            let upVector = vec3.fromValues(
+                camera.upVector[0],
+                camera.upVector[1],
+                camera.upVector[2],
+            );
+            vec3.normalize(upVector, upVector);
+
+            let viewVector = vec3.fromValues(
+                camera.lookAt[0] - camera.position[0],
+                camera.lookAt[1] - camera.position[1],
+                camera.lookAt[2] - camera.position[2],
+            );
+            vec3.normalize(viewVector, viewVector);
+
+            let rightVector = vec3.create();
+            vec3.cross(rightVector, viewVector, upVector);
+            // console.log(rightVector);
+
+            let deltaQuaternion = quat.create();
+
+            quat.setAxisAngle(deltaQuaternion, rightVector, radians(position[1] - lastMousePosition[1]) / 2);
+            quat.multiply(gyroQuaternion, deltaQuaternion, gyroQuaternion);
+            
+            quat.setAxisAngle(deltaQuaternion, upVector, radians(position[0] - lastMousePosition[0]) / 2);
+            quat.multiply(gyroQuaternion, deltaQuaternion, gyroQuaternion)
         }
+        lastMousePosition = position;
+    });
+
+    // prevent right mouse click menu
+    canvas.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+        return false;
     });
 
     // stop dragging
     document.addEventListener("mouseup", function (event) {
         isDragging = false;
+        isPressed[event.button] = false;
     });
 
     // mouse wheel to scale
@@ -933,6 +1054,15 @@ function main() {
         mat4.identity(catTailRearJoint.modelMatrix);
         mat4.translate(catTailRearJoint.modelMatrix, catTailRearJoint.modelMatrix, [0, -0.21, 0]);
         mat4.rotateX(catTailRearJoint.modelMatrix, catTailRearJoint.modelMatrix, catTailRotation);
+
+        // gyro
+        let gyroRotationMatrix = mat4.create();
+        mat4.fromQuat(gyroRotationMatrix, gyroQuaternion);
+        let axis = quat.create();
+        let rotationAngle = quat.getAxisAngle(axis, gyroQuaternion);
+        mat4.fromRotation(gyroRotationMatrix, rotationAngle, axis);
+
+        mat4.multiply(gyro.modelMatrix, gyroTranslationMatrix, gyroRotationMatrix);
     }
 
     window.addEventListener("resize", function (event) {

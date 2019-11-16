@@ -141,7 +141,7 @@ export class RingGeometry extends Geometry {
             }
         }
         for (let r = innerRadius; r <= outerRadius; r += outerRadius - innerRadius) {
-            console.log(r);
+            // console.log(r);
             for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
                 let a = [
                     r * Math.cos(thetaIndex * deltaTheta),
@@ -243,7 +243,7 @@ export class RotationGeometry extends Geometry {
                     totalHeight + height,
                     1
                 ]
-                console.log(a);
+                // console.log(a);
                 vertexPositions = vertexPositions.concat(a).concat(b);
             }
             totalHeight += height;
@@ -260,7 +260,6 @@ export class RotationGeometry extends Geometry {
             vertexPositions = vertexPositions.concat(a).concat(b);
         }
 
-
         super(vertexPositions);
         this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
     }
@@ -270,11 +269,13 @@ export class SphereGeometry extends Geometry {
     radius: number;
     horizontalSegmentCount: number; // how many line segments to simulate horizontal circle
     verticalSegmentCount: number; // how many line segments to simulate vertical semi-circle
+    maxTheta: number;
+    maxPhi: number;
 
-    constructor(radius: number = 1, horizontalSegmentCount: number = 16, verticalSegmentCount: number = 32) {
+    constructor(radius: number = 1, horizontalSegmentCount: number = 16, verticalSegmentCount: number = 32, maxTheta: number = 2 * Math.PI, maxPhi: number = Math.PI) {
         let vertexPositions = [];
-        let deltaPhi = Math.PI / verticalSegmentCount;
-        let deltaTheta = 2 * Math.PI / horizontalSegmentCount;
+        let deltaPhi = maxPhi / verticalSegmentCount;
+        let deltaTheta = maxTheta / horizontalSegmentCount;
 
         for (let phiIndex = 0; phiIndex <= verticalSegmentCount - 1; phiIndex++) {
 
@@ -302,6 +303,8 @@ export class SphereGeometry extends Geometry {
         this.radius = radius;
         this.horizontalSegmentCount = horizontalSegmentCount;
         this.verticalSegmentCount = verticalSegmentCount;
+        this.maxTheta = maxTheta;
+        this.maxPhi = maxPhi;
     }
 }
 
@@ -405,7 +408,7 @@ export class CubeGeometry extends Geometry {
 }
 
 // frustum centered at origin
-export class Frustum extends Geometry {
+export class FrustumGeometry extends Geometry {
     radius1: number; // bottom circle radius
     radius2: number; // top circle radius
     height: number; // height
