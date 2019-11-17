@@ -4,7 +4,7 @@ import * as engine from "./engine";
 
 let canvas = document.querySelector("canvas");
 canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.height = window.innerHeight * 0.8;
 
 function deg2rad(deg) {
     return deg / 360 * 2 * Math.PI;
