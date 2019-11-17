@@ -155,15 +155,16 @@ function main() {
     world.add(zAxis);
 
     // Start building ground grid
+    let groundMaterial = new ColorMaterial([0.5, 0.5, 0.5, 1]);
 
-    for (let i = 0; i < 101; i++) {
-        let xGround = new Sprite(new LineGeometry([-50, -50 + i, 0], [50, -50 + i, 0]), new ColorMaterial([0.5, 0.5, 0.5, 1]));
+    for (let i = 0; i < 501; i++) {
+        let xGround = new Sprite(new LineGeometry([-100, -100 + i, 0], [100, -100 + i, 0]), groundMaterial);
         xGround.material.compile(renderer);
         xGround.material.bindPlaceholders(renderer, {
             aVertexPosition: new Float32Array(xGround.geometry.vertexPositions)
         }, {});
 
-        let yGround = new Sprite(new LineGeometry([-50 + i, -50, 0], [-50 + i, 50, 0]), new ColorMaterial([0.5, 0.5, 0.5, 1]));
+        let yGround = new Sprite(new LineGeometry([-100 + i, -100, 0], [-100 + i, 100, 0]), groundMaterial);
         yGround.material.compile(renderer);
         yGround.material.bindPlaceholders(renderer, {
             aVertexPosition: new Float32Array(yGround.geometry.vertexPositions)
@@ -174,31 +175,34 @@ function main() {
     }
 
     // alter
-    let ring2 = new Sprite(new RingGeometry(2, 2.5, 1, 32), new ColorMaterial([1, 1, 1, 1]));
-    ring2.material.compile(renderer);
+    let ring2 = new Sprite(new RingGeometry(2, 2.5, 1, 32), new Material(vertexShaderSource, fragmentShaderSource));
+    ring2.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
     ring2.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(ring2.geometry.vertexPositions),
+        aVertexColor: new Float32Array(getRandomColors(ring2.geometry.nodePositions).flat()),
     }, {});
     mat4.translate(ring2.modelMatrix, ring2.modelMatrix, [0, 15, 0.5]);
     world.add(ring2);
 
-    let cylinder = new Sprite(new CylinderGeometry(0.5, 3, 16), new ColorMaterial([1, 1, 1, 1]));
-    cylinder.material.compile(renderer);
+    let cylinder = new Sprite(new CylinderGeometry(0.5, 3, 16), new Material(vertexShaderSource, fragmentShaderSource));
+    cylinder.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
     cylinder.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(cylinder.geometry.vertexPositions),
+        aVertexColor: new Float32Array(getRandomColors(cylinder.geometry.nodePositions).flat()),
     }, {});
     mat4.translate(cylinder.modelMatrix, cylinder.modelMatrix, [0, 15, 1.5]);
     world.add(cylinder);
 
-    //
+    // tree
 
-    let rotaion = new Sprite(new RotationGeometry(0.2, 16, [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]), new ColorMaterial([0.2, 0.2, 0.2, 1]));
-    rotaion.material.compile(renderer);
-    rotaion.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(rotaion.geometry.vertexPositions),
+    let tree = new Sprite(new RotationGeometry(0.2, 16, [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]), new Material(vertexShaderSource, fragmentShaderSource));
+    tree.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
+    tree.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(tree.geometry.vertexPositions),
+        aVertexColor: new Float32Array(getRandomColors(tree.geometry.nodePositions).flat()),
     }, {});
-    mat4.translate(rotaion.modelMatrix, rotaion.modelMatrix, [0, 10, 0]);
-    world.add(rotaion);
+    mat4.translate(tree.modelMatrix, tree.modelMatrix, [0, 10, 0]);
+    world.add(tree);
 
     // let gyro = new Sprite(new RotationGeometry(0.1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04]), new ColorMaterial([1, 0.2, 0.2, 1]));
     let gyro = new Sprite(new RotationGeometry(1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04].map(v => 10 * v)), new Material(vertexShaderSource, fragmentShaderSource));
@@ -244,6 +248,7 @@ function main() {
     // random cloud
     let clouds = [];
     let cloudAnimations = [];
+    let cloudMaterial = new ColorMaterial([1, 1, 1, 1])
 
     for (let i = 0; i < 100; i++) {
         for (let j = 0; j < 100; j++) {
@@ -252,7 +257,7 @@ function main() {
                 if (random < 1) {
                     let w = Math.floor(1 + Math.random() * 8);
                     let l = Math.floor(1 + Math.random() * 8);
-                    let cloud = new Sprite(new CubeGeometry(w, l, 1), new ColorMaterial([1, 1, 1, 1]));
+                    let cloud = new Sprite(new CubeGeometry(w, l, 1), cloudMaterial);
                     cloud.material.compile(renderer);
                     cloud.material.bindPlaceholders(renderer, {
                         aVertexPosition: new Float32Array(cloud.geometry.vertexPositions),
