@@ -9,13 +9,13 @@
 <body>
     <canvas width="500" height="500"></canvas>
     <div style="position: fixed; top: 0; left: 0; z-index: 1;" id="which-camera"></div>
-    <div style="position: fixed; top: 0; right: 0; z-index: 1;">
+    <div style="position: fixed; bottom: 0; right: 0; z-index: 1;">
         <span><kbd>v</kbd> to switch camera</span>
         <div>
             under third person camera:
             <ul>
                 <li>mouse wheel to scale</li>
-                <li>mouse dragging to see around</li>
+                <li>drag with LEFT mouse button down to see around</li>
                 <li><kbd>W, S</kbd> to walk</li>
                 <li><kbd>Shift</kbd> to bow</li>
             </ul>
@@ -33,6 +33,9 @@
                 <li><kbd>Shift</kbd> to go up</li>
                 <li><kbd>Ctrl</kbd> to go down</li>
             </ul>
+        </div>
+        <div>
+            drag with RIGHT mouse button down to rotate the gyro
         </div>
     </div>
     <style>
