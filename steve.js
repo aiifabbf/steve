@@ -1072,7 +1072,7 @@ function main() {
 
     window.addEventListener("resize", function (event) {
         canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.height = window.innerHeight * 0.8;
 
         // reset camera aspect ratio
         thirdPersonCamera.aspectRatio = canvas.width / canvas.height / 2;
