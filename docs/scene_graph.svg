@@ -1,0 +1,2759 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="840.15607pt"
+   height="438.79688pt"
+   id="svg_output"
+   style="overflow:hidden"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="sceneGraph.svg">
+  <metadata
+     id="metadata1145">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1535"
+     inkscape:window-height="876"
+     id="namedview1143"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.73818388"
+     inkscape:cx="690.56136"
+     inkscape:cy="206.78497"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg_output" />
+  <g
+     id="viewport-20191117064434952"
+     class="svg-pan-zoom_viewport"
+     transform="matrix(0.5084134,0,0,0.5084134,-3.5952978e-7,-2.8087106e-6)">
+    <g
+       id="graph0"
+       class="graph"
+       transform="translate(4,1074.8388)">
+      <title
+         id="title5">G</title>
+      <polygon
+         stroke="transparent"
+         points="2061.6322,4 -4,4 -4,4 -4,-1074.8388 2061.6322,-1074.8388 "
+         id="polygon7"
+         style="fill:#ffffff" />
+      <!-- 1 -->
+      <g
+         id="node1"
+         class="node">
+        <title
+           id="title10">1</title>
+        <polygon
+           points="237.0581,-144 237.0581,-180 237.0581,-180 138.2063,-180 138.2063,-144 "
+           id="polygon12"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="187.6322"
+           y="-157.8"
+           font-size="14.00"
+           id="text14"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, -0.08, 0]</text>
+      </g>
+      <!-- rarm -->
+      <g
+         id="node30"
+         class="node">
+        <title
+           id="title17">rarm</title>
+        <polygon
+           points="214.6322,-72 214.6322,-108 214.6322,-108 160.6322,-108 160.6322,-72 "
+           id="polygon19"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="187.6322"
+           y="-85.800003"
+           font-size="14.00"
+           id="text21"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">rarm</text>
+      </g>
+      <!-- 1&#45;&gt;rarm -->
+      <g
+         id="edge21"
+         class="edge">
+        <title
+           id="title24">1-&gt;rarm</title>
+        <path
+           d="m 187.6322,-143.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path26"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="191.1323,-118.4132 191.1323,-118.4132 187.6322,-108.4133 184.1323,-118.4133 "
+           id="polygon28"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- 2 -->
+      <g
+         id="node2"
+         class="node">
+        <title
+           id="title31">2</title>
+        <polygon
+           points="538.0581,-360 538.0581,-396 538.0581,-396 439.2063,-396 439.2063,-360 "
+           id="polygon33"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="488.6322"
+           y="-373.79999"
+           font-size="14.00"
+           id="text35"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, -0.12, 0]</text>
+      </g>
+      <!-- lleg -->
+      <g
+         id="node39"
+         class="node">
+        <title
+           id="title38">lleg</title>
+        <polygon
+           points="559.6322,-288 559.6322,-324 559.6322,-324 505.6322,-324 505.6322,-288 "
+           id="polygon40"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="532.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text42"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">lleg</text>
+      </g>
+      <!-- 2&#45;&gt;lleg -->
+      <g
+         id="edge31"
+         class="edge">
+        <title
+           id="title45">2-&gt;lleg</title>
+        <path
+           d="m 499.7353,-359.8314 c 4.9643,8.1235 10.9191,17.8677 16.3897,26.8196"
+           id="path47"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="519.1516,-334.7712 519.1516,-334.7712 521.3796,-324.4133 513.1786,-331.121 "
+           id="polygon49"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- 3 -->
+      <g
+         id="node3"
+         class="node">
+        <title
+           id="title52">3</title>
+        <polygon
+           points="654.0581,-360 654.0581,-396 654.0581,-396 555.2063,-396 555.2063,-360 "
+           id="polygon54"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="604.6322"
+           y="-373.79999"
+           font-size="14.00"
+           id="text56"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, -0.12, 0]</text>
+      </g>
+      <!-- rleg -->
+      <g
+         id="node40"
+         class="node">
+        <title
+           id="title59">rleg</title>
+        <polygon
+           points="631.6322,-288 631.6322,-324 631.6322,-324 577.6322,-324 577.6322,-288 "
+           id="polygon61"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="604.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text63"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">rleg</text>
+      </g>
+      <!-- 3&#45;&gt;rleg -->
+      <g
+         id="edge33"
+         class="edge">
+        <title
+           id="title66">3-&gt;rleg</title>
+        <path
+           d="m 604.6322,-359.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path68"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="608.1323,-334.4132 608.1323,-334.4132 604.6322,-324.4133 601.1323,-334.4133 "
+           id="polygon70"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- 4 -->
+      <g
+         id="node4"
+         class="node">
+        <title
+           id="title73">4</title>
+        <polygon
+           points="953.7178,-360 953.7178,-396 953.7178,-396 829.5466,-396 829.5466,-360 "
+           id="polygon75"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="891.6322"
+           y="-373.79999"
+           font-size="14.00"
+           id="text77"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [-0.021,-0.08, 0]</text>
+      </g>
+      <!-- catFrontFootL -->
+      <g
+         id="node54"
+         class="node">
+        <title
+           id="title80">catFrontFootL</title>
+        <polygon
+           points="940.0117,-288 940.0117,-324 940.0117,-324 843.2527,-324 843.2527,-288 "
+           id="polygon82"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="891.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text84"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catFrontFootL</text>
+      </g>
+      <!-- 4&#45;&gt;catFrontFootL -->
+      <g
+         id="edge48"
+         class="edge">
+        <title
+           id="title87">4-&gt;catFrontFootL</title>
+        <path
+           d="m 891.6322,-359.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path89"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="895.1323,-334.4132 895.1323,-334.4132 891.6322,-324.4133 888.1323,-334.4133 "
+           id="polygon91"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- 5 -->
+      <g
+         id="node5"
+         class="node">
+        <title
+           id="title94">5</title>
+        <polygon
+           points="1143.7178,-360 1143.7178,-396 1143.7178,-396 1019.5466,-396 1019.5466,-360 "
+           id="polygon96"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1081.6322"
+           y="-373.79999"
+           font-size="14.00"
+           id="text98"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [-0.021,-0.08, 0]</text>
+      </g>
+      <!-- catFrontFootR -->
+      <g
+         id="node57"
+         class="node">
+        <title
+           id="title101">catFrontFootR</title>
+        <polygon
+           points="1130.2962,-288 1130.2962,-324 1130.2962,-324 1032.9682,-324 1032.9682,-288 "
+           id="polygon103"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1081.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text105"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catFrontFootR</text>
+      </g>
+      <!-- 5&#45;&gt;catFrontFootR -->
+      <g
+         id="edge52"
+         class="edge">
+        <title
+           id="title108">5-&gt;catFrontFootR</title>
+        <path
+           d="m 1081.6322,-359.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path110"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1085.1323,-334.4132 1085.1323,-334.4132 1081.6322,-324.4133 1078.1323,-334.4133 "
+           id="polygon112"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- 6 -->
+      <g
+         id="node6"
+         class="node">
+        <title
+           id="title115">6</title>
+        <polygon
+           points="1314.5582,-360 1314.5582,-396 1314.5582,-396 1222.7062,-396 1222.7062,-360 "
+           id="polygon117"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1268.6322"
+           y="-373.79999"
+           font-size="14.00"
+           id="text119"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0,-0.04,0]</text>
+      </g>
+      <!-- catRearFootL -->
+      <g
+         id="node60"
+         class="node">
+        <title
+           id="title122">catRearFootL</title>
+        <polygon
+           points="1315.1042,-288 1315.1042,-324 1315.1042,-324 1222.1602,-324 1222.1602,-288 "
+           id="polygon124"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1268.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text126"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catRearFootL</text>
+      </g>
+      <!-- 6&#45;&gt;catRearFootL -->
+      <g
+         id="edge56"
+         class="edge">
+        <title
+           id="title129">6-&gt;catRearFootL</title>
+        <path
+           d="m 1268.6322,-359.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path131"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1272.1323,-334.4132 1272.1323,-334.4132 1268.6322,-324.4133 1265.1323,-334.4133 "
+           id="polygon133"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- 7 -->
+      <g
+         id="node7"
+         class="node">
+        <title
+           id="title136">7</title>
+        <polygon
+           points="1498.5582,-360 1498.5582,-396 1498.5582,-396 1406.7062,-396 1406.7062,-360 "
+           id="polygon138"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1452.6322"
+           y="-373.79999"
+           font-size="14.00"
+           id="text140"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0,-0.04,0]</text>
+      </g>
+      <!-- catRearFootR -->
+      <g
+         id="node63"
+         class="node">
+        <title
+           id="title143">catRearFootR</title>
+        <polygon
+           points="1499.3885,-288 1499.3885,-324 1499.3885,-324 1405.8759,-324 1405.8759,-288 "
+           id="polygon145"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1452.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text147"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catRearFootR</text>
+      </g>
+      <!-- 7&#45;&gt;catRearFootR -->
+      <g
+         id="edge60"
+         class="edge">
+        <title
+           id="title150">7-&gt;catRearFootR</title>
+        <path
+           d="m 1452.6322,-359.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path152"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1456.1323,-334.4132 1456.1323,-334.4132 1452.6322,-324.4133 1449.1323,-334.4133 "
+           id="polygon154"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- 8 -->
+      <g
+         id="node8"
+         class="node">
+        <title
+           id="title157">8</title>
+        <polygon
+           points="1677.5582,-216 1677.5582,-252 1677.5582,-252 1585.7062,-252 1585.7062,-216 "
+           id="polygon159"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1631.6322"
+           y="-229.8"
+           font-size="14.00"
+           id="text161"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0,0,-0.07]</text>
+      </g>
+      <!-- catTailRearJoint -->
+      <g
+         id="node68"
+         class="node">
+        <title
+           id="title164">catTailRearJoint</title>
+        <ellipse
+           cx="1631.6322"
+           cy="-162"
+           rx="74.711098"
+           ry="18"
+           id="ellipse166"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1631.6322"
+           y="-157.8"
+           font-size="14.00"
+           id="text168"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catTailRearJoint</text>
+      </g>
+      <!-- 8&#45;&gt;catTailRearJoint -->
+      <g
+         id="edge66"
+         class="edge">
+        <title
+           id="title171">8-&gt;catTailRearJoint</title>
+        <path
+           d="m 1631.6322,-215.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path173"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1635.1323,-190.4132 1635.1323,-190.4132 1631.6322,-180.4133 1628.1323,-190.4133 "
+           id="polygon175"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- 9 -->
+      <g
+         id="node9"
+         class="node">
+        <title
+           id="title178">9</title>
+        <polygon
+           points="1677.5582,-72 1677.5582,-108 1677.5582,-108 1585.7062,-108 1585.7062,-72 "
+           id="polygon180"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1631.6322"
+           y="-85.800003"
+           font-size="14.00"
+           id="text182"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0,0,-0.07]</text>
+      </g>
+      <!-- catTailRear -->
+      <g
+         id="node69"
+         class="node">
+        <title
+           id="title185">catTailRear</title>
+        <polygon
+           points="1672.4273,0 1672.4273,-36 1672.4273,-36 1590.8371,-36 1590.8371,0 "
+           id="polygon187"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1631.6322"
+           y="-13.8"
+           font-size="14.00"
+           id="text189"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catTailRear</text>
+      </g>
+      <!-- 9&#45;&gt;catTailRear -->
+      <g
+         id="edge68"
+         class="edge">
+        <title
+           id="title192">9-&gt;catTailRear</title>
+        <path
+           d="m 1631.6322,-71.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path194"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1635.1323,-46.4132 1635.1323,-46.4132 1631.6322,-36.4133 1628.1323,-46.4133 "
+           id="polygon196"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- Viewport -->
+      <g
+         id="node10"
+         class="node">
+        <title
+           id="title199">Viewport</title>
+        <ellipse
+           cx="1646.6322"
+           cy="-1052.8387"
+           rx="47.509998"
+           ry="18"
+           id="ellipse201"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1646.6322"
+           y="-1048.6388"
+           font-size="14.00"
+           id="text203"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">Viewport</text>
+      </g>
+      <!-- CVV -->
+      <g
+         id="node11"
+         class="node">
+        <title
+           id="title206">CVV</title>
+        <circle
+           cx="1646.6322"
+           cy="-967.41937"
+           id="ellipse208"
+           r="31.339001"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1646.6322"
+           y="-963.21942"
+           font-size="14.00"
+           id="text210"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">CVV</text>
+      </g>
+      <!-- Viewport&#45;&gt;CVV -->
+      <g
+         id="edge1"
+         class="edge">
+        <title
+           id="title213">Viewport-&gt;CVV</title>
+        <path
+           d="m 1646.6322,-1034.7236 c 0,7.5434 0,16.6394 0,25.6713"
+           id="path215"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1650.1323,-1008.9686 1650.1323,-1008.9686 1646.6322,-998.9686 1643.1323,-1008.9686 "
+           id="polygon217"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- Projection -->
+      <g
+         id="node12"
+         class="node">
+        <title
+           id="title220">Projection</title>
+        <polygon
+           points="1683.1778,-864 1683.1778,-900 1683.1778,-900 1610.0866,-900 1610.0866,-864 "
+           id="polygon222"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1646.6322"
+           y="-877.79999"
+           font-size="14.00"
+           id="text224"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">Projection</text>
+      </g>
+      <!-- CVV&#45;&gt;Projection -->
+      <g
+         id="edge2"
+         class="edge">
+        <title
+           id="title227">CVV-&gt;Projection</title>
+        <path
+           d="m 1646.6322,-935.6124 c 0,8.3113 0,17.2128 0,25.3273"
+           id="path229"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1650.1323,-910.1871 1650.1323,-910.1871 1646.6322,-900.1871 1643.1323,-910.1872 "
+           id="polygon231"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- Camera -->
+      <g
+         id="node13"
+         class="node">
+        <title
+           id="title234">Camera</title>
+        <ellipse
+           cx="1646.6322"
+           cy="-810"
+           rx="41.127701"
+           ry="18"
+           id="ellipse236"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1646.6322"
+           y="-805.79999"
+           font-size="14.00"
+           id="text238"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">Camera</text>
+      </g>
+      <!-- Projection&#45;&gt;Camera -->
+      <g
+         id="edge3"
+         class="edge">
+        <title
+           id="title241">Projection-&gt;Camera</title>
+        <path
+           d="m 1646.6322,-863.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path243"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1650.1323,-838.4132 1650.1323,-838.4132 1646.6322,-828.4133 1643.1323,-838.4133 "
+           id="polygon245"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- View -->
+      <g
+         id="node14"
+         class="node">
+        <title
+           id="title248">View</title>
+        <polygon
+           points="1673.6322,-720 1673.6322,-756 1673.6322,-756 1619.6322,-756 1619.6322,-720 "
+           id="polygon250"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1646.6322"
+           y="-733.79999"
+           font-size="14.00"
+           id="text252"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">View</text>
+      </g>
+      <!-- Camera&#45;&gt;View -->
+      <g
+         id="edge4"
+         class="edge">
+        <title
+           id="title255">Camera-&gt;View</title>
+        <path
+           d="m 1646.6322,-791.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path257"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1650.1323,-766.4132 1650.1323,-766.4132 1646.6322,-756.4133 1643.1323,-766.4133 "
+           id="polygon259"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- world -->
+      <g
+         id="node15"
+         class="node">
+        <title
+           id="title262">world</title>
+        <ellipse
+           cx="1646.6322"
+           cy="-666"
+           rx="33.626598"
+           ry="18"
+           id="ellipse264"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1646.6322"
+           y="-661.79999"
+           font-size="14.00"
+           id="text266"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">world</text>
+      </g>
+      <!-- View&#45;&gt;world -->
+      <g
+         id="edge5"
+         class="edge">
+        <title
+           id="title269">View-&gt;world</title>
+        <path
+           d="m 1646.6322,-719.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path271"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1650.1323,-694.4132 1650.1323,-694.4132 1646.6322,-684.4133 1643.1323,-694.4133 "
+           id="polygon273"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- steve -->
+      <g
+         id="node16"
+         class="node">
+        <title
+           id="title276">steve</title>
+        <ellipse
+           cx="545.6322"
+           cy="-594"
+           rx="30.7558"
+           ry="18"
+           id="ellipse278"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="545.6322"
+           y="-589.79999"
+           font-size="14.00"
+           id="text280"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">steve</text>
+      </g>
+      <!-- world&#45;&gt;steve -->
+      <g
+         id="edge6"
+         class="edge">
+        <title
+           id="title283">world-&gt;steve</title>
+        <path
+           d="m 1613.0803,-663.8059 c -160.6054,10.5028 -850.3275,55.6073 -1026.4024,67.1217"
+           id="path285"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="586.7461,-593.1813 586.7461,-593.1813 576.539,-596.0212 586.2893,-600.1663 "
+           id="polygon287"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catBody -->
+      <g
+         id="node41"
+         class="node">
+        <title
+           id="title290">catBody</title>
+        <ellipse
+           cx="1235.6322"
+           cy="-594"
+           rx="43.439602"
+           ry="18"
+           id="ellipse292"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1235.6322"
+           y="-589.79999"
+           font-size="14.00"
+           id="text294"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catBody</text>
+      </g>
+      <!-- world&#45;&gt;catBody -->
+      <g
+         id="edge34"
+         class="edge">
+        <title
+           id="title297">world-&gt;catBody</title>
+        <path
+           d="m 1614.7237,-660.4102 c -71.2267,12.4777 -243.6237,42.6786 -329.1951,57.6692"
+           id="path299"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1285.9901,-599.2686 1285.9901,-599.2686 1275.5362,-600.9905 1284.7822,-606.1636 "
+           id="polygon301"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- groundGrid -->
+      <g
+         id="node70"
+         class="node">
+        <title
+           id="title304">groundGrid</title>
+        <polygon
+           points="1587.4512,-576 1587.4512,-612 1587.4512,-612 1505.8132,-612 1505.8132,-576 "
+           id="polygon306"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1546.6322"
+           y="-589.79999"
+           font-size="14.00"
+           id="text308"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">groundGrid</text>
+      </g>
+      <!-- world&#45;&gt;groundGrid -->
+      <g
+         id="edge69"
+         class="edge">
+        <title
+           id="title311">world-&gt;groundGrid</title>
+        <path
+           d="m 1626.3957,-651.4297 c -13.2904,9.5691 -30.9919,22.3142 -46.3425,33.3666"
+           id="path313"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1581.9704,-615.1307 1581.9704,-615.1307 1571.8099,-612.128 1577.8802,-620.8114 "
+           id="polygon315"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T:[0,15,0.5] -->
+      <g
+         id="node71"
+         class="node">
+        <title
+           id="title318">T:[0,15,0.5]</title>
+        <polygon
+           points="1688.397,-576 1688.397,-612 1688.397,-612 1604.8674,-612 1604.8674,-576 "
+           id="polygon320"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1646.6322"
+           y="-589.79999"
+           font-size="14.00"
+           id="text322"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T:[0,15,0.5]</text>
+      </g>
+      <!-- world&#45;&gt;T:[0,15,0.5] -->
+      <g
+         id="edge70"
+         class="edge">
+        <title
+           id="title325">world-&gt;T:[0,15,0.5]</title>
+        <path
+           d="m 1646.6322,-647.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path327"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1650.1323,-622.4132 1650.1323,-622.4132 1646.6322,-612.4133 1643.1323,-622.4133 "
+           id="polygon329"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T:[0,10,0.5] -->
+      <g
+         id="node72"
+         class="node">
+        <title
+           id="title332">T:[0,10,0.5]</title>
+        <polygon
+           points="1789.397,-576 1789.397,-612 1789.397,-612 1705.8674,-612 1705.8674,-576 "
+           id="polygon334"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1747.6322"
+           y="-589.79999"
+           font-size="14.00"
+           id="text336"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T:[0,10,0.5]</text>
+      </g>
+      <!-- world&#45;&gt;T:[0,10,0.5] -->
+      <g
+         id="edge71"
+         class="edge">
+        <title
+           id="title339">world-&gt;T:[0,10,0.5]</title>
+        <path
+           d="m 1667.0711,-651.4297 c 13.4232,9.5691 31.3018,22.3142 46.8059,33.3666"
+           id="path341"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1716.0916,-620.7827 1716.0916,-620.7827 1722.2027,-612.128 1712.0282,-615.0828 "
+           id="polygon343"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T:[0,&#45;10,0.5] -->
+      <g
+         id="node73"
+         class="node">
+        <title
+           id="title346">T:[0,-10,0.5]</title>
+        <polygon
+           points="1895.5572,-576 1895.5572,-612 1895.5572,-612 1807.7072,-612 1807.7072,-576 "
+           id="polygon348"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1851.6322"
+           y="-589.79999"
+           font-size="14.00"
+           id="text350"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T:[0,-10,0.5]</text>
+      </g>
+      <!-- world&#45;&gt;T:[0,&#45;10,0.5] -->
+      <g
+         id="edge72"
+         class="edge">
+        <title
+           id="title353">world-&gt;T:[0,-10,0.5]</title>
+        <path
+           d="m 1675.1366,-655.9887 c 31.6434,11.1138 83.4333,29.3034 122.7483,43.1116"
+           id="path355"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1799.3165,-616.084 1799.3165,-616.084 1807.5916,-609.4679 1796.9968,-609.4795 "
+           id="polygon357"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T:[Rand,Rand,Rand] -->
+      <g
+         id="node74"
+         class="node">
+        <title
+           id="title360">T:[Rand,Rand,Rand]</title>
+        <polygon
+           points="2047.5509,-576 2047.5509,-612 2047.5509,-612 1913.7135,-612 1913.7135,-576 "
+           id="polygon362"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1980.6322"
+           y="-589.79999"
+           font-size="14.00"
+           id="text364"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T:[Rand,Rand,Rand]</text>
+      </g>
+      <!-- world&#45;&gt;T:[Rand,Rand,Rand] -->
+      <g
+         id="edge73"
+         class="edge">
+        <title
+           id="title367">world-&gt;T:[Rand,Rand,Rand]</title>
+        <path
+           d="m 1678.4653,-659.617 c 47.0074,9.4865 137.9934,28.0799 225.2566,47.4405"
+           id="path369"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1904.5167,-615.5853 1904.5167,-615.5853 1913.5174,-609.9964 1902.9959,-608.7525 "
+           id="polygon371"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- bodyJoint -->
+      <g
+         id="node17"
+         class="node">
+        <title
+           id="title374">bodyJoint</title>
+        <ellipse
+           cx="359.6322"
+           cy="-522"
+           rx="49.260899"
+           ry="18"
+           id="ellipse376"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="359.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text378"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">bodyJoint</text>
+      </g>
+      <!-- steve&#45;&gt;bodyJoint -->
+      <g
+         id="edge7"
+         class="edge">
+        <title
+           id="title381">steve-&gt;bodyJoint</title>
+        <path
+           d="m 519.7697,-583.9887 c -30.2384,11.7052 -80.753,31.2592 -116.9653,45.2769"
+           id="path383"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="404.0529,-535.4421 404.0529,-535.4421 393.4637,-535.0961 401.5259,-541.9701 "
+           id="polygon385"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [&#45;0.04, 0, 0] -->
+      <g
+         id="node18"
+         class="node">
+        <title
+           id="title388">T: [-0.04, 0, 0]</title>
+        <polygon
+           points="538.0581,-504 538.0581,-540 538.0581,-540 439.2063,-540 439.2063,-504 "
+           id="polygon390"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="488.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text392"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [-0.04, 0, 0]</text>
+      </g>
+      <!-- steve&#45;&gt;T: [&#45;0.04, 0, 0] -->
+      <g
+         id="edge8"
+         class="edge">
+        <title
+           id="title395">steve-&gt;T: [-0.04, 0, 0]</title>
+        <path
+           d="m 532.412,-577.3008 c -6.8858,8.6979 -15.4612,19.5299 -23.1927,29.296"
+           id="path397"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="511.9301,-545.7902 511.9301,-545.7902 502.9789,-540.1222 506.4418,-550.1351 "
+           id="polygon399"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0.04, 0, 0] -->
+      <g
+         id="node19"
+         class="node">
+        <title
+           id="title402">T: [0.04, 0, 0]</title>
+        <polygon
+           points="649.3969,-504 649.3969,-540 649.3969,-540 555.8675,-540 555.8675,-504 "
+           id="polygon404"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="602.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text406"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0.04, 0, 0]</text>
+      </g>
+      <!-- steve&#45;&gt;T: [0.04, 0, 0] -->
+      <g
+         id="edge9"
+         class="edge">
+        <title
+           id="title409">steve-&gt;T: [0.04, 0, 0]</title>
+        <path
+           d="m 558.8524,-577.3008 c 6.8858,8.6979 15.4612,19.5299 23.1927,29.296"
+           id="path411"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="584.8226,-550.1351 584.8226,-550.1351 588.2855,-540.1222 579.3343,-545.7902 "
+           id="polygon413"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T:[0, 0.12, 0] -->
+      <g
+         id="node22"
+         class="node">
+        <title
+           id="title416">T:[0, 0.12, 0]</title>
+        <polygon
+           points="390.897,-432 390.897,-468 390.897,-468 300.3674,-468 300.3674,-432 "
+           id="polygon418"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="345.6322"
+           y="-445.79999"
+           font-size="14.00"
+           id="text420"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T:[0, 0.12, 0]</text>
+      </g>
+      <!-- bodyJoint&#45;&gt;T:[0, 0.12, 0] -->
+      <g
+         id="edge12"
+         class="edge">
+        <title
+           id="title423">bodyJoint-&gt;T:[0, 0.12, 0]</title>
+        <path
+           d="m 356.0994,-503.8314 c -1.4973,7.7004 -3.2777,16.8571 -4.9417,25.4148"
+           id="path425"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="354.557,-477.5614 354.557,-477.5614 349.2126,-468.4133 347.6857,-478.8975 "
+           id="polygon427"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- llegJoint -->
+      <g
+         id="node20"
+         class="node">
+        <title
+           id="title430">llegJoint</title>
+        <ellipse
+           cx="488.6322"
+           cy="-450"
+           rx="44.098701"
+           ry="18"
+           id="ellipse432"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="488.6322"
+           y="-445.79999"
+           font-size="14.00"
+           id="text434"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">llegJoint</text>
+      </g>
+      <!-- T: [&#45;0.04, 0, 0]&#45;&gt;llegJoint -->
+      <g
+         id="edge10"
+         class="edge">
+        <title
+           id="title437">T: [-0.04, 0, 0]-&gt;llegJoint</title>
+        <path
+           d="m 488.6322,-503.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path439"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="492.1323,-478.4132 492.1323,-478.4132 488.6322,-468.4133 485.1323,-478.4133 "
+           id="polygon441"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- rlegJoint -->
+      <g
+         id="node21"
+         class="node">
+        <title
+           id="title444">rlegJoint</title>
+        <ellipse
+           cx="602.6322"
+           cy="-450"
+           rx="44.660702"
+           ry="18"
+           id="ellipse446"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="602.6322"
+           y="-445.79999"
+           font-size="14.00"
+           id="text448"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">rlegJoint</text>
+      </g>
+      <!-- T: [0.04, 0, 0]&#45;&gt;rlegJoint -->
+      <g
+         id="edge11"
+         class="edge">
+        <title
+           id="title451">T: [0.04, 0, 0]-&gt;rlegJoint</title>
+        <path
+           d="m 602.6322,-503.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path453"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="606.1323,-478.4132 606.1323,-478.4132 602.6322,-468.4133 599.1323,-478.4133 "
+           id="polygon455"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- llegJoint&#45;&gt;2 -->
+      <g
+         id="edge30"
+         class="edge">
+        <title
+           id="title458">llegJoint-&gt;2</title>
+        <path
+           d="m 488.6322,-431.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path460"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="492.1323,-406.4132 492.1323,-406.4132 488.6322,-396.4133 485.1323,-406.4133 "
+           id="polygon462"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- rlegJoint&#45;&gt;3 -->
+      <g
+         id="edge32"
+         class="edge">
+        <title
+           id="title465">rlegJoint-&gt;3</title>
+        <path
+           d="m 603.1369,-431.8314 c 0.2139,7.7004 0.4682,16.8571 0.7059,25.4148"
+           id="path467"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="607.3416,-406.5066 607.3416,-406.5066 604.1207,-396.4133 600.3443,-406.3122 "
+           id="polygon469"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- body -->
+      <g
+         id="node23"
+         class="node">
+        <title
+           id="title472">body</title>
+        <polygon
+           points="346.6322,-360 346.6322,-396 346.6322,-396 292.6322,-396 292.6322,-360 "
+           id="polygon474"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="319.6322"
+           y="-373.79999"
+           font-size="14.00"
+           id="text476"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">body</text>
+      </g>
+      <!-- T:[0, 0.12, 0]&#45;&gt;body -->
+      <g
+         id="edge13"
+         class="edge">
+        <title
+           id="title479">T:[0, 0.12, 0]-&gt;body</title>
+        <path
+           d="m 339.0713,-431.8314 c -2.8418,7.8697 -6.2328,17.2602 -9.381,25.9781"
+           id="path481"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="332.9699,-404.63 332.9699,-404.63 326.2814,-396.4133 326.386,-407.0076 "
+           id="polygon483"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0.12, 0.08, 0] -->
+      <g
+         id="node24"
+         class="node">
+        <title
+           id="title486">T: [0.12, 0.08, 0]</title>
+        <polygon
+           points="111.3969,-288 111.3969,-324 111.3969,-324 -0.1325,-324 -0.1325,-288 "
+           id="polygon488"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="55.632198"
+           y="-301.79999"
+           font-size="14.00"
+           id="text490"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0.12, 0.08, 0]</text>
+      </g>
+      <!-- body&#45;&gt;T: [0.12, 0.08, 0] -->
+      <g
+         id="edge14"
+         class="edge">
+        <title
+           id="title493">body-&gt;T: [0.12, 0.08, 0]</title>
+        <path
+           d="m 292.5826,-370.7075 c -36.4989,9.8503 -103.8027,28.0505 -171.326,46.5429"
+           id="path495"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="121.8657,-320.7025 121.8657,-320.7025 111.2962,-321.435 120.0155,-327.4536 "
+           id="polygon497"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [&#45;0.12, 0.08, 0] -->
+      <g
+         id="node25"
+         class="node">
+        <title
+           id="title500">T: [-0.12, 0.08, 0]</title>
+        <polygon
+           points="245.5572,-288 245.5572,-324 245.5572,-324 129.7072,-324 129.7072,-288 "
+           id="polygon502"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="187.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text504"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [-0.12, 0.08, 0]</text>
+      </g>
+      <!-- body&#45;&gt;T: [&#45;0.12, 0.08, 0] -->
+      <g
+         id="edge15"
+         class="edge">
+        <title
+           id="title507">body-&gt;T: [-0.12, 0.08, 0]</title>
+        <path
+           d="m 292.6015,-363.256 c -18.1342,9.8914 -42.3834,23.1182 -63.0061,34.367"
+           id="path509"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="231.1648,-325.7583 231.1648,-325.7583 220.7098,-324.0423 227.8128,-331.9036 "
+           id="polygon511"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0, 0.12, 0.04] -->
+      <g
+         id="node31"
+         class="node">
+        <title
+           id="title514">T: [0, 0.12, 0.04]</title>
+        <polygon
+           points="375.3969,-288 375.3969,-324 375.3969,-324 263.8675,-324 263.8675,-288 "
+           id="polygon516"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="319.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text518"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, 0.12, 0.04]</text>
+      </g>
+      <!-- body&#45;&gt;T: [0, 0.12, 0.04] -->
+      <g
+         id="edge22"
+         class="edge">
+        <title
+           id="title521">body-&gt;T: [0, 0.12, 0.04]</title>
+        <path
+           d="m 319.6322,-359.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path523"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="323.1323,-334.4132 323.1323,-334.4132 319.6322,-324.4133 316.1323,-334.4133 "
+           id="polygon525"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0, 0.12, 0] -->
+      <g
+         id="node35"
+         class="node">
+        <title
+           id="title528">T: [0, 0.12, 0]</title>
+        <polygon
+           points="487.3969,-288 487.3969,-324 487.3969,-324 393.8675,-324 393.8675,-288 "
+           id="polygon530"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="440.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text532"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, 0.12, 0]</text>
+      </g>
+      <!-- body&#45;&gt;T: [0, 0.12, 0] -->
+      <g
+         id="edge26"
+         class="edge">
+        <title
+           id="title535">body-&gt;T: [0, 0.12, 0]</title>
+        <path
+           d="m 346.787,-361.8418 c 16.0203,9.5328 36.5771,21.7649 54.3654,32.3497"
+           id="path537"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="403.3596,-332.2516 403.3596,-332.2516 410.1635,-324.1301 399.78,-326.236 "
+           id="polygon539"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- larmJoint -->
+      <g
+         id="node26"
+         class="node">
+        <title
+           id="title542">larmJoint</title>
+        <ellipse
+           cx="55.632198"
+           cy="-234"
+           rx="47.527401"
+           ry="18"
+           id="ellipse544"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="55.632198"
+           y="-229.8"
+           font-size="14.00"
+           id="text546"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">larmJoint</text>
+      </g>
+      <!-- T: [0.12, 0.08, 0]&#45;&gt;larmJoint -->
+      <g
+         id="edge16"
+         class="edge">
+        <title
+           id="title549">T: [0.12, 0.08, 0]-&gt;larmJoint</title>
+        <path
+           d="m 55.6322,-287.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path551"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="59.1323,-262.4132 59.1323,-262.4132 55.6322,-252.4133 52.1323,-262.4133 "
+           id="polygon553"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- rarmJoint -->
+      <g
+         id="node29"
+         class="node">
+        <title
+           id="title556">rarmJoint</title>
+        <ellipse
+           cx="187.6322"
+           cy="-234"
+           rx="48.089699"
+           ry="18"
+           id="ellipse558"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="187.6322"
+           y="-229.8"
+           font-size="14.00"
+           id="text560"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">rarmJoint</text>
+      </g>
+      <!-- T: [&#45;0.12, 0.08, 0]&#45;&gt;rarmJoint -->
+      <g
+         id="edge19"
+         class="edge">
+        <title
+           id="title563">T: [-0.12, 0.08, 0]-&gt;rarmJoint</title>
+        <path
+           d="m 187.6322,-287.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path565"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="191.1323,-262.4132 191.1323,-262.4132 187.6322,-252.4133 184.1323,-262.4133 "
+           id="polygon567"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0, &#45;0.08, 0] -->
+      <g
+         id="node27"
+         class="node">
+        <title
+           id="title570">T: [0, -0.08, 0]</title>
+        <polygon
+           points="105.0581,-144 105.0581,-180 105.0581,-180 6.2063,-180 6.2063,-144 "
+           id="polygon572"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="55.632198"
+           y="-157.8"
+           font-size="14.00"
+           id="text574"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, -0.08, 0]</text>
+      </g>
+      <!-- larmJoint&#45;&gt;T: [0, &#45;0.08, 0] -->
+      <g
+         id="edge17"
+         class="edge">
+        <title
+           id="title577">larmJoint-&gt;T: [0, -0.08, 0]</title>
+        <path
+           d="m 55.6322,-215.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path579"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="59.1323,-190.4132 59.1323,-190.4132 55.6322,-180.4133 52.1323,-190.4133 "
+           id="polygon581"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- larm -->
+      <g
+         id="node28"
+         class="node">
+        <title
+           id="title584">larm</title>
+        <polygon
+           points="82.6322,-72 82.6322,-108 82.6322,-108 28.6322,-108 28.6322,-72 "
+           id="polygon586"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="55.632198"
+           y="-85.800003"
+           font-size="14.00"
+           id="text588"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">larm</text>
+      </g>
+      <!-- T: [0, &#45;0.08, 0]&#45;&gt;larm -->
+      <g
+         id="edge18"
+         class="edge">
+        <title
+           id="title591">T: [0, -0.08, 0]-&gt;larm</title>
+        <path
+           d="m 55.6322,-143.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path593"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="59.1323,-118.4132 59.1323,-118.4132 55.6322,-108.4133 52.1323,-118.4133 "
+           id="polygon595"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- rarmJoint&#45;&gt;1 -->
+      <g
+         id="edge20"
+         class="edge">
+        <title
+           id="title598">rarmJoint-&gt;1</title>
+        <path
+           d="m 187.6322,-215.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path600"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="191.1323,-190.4132 191.1323,-190.4132 187.6322,-180.4133 184.1323,-190.4133 "
+           id="polygon602"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- capeJoint -->
+      <g
+         id="node32"
+         class="node">
+        <title
+           id="title605">capeJoint</title>
+        <ellipse
+           cx="318.6322"
+           cy="-234"
+           rx="47.509998"
+           ry="18"
+           id="ellipse607"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="318.6322"
+           y="-229.8"
+           font-size="14.00"
+           id="text609"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">capeJoint</text>
+      </g>
+      <!-- T: [0, 0.12, 0.04]&#45;&gt;capeJoint -->
+      <g
+         id="edge23"
+         class="edge">
+        <title
+           id="title612">T: [0, 0.12, 0.04]-&gt;capeJoint</title>
+        <path
+           d="m 319.3799,-287.8314 c -0.107,7.7004 -0.2342,16.8571 -0.353,25.4148"
+           id="path614"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="322.5266,-262.3637 322.5266,-262.3637 318.8879,-252.4133 315.5273,-262.4609 "
+           id="polygon616"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0, &#45;0.18, 0.01] -->
+      <g
+         id="node33"
+         class="node">
+        <title
+           id="title619">T: [0, -0.18, 0.01]</title>
+        <polygon
+           points="376.5572,-144 376.5572,-180 376.5572,-180 260.7072,-180 260.7072,-144 "
+           id="polygon621"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="318.6322"
+           y="-157.8"
+           font-size="14.00"
+           id="text623"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, -0.18, 0.01]</text>
+      </g>
+      <!-- capeJoint&#45;&gt;T: [0, &#45;0.18, 0.01] -->
+      <g
+         id="edge24"
+         class="edge">
+        <title
+           id="title626">capeJoint-&gt;T: [0, -0.18, 0.01]</title>
+        <path
+           d="m 318.6322,-215.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path628"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="322.1323,-190.4132 322.1323,-190.4132 318.6322,-180.4133 315.1323,-190.4133 "
+           id="polygon630"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- cape -->
+      <g
+         id="node34"
+         class="node">
+        <title
+           id="title633">cape</title>
+        <polygon
+           points="345.6322,-72 345.6322,-108 345.6322,-108 291.6322,-108 291.6322,-72 "
+           id="polygon635"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="318.6322"
+           y="-85.800003"
+           font-size="14.00"
+           id="text637"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">cape</text>
+      </g>
+      <!-- T: [0, &#45;0.18, 0.01]&#45;&gt;cape -->
+      <g
+         id="edge25"
+         class="edge">
+        <title
+           id="title640">T: [0, -0.18, 0.01]-&gt;cape</title>
+        <path
+           d="m 318.6322,-143.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path642"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="322.1323,-118.4132 322.1323,-118.4132 318.6322,-108.4133 315.1323,-118.4133 "
+           id="polygon644"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- headJoint -->
+      <g
+         id="node36"
+         class="node">
+        <title
+           id="title647">headJoint</title>
+        <ellipse
+           cx="440.6322"
+           cy="-234"
+           rx="48.093498"
+           ry="18"
+           id="ellipse649"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="440.6322"
+           y="-229.8"
+           font-size="14.00"
+           id="text651"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">headJoint</text>
+      </g>
+      <!-- T: [0, 0.12, 0]&#45;&gt;headJoint -->
+      <g
+         id="edge27"
+         class="edge">
+        <title
+           id="title654">T: [0, 0.12, 0]-&gt;headJoint</title>
+        <path
+           d="m 440.6322,-287.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path656"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="444.1323,-262.4132 444.1323,-262.4132 440.6322,-252.4133 437.1323,-262.4133 "
+           id="polygon658"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0, 0.08, 0] -->
+      <g
+         id="node37"
+         class="node">
+        <title
+           id="title661">T: [0, 0.08, 0]</title>
+        <polygon
+           points="488.3969,-144 488.3969,-180 488.3969,-180 394.8675,-180 394.8675,-144 "
+           id="polygon663"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="441.6322"
+           y="-157.8"
+           font-size="14.00"
+           id="text665"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, 0.08, 0]</text>
+      </g>
+      <!-- headJoint&#45;&gt;T: [0, 0.08, 0] -->
+      <g
+         id="edge28"
+         class="edge">
+        <title
+           id="title668">headJoint-&gt;T: [0, 0.08, 0]</title>
+        <path
+           d="m 440.8845,-215.8314 c 0.107,7.7004 0.2342,16.8571 0.353,25.4148"
+           id="path670"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="444.7371,-190.4609 444.7371,-190.4609 441.3765,-180.4133 437.7378,-190.3637 "
+           id="polygon672"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- head -->
+      <g
+         id="node38"
+         class="node">
+        <title
+           id="title675">head</title>
+        <polygon
+           points="468.6322,-72 468.6322,-108 468.6322,-108 414.6322,-108 414.6322,-72 "
+           id="polygon677"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="441.6322"
+           y="-85.800003"
+           font-size="14.00"
+           id="text679"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">head</text>
+      </g>
+      <!-- T: [0, 0.08, 0]&#45;&gt;head -->
+      <g
+         id="edge29"
+         class="edge">
+        <title
+           id="title682">T: [0, 0.08, 0]-&gt;head</title>
+        <path
+           d="m 441.6322,-143.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path684"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="445.1323,-118.4132 445.1323,-118.4132 441.6322,-108.4133 438.1323,-118.4133 "
+           id="polygon686"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0, 0.03, 0.16] -->
+      <g
+         id="node42"
+         class="node">
+        <title
+           id="title689">T: [0, 0.03, 0.16]</title>
+        <polygon
+           points="815.3969,-504 815.3969,-540 815.3969,-540 703.8675,-540 703.8675,-504 "
+           id="polygon691"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="759.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text693"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, 0.03, 0.16]</text>
+      </g>
+      <!-- catBody&#45;&gt;T: [0, 0.03, 0.16] -->
+      <g
+         id="edge35"
+         class="edge">
+        <title
+           id="title696">catBody-&gt;T: [0, 0.03, 0.16]</title>
+        <path
+           d="m 1193.3754,-589.6787 c -73.2071,7.7943 -228.212,25.6563 -357.7432,49.6787 -3.3684,0.6247 -6.8123,1.3014 -10.2838,2.0138"
+           id="path698"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="826.0406,-534.5552 826.0406,-534.5552 815.5312,-535.8977 824.584,-541.402 "
+           id="polygon700"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [&#45;0.021, 0.04, 0.1] -->
+      <g
+         id="node52"
+         class="node">
+        <title
+           id="title703">T: [-0.021, 0.04, 0.1]</title>
+        <polygon
+           points="978.5579,-504 978.5579,-540 978.5579,-540 844.7065,-540 844.7065,-504 "
+           id="polygon705"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="911.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text707"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [-0.021, 0.04, 0.1]</text>
+      </g>
+      <!-- catBody&#45;&gt;T: [&#45;0.021, 0.04, 0.1] -->
+      <g
+         id="edge45"
+         class="edge">
+        <title
+           id="title710">catBody-&gt;T: [-0.021, 0.04, 0.1]</title>
+        <path
+           d="m 1197.1928,-585.4579 c -51.2601,11.3911 -143.1562,31.8125 -208.861,46.4135"
+           id="path712"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="988.9502,-535.5965 988.9502,-535.5965 978.4291,-536.8438 987.4317,-542.4298 "
+           id="polygon714"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0.021, 0.04, 0.1] -->
+      <g
+         id="node55"
+         class="node">
+        <title
+           id="title717">T: [0.021, 0.04, 0.1]</title>
+        <polygon
+           points="1145.8968,-504 1145.8968,-540 1145.8968,-540 1017.3676,-540 1017.3676,-504 "
+           id="polygon719"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1081.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text721"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0.021, 0.04, 0.1]</text>
+      </g>
+      <!-- catBody&#45;&gt;T: [0.021, 0.04, 0.1] -->
+      <g
+         id="edge49"
+         class="edge">
+        <title
+           id="title724">catBody-&gt;T: [0.021, 0.04, 0.1]</title>
+        <path
+           d="m 1206.666,-580.4574 c -21.7278,10.1585 -51.9516,24.2891 -77.2408,36.1126"
+           id="path726"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1130.8974,-541.1695 1130.8974,-541.1695 1120.3562,-540.1047 1127.9327,-547.5107 "
+           id="polygon728"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [&#45;0.021,&#45;0.04,&#45;0.12] -->
+      <g
+         id="node58"
+         class="node">
+        <title
+           id="title731">T: [-0.021,-0.04,-0.12]</title>
+        <polygon
+           points="1306.8786,-504 1306.8786,-540 1306.8786,-540 1164.3858,-540 1164.3858,-504 "
+           id="polygon733"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1235.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text735"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [-0.021,-0.04,-0.12]</text>
+      </g>
+      <!-- catBody&#45;&gt;T: [&#45;0.021,&#45;0.04,&#45;0.12] -->
+      <g
+         id="edge53"
+         class="edge">
+        <title
+           id="title738">catBody-&gt;T: [-0.021,-0.04,-0.12]</title>
+        <path
+           d="m 1235.6322,-575.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path740"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1239.1323,-550.4132 1239.1323,-550.4132 1235.6322,-540.4133 1232.1323,-550.4133 "
+           id="polygon742"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0.021,&#45;0.04,&#45;0.12] -->
+      <g
+         id="node61"
+         class="node">
+        <title
+           id="title745">T: [0.021,-0.04,-0.12]</title>
+        <polygon
+           points="1462.7178,-504 1462.7178,-540 1462.7178,-540 1324.5466,-540 1324.5466,-504 "
+           id="polygon747"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1393.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text749"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0.021,-0.04,-0.12]</text>
+      </g>
+      <!-- catBody&#45;&gt;T: [0.021,&#45;0.04,&#45;0.12] -->
+      <g
+         id="edge57"
+         class="edge">
+        <title
+           id="title752">catBody-&gt;T: [0.021,-0.04,-0.12]</title>
+        <path
+           d="m 1264.9805,-580.6261 c 22.3345,10.1777 53.5729,24.413 79.6746,36.3074"
+           id="path754"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1346.3647,-547.386 1346.3647,-547.386 1354.013,-540.0543 1343.4619,-541.0162 "
+           id="polygon756"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0,0.04,&#45;0.16] -->
+      <g
+         id="node64"
+         class="node">
+        <title
+           id="title759">T: [0,0.04,-0.16]</title>
+        <polygon
+           points="1590.0572,-504 1590.0572,-540 1590.0572,-540 1481.2072,-540 1481.2072,-504 "
+           id="polygon761"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1535.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text763"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0,0.04,-0.16]</text>
+      </g>
+      <!-- catBody&#45;&gt;T: [0,0.04,&#45;0.16] -->
+      <g
+         id="edge61"
+         class="edge">
+        <title
+           id="title766">catBody-&gt;T: [0,0.04,-0.16]</title>
+        <path
+           d="m 1274.1966,-585.7867 c 44.8315,9.6826 121.2687,26.6056 196.5417,45.6195"
+           id="path768"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1472.0368,-543.4485 1472.0368,-543.4485 1480.8671,-537.5939 1470.3132,-536.6641 "
+           id="polygon770"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catHeadJoint -->
+      <g
+         id="node43"
+         class="node">
+        <title
+           id="title773">catHeadJoint</title>
+        <ellipse
+           cx="726.6322"
+           cy="-450"
+           rx="61.393501"
+           ry="18"
+           id="ellipse775"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="726.6322"
+           y="-445.79999"
+           font-size="14.00"
+           id="text777"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catHeadJoint</text>
+      </g>
+      <!-- T: [0, 0.03, 0.16]&#45;&gt;catHeadJoint -->
+      <g
+         id="edge36"
+         class="edge">
+        <title
+           id="title780">T: [0, 0.03, 0.16]-&gt;catHeadJoint</title>
+        <path
+           d="m 751.3049,-503.8314 c -3.7018,8.0767 -8.1378,17.7553 -12.2212,26.6646"
+           id="path782"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="742.1908,-475.5458 742.1908,-475.5458 734.8425,-467.9134 735.8274,-478.4624 "
+           id="polygon784"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T :[0, 0.01, 0.05] -->
+      <g
+         id="node44"
+         class="node">
+        <title
+           id="title787">T :[0, 0.01, 0.05]</title>
+        <polygon
+           points="783.3969,-360 783.3969,-396 783.3969,-396 671.8675,-396 671.8675,-360 "
+           id="polygon789"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="727.6322"
+           y="-373.79999"
+           font-size="14.00"
+           id="text791"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T :[0, 0.01, 0.05]</text>
+      </g>
+      <!-- catHeadJoint&#45;&gt;T :[0, 0.01, 0.05] -->
+      <g
+         id="edge37"
+         class="edge">
+        <title
+           id="title794">catHeadJoint-&gt;T :[0, 0.01, 0.05]</title>
+        <path
+           d="m 726.8845,-431.8314 c 0.107,7.7004 0.2342,16.8571 0.353,25.4148"
+           id="path796"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="730.7371,-406.4609 730.7371,-406.4609 727.3765,-396.4133 723.7378,-406.3637 "
+           id="polygon798"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catHead -->
+      <g
+         id="node45"
+         class="node">
+        <title
+           id="title801">catHead</title>
+        <polygon
+           points="758.488,-288 758.488,-324 758.488,-324 696.7764,-324 696.7764,-288 "
+           id="polygon803"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="727.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text805"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catHead</text>
+      </g>
+      <!-- T :[0, 0.01, 0.05]&#45;&gt;catHead -->
+      <g
+         id="edge38"
+         class="edge">
+        <title
+           id="title808">T :[0, 0.01, 0.05]-&gt;catHead</title>
+        <path
+           d="m 727.6322,-359.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path810"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="731.1323,-334.4132 731.1323,-334.4132 727.6322,-324.4133 724.1323,-334.4133 "
+           id="polygon812"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0.03, 0.05, &#45;0.03] -->
+      <g
+         id="node46"
+         class="node">
+        <title
+           id="title815">T: [0.03, 0.05, -0.03]</title>
+        <polygon
+           points="640.5579,-216 640.5579,-252 640.5579,-252 506.7065,-252 506.7065,-216 "
+           id="polygon817"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="573.6322"
+           y="-229.8"
+           font-size="14.00"
+           id="text819"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0.03, 0.05, -0.03]</text>
+      </g>
+      <!-- catHead&#45;&gt;T: [0.03, 0.05, &#45;0.03] -->
+      <g
+         id="edge39"
+         class="edge">
+        <title
+           id="title822">catHead-&gt;T: [0.03, 0.05, -0.03]</title>
+        <path
+           d="m 696.468,-291.4297 c -21.5095,10.0564 -50.5217,23.6205 -74.9495,35.0413"
+           id="path824"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="622.9471,-253.1927 622.9471,-253.1927 612.4059,-252.128 619.9824,-259.5339 "
+           id="polygon826"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [&#45;0.03, 0.05, &#45;0.03] -->
+      <g
+         id="node48"
+         class="node">
+        <title
+           id="title829">T: [-0.03, 0.05, -0.03]</title>
+        <polygon
+           points="796.7178,-216 796.7178,-252 796.7178,-252 658.5466,-252 658.5466,-216 "
+           id="polygon831"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="727.6322"
+           y="-229.8"
+           font-size="14.00"
+           id="text833"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [-0.03, 0.05, -0.03]</text>
+      </g>
+      <!-- catHead&#45;&gt;T: [&#45;0.03, 0.05, &#45;0.03] -->
+      <g
+         id="edge41"
+         class="edge">
+        <title
+           id="title836">catHead-&gt;T: [-0.03, 0.05, -0.03]</title>
+        <path
+           d="m 727.6322,-287.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path838"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="731.1323,-262.4132 731.1323,-262.4132 727.6322,-252.4133 724.1323,-262.4133 "
+           id="polygon840"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0, &#45;0.02, 0.06] -->
+      <g
+         id="node50"
+         class="node">
+        <title
+           id="title843">T: [0, -0.02, 0.06]</title>
+        <polygon
+           points="930.5572,-216 930.5572,-252 930.5572,-252 814.7072,-252 814.7072,-216 "
+           id="polygon845"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="872.6322"
+           y="-229.8"
+           font-size="14.00"
+           id="text847"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, -0.02, 0.06]</text>
+      </g>
+      <!-- catHead&#45;&gt;T: [0, &#45;0.02, 0.06] -->
+      <g
+         id="edge43"
+         class="edge">
+        <title
+           id="title850">catHead-&gt;T: [0, -0.02, 0.06]</title>
+        <path
+           d="m 758.7383,-290.5542 c 19.8779,9.8704 45.999,22.8409 68.211,33.8703"
+           id="path852"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="828.7998,-259.6729 828.7998,-259.6729 836.1998,-252.0906 825.6866,-253.4032 "
+           id="polygon854"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catEarL -->
+      <g
+         id="node47"
+         class="node">
+        <title
+           id="title857">catEarL</title>
+        <polygon
+           points="603.9332,-144 603.9332,-180 603.9332,-180 543.3312,-180 543.3312,-144 "
+           id="polygon859"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="573.6322"
+           y="-157.8"
+           font-size="14.00"
+           id="text861"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catEarL</text>
+      </g>
+      <!-- T: [0.03, 0.05, &#45;0.03]&#45;&gt;catEarL -->
+      <g
+         id="edge40"
+         class="edge">
+        <title
+           id="title864">T: [0.03, 0.05, -0.03]-&gt;catEarL</title>
+        <path
+           d="m 573.6322,-215.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path866"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="577.1323,-190.4132 577.1323,-190.4132 573.6322,-180.4133 570.1323,-190.4133 "
+           id="polygon868"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catEarR -->
+      <g
+         id="node49"
+         class="node">
+        <title
+           id="title871">catEarR</title>
+        <polygon
+           points="758.2165,-144 758.2165,-180 758.2165,-180 697.0479,-180 697.0479,-144 "
+           id="polygon873"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="727.6322"
+           y="-157.8"
+           font-size="14.00"
+           id="text875"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catEarR</text>
+      </g>
+      <!-- T: [&#45;0.03, 0.05, &#45;0.03]&#45;&gt;catEarR -->
+      <g
+         id="edge42"
+         class="edge">
+        <title
+           id="title878">T: [-0.03, 0.05, -0.03]-&gt;catEarR</title>
+        <path
+           d="m 727.6322,-215.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path880"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="731.1323,-190.4132 731.1323,-190.4132 727.6322,-180.4133 724.1323,-190.4133 "
+           id="polygon882"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catMouth -->
+      <g
+         id="node51"
+         class="node">
+        <title
+           id="title885">catMouth</title>
+        <polygon
+           points="907.2881,-144 907.2881,-180 907.2881,-180 837.9763,-180 837.9763,-144 "
+           id="polygon887"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="872.6322"
+           y="-157.8"
+           font-size="14.00"
+           id="text889"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catMouth</text>
+      </g>
+      <!-- T: [0, &#45;0.02, 0.06]&#45;&gt;catMouth -->
+      <g
+         id="edge44"
+         class="edge">
+        <title
+           id="title892">T: [0, -0.02, 0.06]-&gt;catMouth</title>
+        <path
+           d="m 872.6322,-215.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path894"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="876.1323,-190.4132 876.1323,-190.4132 872.6322,-180.4133 869.1323,-190.4133 "
+           id="polygon896"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catFrontFootLJoint -->
+      <g
+         id="node53"
+         class="node">
+        <title
+           id="title899">catFrontFootLJoint</title>
+        <ellipse
+           cx="891.6322"
+           cy="-450"
+           rx="85.711098"
+           ry="18"
+           id="ellipse901"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="891.6322"
+           y="-445.79999"
+           font-size="14.00"
+           id="text903"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catFrontFootLJoint</text>
+      </g>
+      <!-- T: [&#45;0.021, 0.04, 0.1]&#45;&gt;catFrontFootLJoint -->
+      <g
+         id="edge46"
+         class="edge">
+        <title
+           id="title906">T: [-0.021, 0.04, 0.1]-&gt;catFrontFootLJoint</title>
+        <path
+           d="m 906.5854,-503.8314 c -2.1626,7.7851 -4.7385,17.0585 -7.138,25.6967"
+           id="path908"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="902.7958,-477.1117 902.7958,-477.1117 896.747,-468.4133 896.0512,-478.9852 "
+           id="polygon910"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catFrontFootLJoint&#45;&gt;4 -->
+      <g
+         id="edge47"
+         class="edge">
+        <title
+           id="title913">catFrontFootLJoint-&gt;4</title>
+        <path
+           d="m 891.6322,-431.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path915"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="895.1323,-406.4132 895.1323,-406.4132 891.6322,-396.4133 888.1323,-406.4133 "
+           id="polygon917"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catFrontFootRJoint -->
+      <g
+         id="node56"
+         class="node">
+        <title
+           id="title920">catFrontFootRJoint</title>
+        <ellipse
+           cx="1081.6322"
+           cy="-450"
+           rx="86.292801"
+           ry="18"
+           id="ellipse922"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1081.6322"
+           y="-445.79999"
+           font-size="14.00"
+           id="text924"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catFrontFootRJoint</text>
+      </g>
+      <!-- T: [0.021, 0.04, 0.1]&#45;&gt;catFrontFootRJoint -->
+      <g
+         id="edge50"
+         class="edge">
+        <title
+           id="title927">T: [0.021, 0.04, 0.1]-&gt;catFrontFootRJoint</title>
+        <path
+           d="m 1081.6322,-503.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path929"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1085.1323,-478.4132 1085.1323,-478.4132 1081.6322,-468.4133 1078.1323,-478.4133 "
+           id="polygon931"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catFrontFootRJoint&#45;&gt;5 -->
+      <g
+         id="edge51"
+         class="edge">
+        <title
+           id="title934">catFrontFootRJoint-&gt;5</title>
+        <path
+           d="m 1081.6322,-431.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path936"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1085.1323,-406.4132 1085.1323,-406.4132 1081.6322,-396.4133 1078.1323,-406.4133 "
+           id="polygon938"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catRearFootLJoint -->
+      <g
+         id="node59"
+         class="node">
+        <title
+           id="title941">catRearFootLJoint</title>
+        <ellipse
+           cx="1268.6322"
+           cy="-450"
+           rx="82.820602"
+           ry="18"
+           id="ellipse943"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1268.6322"
+           y="-445.79999"
+           font-size="14.00"
+           id="text945"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catRearFootLJoint</text>
+      </g>
+      <!-- T: [&#45;0.021,&#45;0.04,&#45;0.12]&#45;&gt;catRearFootLJoint -->
+      <g
+         id="edge54"
+         class="edge">
+        <title
+           id="title948">T: [-0.021,-0.04,-0.12]-&gt;catRearFootLJoint</title>
+        <path
+           d="m 1243.9595,-503.8314 c 3.7018,8.0767 8.1378,17.7553 12.2212,26.6646"
+           id="path950"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1259.437,-478.4624 1259.437,-478.4624 1260.4219,-467.9134 1253.0736,-475.5458 "
+           id="polygon952"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catRearFootLJoint&#45;&gt;6 -->
+      <g
+         id="edge55"
+         class="edge">
+        <title
+           id="title955">catRearFootLJoint-&gt;6</title>
+        <path
+           d="m 1268.6322,-431.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path957"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1272.1323,-406.4132 1272.1323,-406.4132 1268.6322,-396.4133 1265.1323,-406.4133 "
+           id="polygon959"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catRearFootRJoint -->
+      <g
+         id="node62"
+         class="node">
+        <title
+           id="title962">catRearFootRJoint</title>
+        <ellipse
+           cx="1452.6322"
+           cy="-450"
+           rx="83.4021"
+           ry="18"
+           id="ellipse964"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1452.6322"
+           y="-445.79999"
+           font-size="14.00"
+           id="text966"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catRearFootRJoint</text>
+      </g>
+      <!-- T: [0.021,&#45;0.04,&#45;0.12]&#45;&gt;catRearFootRJoint -->
+      <g
+         id="edge58"
+         class="edge">
+        <title
+           id="title969">T: [0.021,-0.04,-0.12]-&gt;catRearFootRJoint</title>
+        <path
+           d="m 1408.5204,-503.8314 c 6.9704,8.5063 15.3969,18.7895 23.0095,28.0794"
+           id="path971"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1434.3221,-477.8666 1434.3221,-477.8666 1437.9532,-467.9134 1428.9077,-473.4298 "
+           id="polygon973"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catRearFootRJoint&#45;&gt;7 -->
+      <g
+         id="edge59"
+         class="edge">
+        <title
+           id="title976">catRearFootRJoint-&gt;7</title>
+        <path
+           d="m 1452.6322,-431.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path978"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1456.1323,-406.4132 1456.1323,-406.4132 1452.6322,-396.4133 1449.1323,-406.4133 "
+           id="polygon980"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catTailFrontJoint -->
+      <g
+         id="node65"
+         class="node">
+        <title
+           id="title983">catTailFrontJoint</title>
+        <ellipse
+           cx="1631.6322"
+           cy="-450"
+           rx="77.601303"
+           ry="18"
+           id="ellipse985"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1631.6322"
+           y="-445.79999"
+           font-size="14.00"
+           id="text987"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catTailFrontJoint</text>
+      </g>
+      <!-- T: [0,0.04,&#45;0.16]&#45;&gt;catTailFrontJoint -->
+      <g
+         id="edge62"
+         class="edge">
+        <title
+           id="title990">T: [0,0.04,-0.16]-&gt;catTailFrontJoint</title>
+        <path
+           d="m 1559.8571,-503.8314 c 12.2112,9.1585 27.169,20.3769 40.2633,30.1976"
+           id="path992"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1602.5086,-476.2178 1602.5086,-476.2178 1608.4086,-467.4177 1598.3086,-470.6177 "
+           id="polygon994"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- T: [0, 0, &#45;0.07] -->
+      <g
+         id="node66"
+         class="node">
+        <title
+           id="title997">T: [0, 0, -0.07]</title>
+        <polygon
+           points="1681.0581,-360 1681.0581,-396 1681.0581,-396 1582.2063,-396 1582.2063,-360 "
+           id="polygon999"
+           style="fill:none;stroke:#000000" />
+        <text
+           x="1631.6322"
+           y="-373.79999"
+           font-size="14.00"
+           id="text1001"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">T: [0, 0, -0.07]</text>
+      </g>
+      <!-- catTailFrontJoint&#45;&gt;T: [0, 0, &#45;0.07] -->
+      <g
+         id="edge63"
+         class="edge">
+        <title
+           id="title1004">catTailFrontJoint-&gt;T: [0, 0, -0.07]</title>
+        <path
+           d="m 1631.6322,-431.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path1006"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1635.1323,-406.4132 1635.1323,-406.4132 1631.6322,-396.4133 1628.1323,-406.4133 "
+           id="polygon1008"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catTailFront -->
+      <g
+         id="node67"
+         class="node">
+        <title
+           id="title1011">catTailFront</title>
+        <polygon
+           points="1674.3344,-288 1674.3344,-324 1674.3344,-324 1588.93,-324 1588.93,-288 "
+           id="polygon1013"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1631.6322"
+           y="-301.79999"
+           font-size="14.00"
+           id="text1015"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">catTailFront</text>
+      </g>
+      <!-- T: [0, 0, &#45;0.07]&#45;&gt;catTailFront -->
+      <g
+         id="edge64"
+         class="edge">
+        <title
+           id="title1018">T: [0, 0, -0.07]-&gt;catTailFront</title>
+        <path
+           d="m 1631.6322,-359.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path1020"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1635.1323,-334.4132 1635.1323,-334.4132 1631.6322,-324.4133 1628.1323,-334.4133 "
+           id="polygon1022"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catTailFront&#45;&gt;8 -->
+      <g
+         id="edge65"
+         class="edge">
+        <title
+           id="title1025">catTailFront-&gt;8</title>
+        <path
+           d="m 1631.6322,-287.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path1027"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1635.1323,-262.4132 1635.1323,-262.4132 1631.6322,-252.4133 1628.1323,-262.4133 "
+           id="polygon1029"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- catTailRearJoint&#45;&gt;9 -->
+      <g
+         id="edge67"
+         class="edge">
+        <title
+           id="title1032">catTailRearJoint-&gt;9</title>
+        <path
+           d="m 1631.6322,-143.8314 c 0,7.7004 0,16.8571 0,25.4148"
+           id="path1034"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1635.1323,-118.4132 1635.1323,-118.4132 1631.6322,-108.4133 1628.1323,-118.4133 "
+           id="polygon1036"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- ring2 -->
+      <g
+         id="node75"
+         class="node">
+        <title
+           id="title1039">ring2</title>
+        <polygon
+           points="1661.6322,-504 1661.6322,-540 1661.6322,-540 1607.6322,-540 1607.6322,-504 "
+           id="polygon1041"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1634.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text1043"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">ring2</text>
+      </g>
+      <!-- T:[0,15,0.5]&#45;&gt;ring2 -->
+      <g
+         id="edge74"
+         class="edge">
+        <title
+           id="title1046">T:[0,15,0.5]-&gt;ring2</title>
+        <path
+           d="m 1643.6041,-575.8314 c -1.2834,7.7004 -2.8095,16.8571 -4.2358,25.4148"
+           id="path1048"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1642.7975,-549.7018 1642.7975,-549.7018 1637.7011,-540.4133 1635.8928,-550.8526 "
+           id="polygon1050"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- cylinder -->
+      <g
+         id="node76"
+         class="node">
+        <title
+           id="title1053">cylinder</title>
+        <polygon
+           points="1741.5033,-504 1741.5033,-540 1741.5033,-540 1679.7611,-540 1679.7611,-504 "
+           id="polygon1055"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1710.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text1057"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">cylinder</text>
+      </g>
+      <!-- T:[0,15,0.5]&#45;&gt;cylinder -->
+      <g
+         id="edge75"
+         class="edge">
+        <title
+           id="title1060">T:[0,15,0.5]-&gt;cylinder</title>
+        <path
+           d="m 1662.7821,-575.8314 c 7.5218,8.462 16.6066,18.6825 24.8305,27.9343"
+           id="path1062"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1690.2371,-550.2127 1690.2371,-550.2127 1694.2649,-540.4133 1685.0052,-545.5621 "
+           id="polygon1064"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- rotation -->
+      <g
+         id="node77"
+         class="node">
+        <title
+           id="title1067">rotation</title>
+        <polygon
+           points="1819.1809,-504 1819.1809,-540 1819.1809,-540 1760.0835,-540 1760.0835,-504 "
+           id="polygon1069"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1789.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text1071"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">rotation</text>
+      </g>
+      <!-- T:[0,10,0.5]&#45;&gt;rotation -->
+      <g
+         id="edge76"
+         class="edge">
+        <title
+           id="title1074">T:[0,10,0.5]-&gt;rotation</title>
+        <path
+           d="m 1758.2306,-575.8314 c 4.6893,8.0389 10.3044,17.6648 15.4814,26.5396"
+           id="path1076"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1776.8756,-550.8146 1776.8756,-550.8146 1778.8911,-540.4133 1770.8291,-547.2875 "
+           id="polygon1078"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- gyro -->
+      <g
+         id="node78"
+         class="node">
+        <title
+           id="title1081">gyro</title>
+        <polygon
+           points="1891.6322,-504 1891.6322,-540 1891.6322,-540 1837.6322,-540 1837.6322,-504 "
+           id="polygon1083"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1864.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text1085"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">gyro</text>
+      </g>
+      <!-- T:[0,&#45;10,0.5]&#45;&gt;gyro -->
+      <g
+         id="edge77"
+         class="edge">
+        <title
+           id="title1088">T:[0,-10,0.5]-&gt;gyro</title>
+        <path
+           d="m 1854.9126,-575.8314 c 1.3904,7.7004 3.0437,16.8571 4.5888,25.4148"
+           id="path1090"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1862.975,-550.8761 1862.975,-550.8761 1861.3076,-540.4133 1856.0864,-549.6322 "
+           id="polygon1092"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- grass -->
+      <g
+         id="node79"
+         class="node">
+        <title
+           id="title1095">grass</title>
+        <polygon
+           points="1985.6322,-504 1985.6322,-540 1985.6322,-540 1931.6322,-540 1931.6322,-504 "
+           id="polygon1097"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="1958.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text1099"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">grass</text>
+      </g>
+      <!-- T:[Rand,Rand,Rand]&#45;&gt;grass -->
+      <g
+         id="edge78"
+         class="edge">
+        <title
+           id="title1102">T:[Rand,Rand,Rand]-&gt;grass</title>
+        <path
+           d="m 1975.0807,-575.8314 c -2.3788,7.7851 -5.2123,17.0585 -7.8518,25.6967"
+           id="path1104"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="1970.528,-548.954 1970.528,-548.954 1964.2585,-540.4133 1963.8335,-550.9996 "
+           id="polygon1106"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+      <!-- cloud -->
+      <g
+         id="node80"
+         class="node">
+        <title
+           id="title1109">cloud</title>
+        <polygon
+           points="2057.6322,-504 2057.6322,-540 2057.6322,-540 2003.6322,-540 2003.6322,-504 "
+           id="polygon1111"
+           style="fill:none;stroke:#0000ff" />
+        <text
+           x="2030.6322"
+           y="-517.79999"
+           font-size="14.00"
+           id="text1113"
+           style="font-size:14px;font-family:Times, serif;text-anchor:middle;fill:#000000">cloud</text>
+      </g>
+      <!-- T:[Rand,Rand,Rand]&#45;&gt;cloud -->
+      <g
+         id="edge79"
+         class="edge">
+        <title
+           id="title1116">T:[Rand,Rand,Rand]-&gt;cloud</title>
+        <path
+           d="m 1993.2493,-575.8314 c 5.7001,8.2082 12.5492,18.0708 18.8188,27.0991"
+           id="path1118"
+           inkscape:connector-curvature="0"
+           style="fill:none;stroke:#000000" />
+        <polygon
+           points="2015.016,-550.6234 2015.016,-550.6234 2017.8452,-540.4133 2009.2664,-546.6306 "
+           id="polygon1120"
+           style="fill:#000000;stroke:#000000" />
+      </g>
+    </g>
+  </g>
+  <defs
+     id="defs1122">
+    <style
+       id="svg-pan-zoom-controls-styles"
+       type="text/css">.svg-pan-zoom-control { cursor: pointer; fill: black; fill-opacity: 0.333; } .svg-pan-zoom-control:hover { fill-opacity: 0.8; } .svg-pan-zoom-control-background { fill: white; fill-opacity: 0.5; } .svg-pan-zoom-control-background { fill-opacity: 0.8; }</style>
+  </defs>
+</svg>

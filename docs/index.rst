@@ -68,7 +68,7 @@ Behind the scene
 The scene graph is shown at :numref:`fig-scene-graph`.
 
 .. _fig-scene-graph:
-.. figure:: scene_graph.png
+.. figure:: scene_graph.svg
     :width: 100%
 
-    Scene graph. User controlled and animated movement transformation is not drawn on the scene graph. For example, mouse and mouse-wheel controls view angles and viewport scale by applying a matrix to ``world``. Steve's arm, leg and body movement are implemented by applying a matrix to their ``Joint`` sprites. The cat's front and rear leg movement are also implemented by applying a matrix to their ``Joint`` sprites.
+    Scene graph. View-specific transforms are applied to view matrix, projection matrix and viewport matrix and do not touch model matrices at all. Only rotation of the gyro is done by changing its model matrix (with quaternion).
