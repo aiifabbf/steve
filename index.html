@@ -9,7 +9,7 @@
 <body>
     <canvas width="500" height="500"></canvas>
     <div style="position: fixed; top: 0; left: 0; z-index: 1;" id="which-camera"></div>
-    <div style="position: fixed; bottom: 0; right: 0; z-index: 1;">
+    <div style="max-height: 20vh; overflow: auto; padding: 20px;">
         <span><kbd>v</kbd> to switch camera</span>
         <div>
             under third person camera:
@@ -43,6 +43,8 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            text-shadow: 10px white;
         }
     </style>
     <script src="./steve.js"></script>

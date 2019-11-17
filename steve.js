@@ -879,13 +879,10 @@ function main() {
         } else if (event.code === "KeyV") {
             if (camera === thirdPersonCamera) {
                 camera = firstPersonCamera;
-                document.querySelector("#which-camera").textContent = "first person";
             } else if (camera === firstPersonCamera) {
                 camera = freeCamera;
-                document.querySelector("#which-camera").textContent = "free fly";
             } else {
                 camera = thirdPersonCamera;
-                document.querySelector("#which-camera").textContent = "third person";
             }
         }
     });
@@ -1068,6 +1065,15 @@ function main() {
         mat4.fromRotation(gyroRotationMatrix, rotationAngle, axis);
 
         mat4.multiply(gyro.modelMatrix, gyroTranslationMatrix, gyroRotationMatrix);
+
+        // update user interface camera position
+        if (camera === firstPersonCamera) {
+            document.querySelector("#which-camera").textContent = "first person, position: " + camera.position.map(v => v.toFixed(2));
+        } else if (camera === freeCamera) {
+            document.querySelector("#which-camera").textContent = "free fly, position: " + camera.position.map(v => v.toFixed(2));
+        } else {
+            document.querySelector("#which-camera").textContent = "third person, position: " + camera.position.map(v => v.toFixed(2));
+        }
     }
 
     window.addEventListener("resize", function (event) {

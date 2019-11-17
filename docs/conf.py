@@ -40,6 +40,7 @@ release = ''
 # ones.
 extensions = [
     'sphinx.ext.mathjax',
+    "sphinxcontrib.inkscapeconverter",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -131,7 +132,7 @@ numfig = True
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'steve.tex', 'Project A: steve',
+    (master_doc, 'steve.tex', 'Project B: steve again',
      'Yuchen Shi ysi5420, Yifeng Chen yct2284', 'howto'),
 ]
 
