@@ -9,23 +9,7 @@
 <body>
     <canvas width="500" height="500"></canvas>
     <div style="position: fixed; top: 0; left: 0; z-index: 1;" id="which-camera"></div>
-    <div style="max-height: 20vh; overflow: auto; padding: 20px;">
-        <span><kbd>v</kbd> to switch camera</span>
-        <div>
-            under third person camera:
-            <ul>
-                <li>mouse wheel to scale</li>
-                <li>drag with LEFT mouse button down to see around</li>
-                <li><kbd>W, S</kbd> to walk</li>
-                <li><kbd>Shift</kbd> to bow</li>
-            </ul>
-        </div>
-        <div>
-            under first person camera:
-            <ul>
-                <li>mouse dragging to see around</li>
-            </ul>
-        </div>
+    <div style="max-height: 20vh; overflow: auto; padding: 20px; column-count: 2;">
         <div>
             under free camera:
             <ul>
@@ -35,7 +19,9 @@
             </ul>
         </div>
         <div>
-            drag with RIGHT mouse button down to rotate the gyro
+            <button id="toggle-ground-plane">toggle ground plane</button>
+            <button id="toggle-sphere">toggle random-colored sphere</button>
+            <button id="toggle-another-sphere">toggle red-white sphere</button>
         </div>
     </div>
     <style>
