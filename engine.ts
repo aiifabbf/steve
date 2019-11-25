@@ -728,8 +728,8 @@ export class Renderer {
         this.viewport = {
             x: 0,
             y: 0,
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width: canvas.width,
+            height: canvas.height,
         };
     }
 
