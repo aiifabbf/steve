@@ -1,4 +1,4 @@
-import { mat4 } from "gl-matrix";
+import { mat4, vec3, vec4 } from "gl-matrix";
 
 export class Sprite {
     geometry: Geometry;
@@ -27,6 +27,7 @@ export class Geometry {
         this.vertexPositions = vertexPositions;
     }
 
+    // get vertex positions in Array<vec4>-like form. Equivalent to reshaping vertexPositions to (-1, 4)
     get nodePositions(): Array<Array<number>> {
         let nodePositions = [];
 
@@ -40,6 +41,36 @@ export class Geometry {
         }
 
         return nodePositions;
+    }
+
+    // compute normalized, normal vector in Array<vec4>-like form for every node
+    // sub-types can have their own specialized, more accurate normal vectors.
+    get normalVectors(): Array<Array<number>> {
+        let nodePositions = this.nodePositions;
+        console.log(nodePositions);
+        let normalVectors: Array<Array<number>> = [];
+        let normalVector = vec3.create();
+
+        for (let i = 0; i < nodePositions.length - 2; i++) {
+            let a = nodePositions[i];
+            let b = nodePositions[i + 1];
+            let c = nodePositions[i + 2];
+
+            let ab = vec3.create();
+            vec3.subtract(ab, b, a); // ab = b - a
+
+            let bc = vec3.create();
+            vec3.subtract(bc, c, b); // bc = c - b
+            if (i % 2 == 0) {
+                vec3.cross(normalVector, bc, ab); // for even-indexed triangles, surface normal vector is bc x ab
+            } else {
+                vec3.cross(normalVector, ab, bc); // for odd-indexed triangles, surface normal vector is ab x bc
+            }
+            vec3.normalize(normalVector, normalVector);
+            normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
+        }
+
+        return normalVectors;
     }
 }
 
@@ -576,10 +607,12 @@ export class ColorMaterial extends Material {
         super(`
             attribute vec4 aVertexPosition;
 
-            uniform mat4 uModelViewProjectionMatrix;
+            uniform mat4 uModelMatrix;
+            uniform mat4 uViewMatrix;
+            uniform mat4 uProjectionMatrix;
 
             void main() {
-                gl_Position = uModelViewProjectionMatrix * aVertexPosition;
+                gl_Position = uModelMatrix * uViewMatrix * uProjectionMatrix * aVertexPosition;
             }
         `, `
             precision mediump float;
@@ -595,7 +628,9 @@ export class ColorMaterial extends Material {
         super.compile(renderer, {
             aVertexPosition: "aVertexPosition"
         }, {
-            uModelViewProjectionMatrix: "uModelViewProjectionMatrix"
+            uModelMatrix: "uModelMatrix",
+            uViewMatrix: "uViewMatrix",
+            uProjectionMatrix: "uProjectionMatrix",
         });
     }
 }
@@ -728,8 +763,8 @@ export class Renderer {
         this.viewport = {
             x: 0,
             y: 0,
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width: canvas.width,
+            height: canvas.height,
         };
     }
 
@@ -741,26 +776,33 @@ export class Renderer {
 
     render(world: Sprite, camera: Camera) {
         this.gl.viewport(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
-        let rootMatrix = mat4.create();
-        mat4.multiply(rootMatrix, camera.viewMatrix, rootMatrix);
-        mat4.multiply(rootMatrix, camera.projectionMatrix, rootMatrix);
-        this.renderWithMatrix(world, rootMatrix);
+        this.renderWithMatrices(world, mat4.create(), camera.viewMatrix, camera.projectionMatrix);
     }
 
-    renderWithMatrix(sprite: Sprite, matrix: mat4) {
+    renderWithMatrices(sprite: Sprite, modelMatrix: mat4, viewMatrix: mat4, projectionMatrix: mat4) {
         let self = this;
         let gl = this.gl;
         let realMatrix = mat4.create();
-        mat4.multiply(realMatrix, matrix, sprite.modelMatrix);
+        mat4.multiply(realMatrix, modelMatrix, sprite.modelMatrix);
 
         if (sprite.material) {
             gl.useProgram(sprite.material.programInfo.program);
             sprite.material.placeholderValueMapping.attributes.aVertexPosition = new Float32Array(sprite.geometry.vertexPositions);
             sprite.material.bindPlaceholders(self, sprite.material.placeholderValueMapping.attributes, sprite.material.placeholderValueMapping.uniforms);
             gl.uniformMatrix4fv(
-                sprite.material.programInfo.uniformLocations["uModelViewProjectionMatrix"],
+                sprite.material.programInfo.uniformLocations["uModelMatrix"],
                 false,
                 realMatrix,
+            );
+            gl.uniformMatrix4fv(
+                sprite.material.programInfo.uniformLocations["uViewMatrix"],
+                false,
+                viewMatrix,
+            );
+            gl.uniformMatrix4fv(
+                sprite.material.programInfo.uniformLocations["uProjectionMatrix"],
+                false,
+                projectionMatrix,
             );
         }
 
@@ -769,7 +811,7 @@ export class Renderer {
         }
 
         sprite.children.forEach(function (child) {
-            self.renderWithMatrix(child, realMatrix);
+            self.renderWithMatrices(child, realMatrix, viewMatrix, projectionMatrix);
         })
     }
 }
