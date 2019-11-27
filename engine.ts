@@ -19,6 +19,32 @@ export class Sprite {
     }
 }
 
+export class Light {
+    position: Array<number>; // light position
+    ia: Array<number>; // ambient light density for r, g, b, a
+    id: Array<number>; // diffuse light density for r, g, b, a
+    is: Array<number>; // specular light density for r, g, b, a
+
+    constructor(position: Array<number>, ia: Array<number>, id: Array<number>, is: Array<number>) {
+        this.position = position;
+        this.ia = ia;
+        this.id = id;
+        this.is = is;
+    }
+}
+
+export class AmbientLight extends Light {
+    constructor(position: Array<number>, ia: Array<number>) {
+        super(position, ia, [0, 0, 0, 0], [0, 0, 0, 0]);
+    }
+}
+
+export class PointLight extends Light {
+    constructor(position: Array<number>, id: Array<number>, is: Array<number>) {
+        super(position, [0, 0, 0, 0], id, is);
+    }
+}
+
 export class Geometry {
     vertexPositions: Array<Number>;
     mode: number;
@@ -47,7 +73,6 @@ export class Geometry {
     // sub-types can have their own specialized, more accurate normal vectors.
     get normalVectors(): Array<Array<number>> {
         let nodePositions = this.nodePositions;
-        console.log(nodePositions);
         let normalVectors: Array<Array<number>> = [];
         let normalVector = vec3.create();
 
@@ -69,6 +94,9 @@ export class Geometry {
             vec3.normalize(normalVector, normalVector);
             normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
         }
+
+        normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
+        normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
 
         return normalVectors;
     }
@@ -337,6 +365,14 @@ export class SphereGeometry extends Geometry {
         this.maxTheta = maxTheta;
         this.maxPhi = maxPhi;
     }
+
+    get normalVectors() {
+        return this.nodePositions.map(v => {
+            let normalVector = vec4.create();
+            vec4.normalize(normalVector, [v[0], v[1], v[2], 0]);
+            return Array.from(normalVector);
+        }).flat();
+    }
 }
 
 export class TorusGeometry extends Geometry {
@@ -585,17 +621,18 @@ export class Material {
         Object.entries(uniformPlaceholderValueMapping).forEach(function (item) {
             let k = item[0];
             let v = item[1];
-            gl.bindBuffer(gl.ARRAY_BUFFER, self.buffers.uniforms[k]);
-            gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-            gl.vertexAttribPointer(
-                self.programInfo.uniformLocations[k],
-                4,
-                gl.FLOAT,
-                false,
-                0,
-                0
-            );
-            gl.enableVertexAttribArray(self.programInfo.uniformLocations[k]);
+            // gl.bindBuffer(gl.ARRAY_BUFFER, self.buffers.uniforms[k]);
+            // gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
+            // gl.vertexAttribPointer(
+            //     self.programInfo.uniformLocations[k],
+            //     4,
+            //     gl.FLOAT,
+            //     false,
+            //     0,
+            //     0
+            // );
+            // gl.enableVertexAttribArray(self.programInfo.uniformLocations[k]);
+            gl.uniform4fv(self.programInfo.uniformLocations[k], v);
         });
     }
 }
@@ -612,7 +649,7 @@ export class ColorMaterial extends Material {
             uniform mat4 uProjectionMatrix;
 
             void main() {
-                gl_Position = uModelMatrix * uViewMatrix * uProjectionMatrix * aVertexPosition;
+                gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
             }
         `, `
             precision mediump float;
@@ -633,6 +670,108 @@ export class ColorMaterial extends Material {
             uProjectionMatrix: "uProjectionMatrix",
         });
     }
+}
+
+export interface ReflectiveMaterial {
+    ka: Array<Number>; // ambient reflectance
+    kd: Array<Number>; // diffuse reflectance
+    ks: Array<Number>; // specular reflectance
+    ke: Array<Number>; // emissive term
+    se: Array<Number>; // shininess, specular exponent
+}
+
+export class GourandShadingMaterial extends Material implements ReflectiveMaterial {
+    ka: Array<Number>; // ambient reflectance
+    kd: Array<Number>; // diffuse reflectance
+    ks: Array<Number>; // specular reflectance
+    ke: Array<Number>; // emissive term
+    se: Array<Number>; // shininess, specular exponent
+
+    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>) {
+        super(`
+            attribute vec4 aVertexPosition;
+            attribute vec4 aVertexNormal;
+
+            uniform mat4 uModelMatrix;
+            uniform mat4 uViewMatrix;
+            uniform mat4 uProjectionMatrix;
+
+            uniform vec4 uLightAbsolutePosition;
+            uniform vec4 uLightIa;
+            uniform vec4 uLightId;
+            uniform vec4 uLightIs;
+
+            uniform vec4 uMaterialKa;
+            uniform vec4 uMaterialKd;
+            uniform vec4 uMaterialKs;
+            uniform vec4 uMaterialKe;
+            uniform vec4 uMaterialSe;
+
+            varying vec4 vVertexColor;
+
+            void main() {
+                vec4 absoluteVertexPosition = uProjectionMatrix * aVertexPosition;
+                vec4 absoluteCameraPosition = inverse(uViewMatrix)[3]; 
+
+                vec4 lightVector = normalize(uLightAbsolutePosition.xyz - absoluteVertexPosition.xyz);
+                vec4 normalVector = normalize(transpose(inverse(uModelMatrix)) * aVertexNormal);
+                vec4 viewVector = normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz);
+                vec4 reflectedLightVector = reflect(-lightVector, normalVector);
+
+                vec4 ambientColor = uLightIa * uMaterialKa;
+                vec4 diffuseColor = uLightId * uMaterialKd * max(0, dot(normalVector, lightVector));
+                vec4 specularColor = uLightIs * uMaterialKs * pow(max(0, dot(reflectedLightVector, viewVector)), uMaterialSe);
+                vec4 emissiveColor = uMaterialKe;
+
+                vVertexColor = ambientColor + diffuseColor + specularColor + emissiveColor;
+
+                gl_Position = uModelMatrix * uViewMatrix * absoluteVertexPosition;
+            }
+        `, `
+            precision mediump float;
+
+            varying vec4 vVertexColor;
+
+            void main() {
+                gl_FragColor = vVertexColor;
+            }
+        `);
+        // extract camera position from view matrix <https://stackoverflow.com/questions/46637247/is-4th-row-in-model-view-projection-the-viewing-position>
+
+        this.ka = ka;
+        this.kd = kd;
+        this.ks = ks;
+        this.ke = ke;
+        this.se = se;
+    }
+
+    compile(renderer: Renderer, attributePlaceholders: Object, uniformPlaceholders: Object) {
+        super.compile(renderer, {
+            aVertexPosition: "aVertexPosition",
+            aVertexNormal: "aVertexNormal",
+        }, {
+            uModelMatrix: "uModelMatrix",
+            uViewMatrix: "uViewMatrix",
+            uProjectionMatrix: "uProjectionMatrix",
+            uLightAbsolutePosition: "uLightAbsolutePosition",
+            uLightIa: "uLightIa",
+            uLightId: "uLightId",
+            uLightIs: "uLightIs",
+            uMaterialKa: "uMaterialKa",
+            uMaterialKd: "uMaterialKd",
+            uMaterialKs: "uMaterialKs",
+            uMaterialKe: "uMaterialKe",
+            uMaterialSe: "uMaterialSe",
+        });
+    }
+}
+
+export class PhongShadingMaterial extends Material {
+
+}
+
+export class PhongLightingGourandShadingMaterial extends Material {
+
 }
 
 export interface Camera {
@@ -768,8 +907,8 @@ export class Renderer {
         };
     }
 
-    clear(color = [0.528, 0.803, 0.921, 1]) {
-        let gl = this.gl
+    clear(color = [0, 0, 0, 1]) {
+        let gl = this.gl;
         gl.clearColor(color[0], color[1], color[2], color[3]);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
@@ -787,17 +926,33 @@ export class Renderer {
 
         if (sprite.material) {
             gl.useProgram(sprite.material.programInfo.program);
-            sprite.material.placeholderValueMapping.attributes.aVertexPosition = new Float32Array(sprite.geometry.vertexPositions);
+            // sprite.material.placeholderValueMapping.attributes.aVertexPosition = new Float32Array(sprite.geometry.vertexPositions);
+            // sprite.material.placeholderValueMapping.attributes.aVertexNormal = new Float32Array(sprite.geometry.normalVectors.flat());
             sprite.material.bindPlaceholders(self, sprite.material.placeholderValueMapping.attributes, sprite.material.placeholderValueMapping.uniforms);
             gl.uniformMatrix4fv(
                 sprite.material.programInfo.uniformLocations["uModelMatrix"],
                 false,
                 realMatrix,
             );
+            let modelMatrixInvertedTransposed = mat4.create();
+            mat4.invert(modelMatrixInvertedTransposed, realMatrix);
+            mat4.transpose(modelMatrixInvertedTransposed, modelMatrixInvertedTransposed);
+            gl.uniformMatrix4fv(
+                sprite.material.programInfo.uniformLocations["uModelMatrixInvertedTransposed"],
+                false,
+                modelMatrixInvertedTransposed,
+            );
             gl.uniformMatrix4fv(
                 sprite.material.programInfo.uniformLocations["uViewMatrix"],
                 false,
                 viewMatrix,
+            );
+            let viewMatrixInverted = mat4.create();
+            mat4.invert(viewMatrixInverted, viewMatrix);
+            gl.uniformMatrix4fv(
+                sprite.material.programInfo.uniformLocations["uViewMatrixInverted"],
+                false,
+                viewMatrixInverted,
             );
             gl.uniformMatrix4fv(
                 sprite.material.programInfo.uniformLocations["uProjectionMatrix"],

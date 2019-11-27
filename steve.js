@@ -1,5 +1,5 @@
 import { vec3, mat4 } from "gl-matrix";
-import { Renderer, Sprite, LineGeometry, ColorMaterial, PerspectiveCamera, radians, SphereGeometry, Material, Animation, linear } from "./engine";
+import { Renderer, Sprite, LineGeometry, ColorMaterial, PerspectiveCamera, radians, SphereGeometry, Material, Animation, linear, PlaneGeometry } from "./engine";
 
 let canvas = document.querySelector("canvas");
 canvas.width = window.innerWidth;
@@ -37,24 +37,71 @@ function getRandomColors(nodePositions) {
 
 let defaultAttributePlaceholders = {
     aVertexPosition: "aVertexPosition",
-    aVertexColor: "aVertexColor",
+    aVertexNormal: "aVertexNormal",
 };
 let defaultUniformPlaceholders = {
-    uModelViewProjectionMatrix: "uModelViewProjectionMatrix",
+    uModelMatrix: "uModelMatrix",
+    uModelMatrixInvertedTransposed: "uModelMatrixInvertedTransposed",
+    uViewMatrix: "uViewMatrix",
+    uViewMatrixInverted: "uViewMatrixInverted",
+    uProjectionMatrix: "uProjectionMatrix",
+    uLightAbsolutePosition: "uLightAbsolutePosition",
+    uLightIa: "uLightIa",
+    uLightId: "uLightId",
+    uLightIs: "uLightIs",
+    uMaterialKa: "uMaterialKa",
+    uMaterialKd: "uMaterialKd",
+    uMaterialKs: "uMaterialKs",
+    uMaterialKe: "uMaterialKe",
+    uMaterialSe: "uMaterialSe",
 };
 
 function main() {
     let vertexShaderSource = `
         attribute vec4 aVertexPosition;
-        attribute vec4 aVertexColor;
+        attribute vec4 aVertexNormal;
 
-        uniform mat4 uModelViewProjectionMatrix;
+        uniform mat4 uModelMatrix;
+        uniform mat4 uModelMatrixInvertedTransposed;
+        uniform mat4 uViewMatrix;
+        uniform mat4 uViewMatrixInverted;
+        uniform mat4 uProjectionMatrix;
+
+        uniform vec4 uLightAbsolutePosition;
+        uniform vec4 uLightIa;
+        uniform vec4 uLightId;
+        uniform vec4 uLightIs;
+
+        uniform vec4 uMaterialKa;
+        uniform vec4 uMaterialKd;
+        uniform vec4 uMaterialKs;
+        uniform vec4 uMaterialKe;
+        uniform vec4 uMaterialSe;
 
         varying vec4 vVertexColor;
 
         void main() {
-            gl_Position = uModelViewProjectionMatrix * aVertexPosition;
-            vVertexColor = aVertexColor;
+            vec4 absoluteVertexPosition = uModelMatrix * aVertexPosition;
+            vec4 absoluteCameraPosition = vec4(uViewMatrixInverted[3].xyz, 1.0);
+
+            vec4 lightVector = vec4(normalize(uLightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
+            vec4 normalVector = vec4(normalize((uModelMatrix * aVertexNormal).xyz), 0.0);
+            vec4 viewVector = vec4(normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz), 0.0);
+            vec4 reflectedLightVector = reflect(-lightVector, normalVector);
+
+            vec4 ambientColor = uLightIa * uMaterialKa;
+            vec4 diffuseColor = uLightId * uMaterialKd * max(0.0, dot(normalVector, lightVector));
+
+            float specularColorR = uLightIs.x * uMaterialKs.x * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.x);
+            float specularColorG = uLightIs.y * uMaterialKs.y * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.y);
+            float specularColorB = uLightIs.z * uMaterialKs.z * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.z);
+            float specularColorA = uLightIs.w * uMaterialKs.w * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.w);
+            vec4 specularColor = vec4(specularColorR, specularColorG, specularColorB, specularColorA);
+
+            vec4 emissiveColor = uMaterialKe;
+            
+            gl_Position = uProjectionMatrix * uViewMatrix * absoluteVertexPosition;
+            vVertexColor = ambientColor + diffuseColor + specularColor + emissiveColor;
         }
     `;
     let fragmentShaderSource = `
@@ -77,7 +124,7 @@ function main() {
 
     let world = new Sprite(null, null);
 
-    let freeCameraPosition = [10, 10, 2.5];
+    let freeCameraPosition = [10, 10, 5];
     let freeCameraTheta = 45;
     let freeCameraPhi = 90;
     let freeCameraRadius = 10;
@@ -90,6 +137,15 @@ function main() {
         0.1,
         100,
     );
+    console.log(freeCamera);
+
+    // how to get camera position from view matrix? it is the 4-th column of inverted view matrix.
+    let a = vec3.create();
+    let b = mat4.create();
+    mat4.invert(b, freeCamera.viewMatrix);
+    mat4.getTranslation(a, b);
+    console.log(a);
+    console.log(b);
 
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let yAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 1, 0]), new ColorMaterial([0, 1, 0, 1]));
@@ -101,57 +157,75 @@ function main() {
         }, {});
     });
 
+    let plane = new Sprite(new PlaneGeometry(10, 10), new ColorMaterial([0.5, 0.5, 0.5, 1]));
+    plane.material.compile(renderer, {
+        aVertexPosition: "aVertexPosition",
+    }, {});
+    plane.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(plane.geometry.vertexPositions),
+    }, {});
+
+    world.add(plane);
+
     world.add(xAxis);
     world.add(yAxis);
     world.add(zAxis);
+
+    console.log(xAxis.geometry.normalVectors);
 
     // Start building ground grid
     let groundMaterial = new ColorMaterial([0.5, 0.5, 0.5, 1]);
     let ground = [];
 
-    for (let i = 0; i < 501; i++) {
-        let xGround = new Sprite(new LineGeometry([-100, -100 + i, 0], [100, -100 + i, 0]), groundMaterial);
-        xGround.material.compile(renderer);
-        // xGround.material.bindPlaceholders(renderer, {
-        //     aVertexPosition: new Float32Array(xGround.geometry.vertexPositions)
-        // }, {});
+    // for (let i = 0; i < 501; i++) {
+    //     let xGround = new Sprite(new LineGeometry([-100, -100 + i, 0], [100, -100 + i, 0]), groundMaterial);
+    //     xGround.material.compile(renderer);
+    //     // xGround.material.bindPlaceholders(renderer, {
+    //     //     aVertexPosition: new Float32Array(xGround.geometry.vertexPositions)
+    //     // }, {});
 
-        let yGround = new Sprite(new LineGeometry([-100 + i, -100, 0], [-100 + i, 100, 0]), groundMaterial);
-        yGround.material.compile(renderer);
-        // yGround.material.bindPlaceholders(renderer, {
-        //     aVertexPosition: new Float32Array(yGround.geometry.vertexPositions)
-        // }, {});
+    //     let yGround = new Sprite(new LineGeometry([-100 + i, -100, 0], [-100 + i, 100, 0]), groundMaterial);
+    //     yGround.material.compile(renderer);
+    //     // yGround.material.bindPlaceholders(renderer, {
+    //     //     aVertexPosition: new Float32Array(yGround.geometry.vertexPositions)
+    //     // }, {});
 
-        world.add(xGround);
-        world.add(yGround);
+    //     world.add(xGround);
+    //     world.add(yGround);
 
-        ground.push(xGround);
-        ground.push(yGround);
-    }
-
-    let sphereMaterial = new Material(vertexShaderSource, fragmentShaderSource);
-    let sphere = new Sprite(new SphereGeometry(1, 32, 16), sphereMaterial);
-    sphere.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    sphere.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(sphere.geometry.vertexPositions),
-        aVertexColor: new Float32Array(getRandomColors(sphere.geometry.nodePositions).flat()),
-    }, {});
-    world.add(sphere);
+    //     ground.push(xGround);
+    //     ground.push(yGround);
+    // }
 
     let sphereContainer = new Sprite(null, null);
     let anotherSphereMaterial = new Material(vertexShaderSource, fragmentShaderSource);
-    let anotherSphere = new Sprite(new SphereGeometry(1, 16, 8), anotherSphereMaterial);
+    let anotherSphere = new Sprite(new SphereGeometry(1, 32, 16), anotherSphereMaterial);
+    console.log(anotherSphere);
     anotherSphere.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
     anotherSphere.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(anotherSphere.geometry.vertexPositions),
-        aVertexColor: new Float32Array(anotherSphere.geometry.nodePositions.map(function (v) {
-            if (Math.random() > 0.5) {
-                return [1, 0, 0, 1];
-            } else {
-                return [1, 1, 1, 1];
-            }
-        }).flat())
+        aVertexNormal: new Float32Array(anotherSphere.geometry.normalVectors.flat()),
+    }, {
+        uLightAbsolutePosition: new Float32Array([2, 2, 5, 1]),
+        uLightIa: new Float32Array([1, 1, 1, 1]),
+        uLightId: new Float32Array([1, 1, 1, 1]),
+        uLightIs: new Float32Array([1, 1, 1, 1]),
+        uMaterialKa: new Float32Array([0.24725, 0.1995, 0.0745, 1.0]),
+        uMaterialKd: new Float32Array([0.75164, 0.60648, 0.22648, 1.0]),
+        uMaterialKs: new Float32Array([0.628281, 0.555802, 0.366065, 1.0]),
+        uMaterialKe: new Float32Array([0, 0, 0, 1]),
+        uMaterialSe: new Float32Array([51.2, 51.2, 51.2, 51.2]),
+    });
+
+    let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
+    lightIndicator.material.compile(renderer, {
+        aVertexPosition: "aVertexPosition",
     }, {});
+    lightIndicator.material.bindPlaceholders(renderer, {
+        aVertexPosition: new Float32Array(lightIndicator.geometry.vertexPositions),
+    }, {});
+    mat4.translate(lightIndicator.modelMatrix, lightIndicator.modelMatrix, [2, 2, 5]);
+    world.add(lightIndicator);
 
     mat4.translate(sphereContainer.modelMatrix, sphereContainer.modelMatrix, [0, 0, 5]);
     sphereContainer.add(anotherSphere);
@@ -217,8 +291,8 @@ function main() {
     function onDraw() {
         let rotation = sphereAnimation.yield()["rotation"];
 
-        mat4.identity(sphere.modelMatrix);
-        mat4.rotateX(sphere.modelMatrix, sphere.modelMatrix, deg2rad(rotation));
+        // mat4.identity(sphere.modelMatrix);
+        // mat4.rotateX(sphere.modelMatrix, sphere.modelMatrix, deg2rad(rotation));
 
         mat4.identity(anotherSphere.modelMatrix);
         mat4.rotateY(anotherSphere.modelMatrix, anotherSphere.modelMatrix, deg2rad(rotation));
