@@ -621,17 +621,6 @@ export class Material {
         Object.entries(uniformPlaceholderValueMapping).forEach(function (item) {
             let k = item[0];
             let v = item[1];
-            // gl.bindBuffer(gl.ARRAY_BUFFER, self.buffers.uniforms[k]);
-            // gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-            // gl.vertexAttribPointer(
-            //     self.programInfo.uniformLocations[k],
-            //     4,
-            //     gl.FLOAT,
-            //     false,
-            //     0,
-            //     0
-            // );
-            // gl.enableVertexAttribArray(self.programInfo.uniformLocations[k]);
             gl.uniform4fv(self.programInfo.uniformLocations[k], v);
         });
     }

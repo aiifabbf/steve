@@ -45,10 +45,10 @@ let defaultUniformPlaceholders = {
     uViewMatrix: "uViewMatrix",
     uViewMatrixInverted: "uViewMatrixInverted",
     uProjectionMatrix: "uProjectionMatrix",
-    uLightAbsolutePosition: "uLightAbsolutePosition",
-    uLightIa: "uLightIa",
-    uLightId: "uLightId",
-    uLightIs: "uLightIs",
+    uLightAbsolutePositions: "uLightAbsolutePositions",
+    uLightIas: "uLightIas",
+    uLightIds: "uLightIds",
+    uLightIss: "uLightIss",
     uMaterialKa: "uMaterialKa",
     uMaterialKd: "uMaterialKd",
     uMaterialKs: "uMaterialKs",
@@ -67,10 +67,10 @@ function main() {
         uniform mat4 uViewMatrixInverted;
         uniform mat4 uProjectionMatrix;
 
-        uniform vec4 uLightAbsolutePosition;
-        uniform vec4 uLightIa;
-        uniform vec4 uLightId;
-        uniform vec4 uLightIs;
+        uniform vec4 uLightAbsolutePositions[32];
+        uniform vec4 uLightIas[32];
+        uniform vec4 uLightIds[32];
+        uniform vec4 uLightIss[32];
 
         uniform vec4 uMaterialKa;
         uniform vec4 uMaterialKd;
@@ -84,24 +84,34 @@ function main() {
             vec4 absoluteVertexPosition = uModelMatrix * aVertexPosition;
             vec4 absoluteCameraPosition = vec4(uViewMatrixInverted[3].xyz, 1.0);
 
-            vec4 lightVector = vec4(normalize(uLightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
-            vec4 normalVector = vec4(normalize((uModelMatrixInvertedTransposed * aVertexNormal).xyz), 0.0);
-            vec4 viewVector = vec4(normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz), 0.0);
-            vec4 reflectedLightVector = reflect(-lightVector, normalVector);
+            vVertexColor = vec4(0.0, 0.0, 0.0, 0.0);
 
-            vec4 ambientColor = uLightIa * uMaterialKa;
-            vec4 diffuseColor = uLightId * uMaterialKd * max(0.0, dot(normalVector, lightVector));
+            for (int i = 0; i < 32; i++) {
+                vec4 lightAbsolutePosition = uLightAbsolutePositions[i];
+                vec4 lightIa = uLightIas[i];
+                vec4 lightId = uLightIds[i];
+                vec4 lightIs = uLightIss[i];
 
-            float specularColorR = uLightIs.x * uMaterialKs.x * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.x);
-            float specularColorG = uLightIs.y * uMaterialKs.y * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.y);
-            float specularColorB = uLightIs.z * uMaterialKs.z * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.z);
-            float specularColorA = uLightIs.w * uMaterialKs.w * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.w);
-            vec4 specularColor = vec4(specularColorR, specularColorG, specularColorB, specularColorA);
+                vec4 lightVector = vec4(normalize(lightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
+                vec4 normalVector = vec4(normalize((uModelMatrixInvertedTransposed * aVertexNormal).xyz), 0.0);
+                vec4 viewVector = vec4(normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz), 0.0);
+                vec4 reflectedLightVector = reflect(-lightVector, normalVector);
+    
+                vec4 ambientColor = lightIa * uMaterialKa;
+                vec4 diffuseColor = lightId * uMaterialKd * max(0.0, dot(normalVector, lightVector));
+    
+                float specularColorR = lightIs.x * uMaterialKs.x * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.x);
+                float specularColorG = lightIs.y * uMaterialKs.y * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.y);
+                float specularColorB = lightIs.z * uMaterialKs.z * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.z);
+                float specularColorA = lightIs.w * uMaterialKs.w * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.w);
+                vec4 specularColor = vec4(specularColorR, specularColorG, specularColorB, specularColorA);
+    
+                vec4 emissiveColor = uMaterialKe;
 
-            vec4 emissiveColor = uMaterialKe;
-            
+                vVertexColor += ambientColor + diffuseColor + specularColor + emissiveColor;
+            }
+
             gl_Position = uProjectionMatrix * uViewMatrix * absoluteVertexPosition;
-            vVertexColor = ambientColor + diffuseColor + specularColor + emissiveColor;
         }
     `;
     let fragmentShaderSource = `
@@ -206,10 +216,22 @@ function main() {
         aVertexPosition: new Float32Array(anotherSphere.geometry.vertexPositions),
         aVertexNormal: new Float32Array(anotherSphere.geometry.normalVectors.flat()),
     }, {
-        uLightAbsolutePosition: new Float32Array([2, 2, 5, 1]),
-        uLightIa: new Float32Array([1, 1, 1, 1]),
-        uLightId: new Float32Array([1, 1, 1, 1]),
-        uLightIs: new Float32Array([1, 1, 1, 1]),
+        uLightAbsolutePositions: new Float32Array([
+            [2, 2, 5, 1],
+            [-2, -2, 5, 1],
+        ].flat()),
+        uLightIas: new Float32Array([
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+        ].flat()),
+        uLightIds: new Float32Array([
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+        ].flat()),
+        uLightIss: new Float32Array([
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+        ].flat()),
         uMaterialKa: new Float32Array([0.24725, 0.1995, 0.0745, 1.0]),
         uMaterialKd: new Float32Array([0.75164, 0.60648, 0.22648, 1.0]),
         uMaterialKs: new Float32Array([0.628281, 0.555802, 0.366065, 1.0]),
