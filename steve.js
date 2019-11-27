@@ -85,7 +85,7 @@ function main() {
             vec4 absoluteCameraPosition = vec4(uViewMatrixInverted[3].xyz, 1.0);
 
             vec4 lightVector = vec4(normalize(uLightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
-            vec4 normalVector = vec4(normalize((uModelMatrix * aVertexNormal).xyz), 0.0);
+            vec4 normalVector = vec4(normalize((uModelMatrixInvertedTransposed * aVertexNormal).xyz), 0.0);
             vec4 viewVector = vec4(normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz), 0.0);
             vec4 reflectedLightVector = reflect(-lightVector, normalVector);
 
