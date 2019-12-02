@@ -1,5 +1,5 @@
 import { vec3, mat4 } from "gl-matrix";
-import { Renderer, Sprite, LineGeometry, ColorMaterial, PerspectiveCamera, radians, SphereGeometry, Material, Animation, linear, PlaneGeometry } from "./engine";
+import { Renderer, Sprite, LineGeometry, ColorMaterial, PerspectiveCamera, radians, SphereGeometry, Animation, linear, PlaneGeometry, Light, GouraudShadingMaterial } from "./engine";
 
 let canvas = document.querySelector("canvas");
 canvas.width = window.innerWidth;
@@ -9,9 +9,6 @@ function deg2rad(deg) {
     return deg / 360 * 2 * Math.PI;
 }
 
-function rad2deg(rad) {
-    return rad / (2 * Math.PI) * 360;
-}
 
 function getRandomNodePositionColorMapping(nodePositions) {
     let nodePositionColorMapping = {};
@@ -28,101 +25,9 @@ function getRandomNodePositionColorMapping(nodePositions) {
     return nodePositionColorMapping;
 }
 
-function getRandomColors(nodePositions) {
-    let nodePositionColorMapping = getRandomNodePositionColorMapping(nodePositions);
-    return nodePositions.map(function (nodePosition) {
-        return nodePositionColorMapping[nodePosition];
-    });
-}
 
-let defaultAttributePlaceholders = {
-    aVertexPosition: "aVertexPosition",
-    aVertexNormal: "aVertexNormal",
-};
-let defaultUniformPlaceholders = {
-    uModelMatrix: "uModelMatrix",
-    uModelMatrixInvertedTransposed: "uModelMatrixInvertedTransposed",
-    uViewMatrix: "uViewMatrix",
-    uViewMatrixInverted: "uViewMatrixInverted",
-    uProjectionMatrix: "uProjectionMatrix",
-    uLightAbsolutePositions: "uLightAbsolutePositions",
-    uLightIas: "uLightIas",
-    uLightIds: "uLightIds",
-    uLightIss: "uLightIss",
-    uMaterialKa: "uMaterialKa",
-    uMaterialKd: "uMaterialKd",
-    uMaterialKs: "uMaterialKs",
-    uMaterialKe: "uMaterialKe",
-    uMaterialSe: "uMaterialSe",
-};
 
 function main() {
-    let vertexShaderSource = `
-        attribute vec4 aVertexPosition;
-        attribute vec4 aVertexNormal;
-
-        uniform mat4 uModelMatrix;
-        uniform mat4 uModelMatrixInvertedTransposed;
-        uniform mat4 uViewMatrix;
-        uniform mat4 uViewMatrixInverted;
-        uniform mat4 uProjectionMatrix;
-
-        uniform vec4 uLightAbsolutePositions[32];
-        uniform vec4 uLightIas[32];
-        uniform vec4 uLightIds[32];
-        uniform vec4 uLightIss[32];
-
-        uniform vec4 uMaterialKa;
-        uniform vec4 uMaterialKd;
-        uniform vec4 uMaterialKs;
-        uniform vec4 uMaterialKe;
-        uniform vec4 uMaterialSe;
-
-        varying vec4 vVertexColor;
-
-        void main() {
-            vec4 absoluteVertexPosition = uModelMatrix * aVertexPosition;
-            vec4 absoluteCameraPosition = vec4(uViewMatrixInverted[3].xyz, 1.0);
-
-            vVertexColor = vec4(0.0, 0.0, 0.0, 0.0);
-
-            for (int i = 0; i < 32; i++) {
-                vec4 lightAbsolutePosition = uLightAbsolutePositions[i];
-                vec4 lightIa = uLightIas[i];
-                vec4 lightId = uLightIds[i];
-                vec4 lightIs = uLightIss[i];
-
-                vec4 lightVector = vec4(normalize(lightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
-                vec4 normalVector = vec4(normalize((uModelMatrixInvertedTransposed * aVertexNormal).xyz), 0.0);
-                vec4 viewVector = vec4(normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz), 0.0);
-                vec4 reflectedLightVector = reflect(-lightVector, normalVector);
-    
-                vec4 ambientColor = lightIa * uMaterialKa;
-                vec4 diffuseColor = lightId * uMaterialKd * max(0.0, dot(normalVector, lightVector));
-    
-                float specularColorR = lightIs.x * uMaterialKs.x * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.x);
-                float specularColorG = lightIs.y * uMaterialKs.y * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.y);
-                float specularColorB = lightIs.z * uMaterialKs.z * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.z);
-                float specularColorA = lightIs.w * uMaterialKs.w * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.w);
-                vec4 specularColor = vec4(specularColorR, specularColorG, specularColorB, specularColorA);
-    
-                vec4 emissiveColor = uMaterialKe;
-
-                vVertexColor += ambientColor + diffuseColor + specularColor + emissiveColor;
-            }
-
-            gl_Position = uProjectionMatrix * uViewMatrix * absoluteVertexPosition;
-        }
-    `;
-    let fragmentShaderSource = `
-        precision mediump float;
-
-        varying vec4 vVertexColor;
-
-        void main() {
-            gl_FragColor = vVertexColor;
-        }
-    `;
 
     let renderer = new Renderer(canvas);
     renderer.viewport = {
@@ -208,45 +113,23 @@ function main() {
     // }
 
     let sphereContainer = new Sprite(null, null);
-    let anotherSphereMaterial = new Material(vertexShaderSource, fragmentShaderSource);
+    let anotherSphereMaterial = new GouraudShadingMaterial(
+        [0.24725, 0.1995, 0.0745, 1.0],
+        [0.75164, 0.60648, 0.22648, 1.0],
+        [0.628281, 0.555802, 0.366065, 1.0],
+        [0, 0, 0, 1],
+        [51.2, 51.2, 51.2, 51.2]
+    )
     let anotherSphere = new Sprite(new SphereGeometry(1, 32, 16), anotherSphereMaterial);
-    console.log(anotherSphere);
-    anotherSphere.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    anotherSphere.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(anotherSphere.geometry.vertexPositions),
-        aVertexNormal: new Float32Array(anotherSphere.geometry.normalVectors.flat()),
-    }, {
-        uLightAbsolutePositions: new Float32Array([
-            [2, 2, 5, 1],
-            [-2, -2, 5, 1],
-        ].flat()),
-        uLightIas: new Float32Array([
-            [1, 1, 1, 1],
-            [1, 1, 1, 1],
-        ].flat()),
-        uLightIds: new Float32Array([
-            [1, 1, 1, 1],
-            [1, 1, 1, 1],
-        ].flat()),
-        uLightIss: new Float32Array([
-            [1, 1, 1, 1],
-            [1, 1, 1, 1],
-        ].flat()),
-        uMaterialKa: new Float32Array([0.24725, 0.1995, 0.0745, 1.0]),
-        uMaterialKd: new Float32Array([0.75164, 0.60648, 0.22648, 1.0]),
-        uMaterialKs: new Float32Array([0.628281, 0.555802, 0.366065, 1.0]),
-        uMaterialKe: new Float32Array([0, 0, 0, 1]),
-        uMaterialSe: new Float32Array([51.2, 51.2, 51.2, 51.2]),
-    });
+    anotherSphere.material.compile(renderer);
+    anotherSphere.material.bindGeometry(anotherSphere.geometry);
 
+    let light = new Light([1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]);
     let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
-    lightIndicator.material.compile(renderer, {
-        aVertexPosition: "aVertexPosition",
-    }, {});
-    lightIndicator.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(lightIndicator.geometry.vertexPositions),
-    }, {});
-    mat4.translate(lightIndicator.modelMatrix, lightIndicator.modelMatrix, [2, 2, 5]);
+    lightIndicator.material.compile(renderer);
+    lightIndicator.material.bindGeometry(lightIndicator.geometry);
+    lightIndicator.add(light);
+
     world.add(lightIndicator);
 
     mat4.translate(sphereContainer.modelMatrix, sphereContainer.modelMatrix, [0, 0, 5]);
@@ -319,6 +202,10 @@ function main() {
         mat4.identity(anotherSphere.modelMatrix);
         mat4.rotateY(anotherSphere.modelMatrix, anotherSphere.modelMatrix, deg2rad(rotation));
 
+        mat4.identity(lightIndicator.modelMatrix);
+        mat4.rotateZ(lightIndicator.modelMatrix, lightIndicator.modelMatrix, deg2rad(rotation));
+        mat4.translate(lightIndicator.modelMatrix, lightIndicator.modelMatrix, [2, 2, 5]);
+
         // set free camera
         let facingVector = [ // lookAt - position
             freeCamera.lookAt[0] - freeCamera.position[0],
@@ -379,7 +266,7 @@ function main() {
         renderer.viewport.height = canvas.height;
     });
 
-    document.querySelector("#toggle-ground-plane").addEventListener("click", function (event) {
+    document.querySelector("#toggle-ground-plane").addEventListener("click", function () {
         if (ground[0].material === null) {
             ground.forEach(sprite => {
                 sprite.material = groundMaterial;
@@ -391,7 +278,7 @@ function main() {
         }
     });
 
-    document.querySelector("#toggle-sphere").addEventListener("click", function (event) {
+    document.querySelector("#toggle-sphere").addEventListener("click", function () {
         if (sphere.material === null) {
             sphere.material = sphereMaterial;
         } else {
@@ -399,7 +286,7 @@ function main() {
         }
     });
 
-    document.querySelector("#toggle-another-sphere").addEventListener("click", function (event) {
+    document.querySelector("#toggle-another-sphere").addEventListener("click", function () {
         if (anotherSphere.material === null) {
             anotherSphere.material = anotherSphereMaterial;
         } else {

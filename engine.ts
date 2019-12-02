@@ -19,14 +19,13 @@ export class Sprite {
     }
 }
 
-export class Light {
-    position: Array<number>; // light position
+export class Light extends Sprite {
     ia: Array<number>; // ambient light density for r, g, b, a
     id: Array<number>; // diffuse light density for r, g, b, a
     is: Array<number>; // specular light density for r, g, b, a
 
-    constructor(position: Array<number>, ia: Array<number>, id: Array<number>, is: Array<number>) {
-        this.position = position;
+    constructor(ia: Array<number>, id: Array<number>, is: Array<number>) {
+        super(null, null);
         this.ia = ia;
         this.id = id;
         this.is = is;
@@ -34,14 +33,14 @@ export class Light {
 }
 
 export class AmbientLight extends Light {
-    constructor(position: Array<number>, ia: Array<number>) {
-        super(position, ia, [0, 0, 0, 0], [0, 0, 0, 0]);
+    constructor(ia: Array<number>) {
+        super(ia, [0, 0, 0, 0], [0, 0, 0, 0]);
     }
 }
 
 export class PointLight extends Light {
-    constructor(position: Array<number>, id: Array<number>, is: Array<number>) {
-        super(position, [0, 0, 0, 0], id, is);
+    constructor(id: Array<number>, is: Array<number>) {
+        super([0, 0, 0, 0], id, is);
     }
 }
 
@@ -366,6 +365,7 @@ export class SphereGeometry extends Geometry {
         this.maxPhi = maxPhi;
     }
 
+    // override Geometry.normalVectors. This is more accurate, because we already know what the normal vector should be precisely on every point.
     get normalVectors() {
         return this.nodePositions.map(v => {
             let normalVector = vec4.create();
@@ -624,6 +624,8 @@ export class Material {
             gl.uniform4fv(self.programInfo.uniformLocations[k], v);
         });
     }
+
+    bindGeometry(geometry: Geometry) { }
 }
 
 export class ColorMaterial extends Material {
@@ -659,6 +661,10 @@ export class ColorMaterial extends Material {
             uProjectionMatrix: "uProjectionMatrix",
         });
     }
+
+    bindGeometry(geometry: Geometry) {
+        this.placeholderValueMapping.attributes["aVertexPosition"] = new Float32Array(geometry.vertexPositions);
+    }
 }
 
 export interface ReflectiveMaterial {
@@ -669,7 +675,46 @@ export interface ReflectiveMaterial {
     se: Array<Number>; // shininess, specular exponent
 }
 
-export class GourandShadingMaterial extends Material implements ReflectiveMaterial {
+export class ReflectiveMaterial extends Material {
+    constructor(vertexShaderSource: string, fragmentShaderSource: string) {
+        super(vertexShaderSource, fragmentShaderSource);
+    }
+
+    compile(renderer: Renderer, attributePlaceholders: Object, uniformPlaceholders: Object) {
+        super.compile(renderer, {
+            aVertexPosition: "aVertexPosition",
+            aVertexNormal: "aVertexNormal",
+        }, {
+            uModelMatrix: "uModelMatrix",
+            uModelMatrixInvertedTransposed: "uModelMatrixInvertedTransposed",
+            uViewMatrix: "uViewMatrix",
+            uViewMatrixInverted: "uViewMatrixInverted",
+            uProjectionMatrix: "uProjectionMatrix",
+            uLightAbsolutePositions: "uLightAbsolutePositions",
+            uLightIas: "uLightIas",
+            uLightIds: "uLightIds",
+            uLightIss: "uLightIss",
+            uMaterialKa: "uMaterialKa",
+            uMaterialKd: "uMaterialKd",
+            uMaterialKs: "uMaterialKs",
+            uMaterialKe: "uMaterialKe",
+            uMaterialSe: "uMaterialSe",
+        });
+    }
+
+    bindGeometry(geometry: Geometry) {
+        this.placeholderValueMapping.attributes["aVertexPosition"] = new Float32Array(geometry.vertexPositions);
+        this.placeholderValueMapping.attributes["aVertexNormal"] = new Float32Array(geometry.normalVectors.flat());
+
+        this.placeholderValueMapping.uniforms["uMaterialKa"] = new Float32Array(this.ka);
+        this.placeholderValueMapping.uniforms["uMaterialKd"] = new Float32Array(this.kd);
+        this.placeholderValueMapping.uniforms["uMaterialKs"] = new Float32Array(this.ks);
+        this.placeholderValueMapping.uniforms["uMaterialKe"] = new Float32Array(this.ke);
+        this.placeholderValueMapping.uniforms["uMaterialSe"] = new Float32Array(this.se);
+    }
+}
+
+export class GouraudShadingMaterial extends ReflectiveMaterial implements ReflectiveMaterial {
     ka: Array<Number>; // ambient reflectance
     kd: Array<Number>; // diffuse reflectance
     ks: Array<Number>; // specular reflectance
@@ -682,13 +727,15 @@ export class GourandShadingMaterial extends Material implements ReflectiveMateri
             attribute vec4 aVertexNormal;
 
             uniform mat4 uModelMatrix;
+            uniform mat4 uModelMatrixInvertedTransposed;
             uniform mat4 uViewMatrix;
+            uniform mat4 uViewMatrixInverted;
             uniform mat4 uProjectionMatrix;
 
-            uniform vec4 uLightAbsolutePosition;
-            uniform vec4 uLightIa;
-            uniform vec4 uLightId;
-            uniform vec4 uLightIs;
+            uniform vec4 uLightAbsolutePositions[32];
+            uniform vec4 uLightIas[32];
+            uniform vec4 uLightIds[32];
+            uniform vec4 uLightIss[32];
 
             uniform vec4 uMaterialKa;
             uniform vec4 uMaterialKd;
@@ -699,22 +746,37 @@ export class GourandShadingMaterial extends Material implements ReflectiveMateri
             varying vec4 vVertexColor;
 
             void main() {
-                vec4 absoluteVertexPosition = uProjectionMatrix * aVertexPosition;
-                vec4 absoluteCameraPosition = inverse(uViewMatrix)[3]; 
+                vec4 absoluteVertexPosition = uModelMatrix * aVertexPosition;
+                vec4 absoluteCameraPosition = vec4(uViewMatrixInverted[3].xyz, 1.0);
 
-                vec4 lightVector = normalize(uLightAbsolutePosition.xyz - absoluteVertexPosition.xyz);
-                vec4 normalVector = normalize(transpose(inverse(uModelMatrix)) * aVertexNormal);
-                vec4 viewVector = normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz);
-                vec4 reflectedLightVector = reflect(-lightVector, normalVector);
+                vVertexColor = vec4(0.0, 0.0, 0.0, 0.0);
 
-                vec4 ambientColor = uLightIa * uMaterialKa;
-                vec4 diffuseColor = uLightId * uMaterialKd * max(0, dot(normalVector, lightVector));
-                vec4 specularColor = uLightIs * uMaterialKs * pow(max(0, dot(reflectedLightVector, viewVector)), uMaterialSe);
-                vec4 emissiveColor = uMaterialKe;
+                for (int i = 0; i < 32; i++) {
+                    vec4 lightAbsolutePosition = uLightAbsolutePositions[i];
+                    vec4 lightIa = uLightIas[i];
+                    vec4 lightId = uLightIds[i];
+                    vec4 lightIs = uLightIss[i];
 
-                vVertexColor = ambientColor + diffuseColor + specularColor + emissiveColor;
+                    vec4 lightVector = vec4(normalize(lightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
+                    vec4 normalVector = vec4(normalize((uModelMatrixInvertedTransposed * aVertexNormal).xyz), 0.0);
+                    vec4 viewVector = vec4(normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz), 0.0);
+                    vec4 reflectedLightVector = reflect(-lightVector, normalVector);
+        
+                    vec4 ambientColor = lightIa * uMaterialKa;
+                    vec4 diffuseColor = lightId * uMaterialKd * max(0.0, dot(normalVector, lightVector));
+        
+                    float specularColorR = lightIs.x * uMaterialKs.x * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.x);
+                    float specularColorG = lightIs.y * uMaterialKs.y * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.y);
+                    float specularColorB = lightIs.z * uMaterialKs.z * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.z);
+                    float specularColorA = lightIs.w * uMaterialKs.w * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.w);
+                    vec4 specularColor = vec4(specularColorR, specularColorG, specularColorB, specularColorA);
+        
+                    vec4 emissiveColor = uMaterialKe;
 
-                gl_Position = uModelMatrix * uViewMatrix * absoluteVertexPosition;
+                    vVertexColor += ambientColor + diffuseColor + specularColor + emissiveColor;
+                }
+
+                gl_Position = uProjectionMatrix * uViewMatrix * absoluteVertexPosition;
             }
         `, `
             precision mediump float;
@@ -725,33 +787,15 @@ export class GourandShadingMaterial extends Material implements ReflectiveMateri
                 gl_FragColor = vVertexColor;
             }
         `);
-        // extract camera position from view matrix <https://stackoverflow.com/questions/46637247/is-4th-row-in-model-view-projection-the-viewing-position>
+        // extract camera position from view matrix <https://community.khronos.org/t/extracting-camera-position-from-a-modelview-matrix/68031>
+        // camera position is the 4-th column of inverted view matrix
+        // This is incorrect! <https://stackoverflow.com/questions/46637247/is-4th-row-in-model-view-projection-the-viewing-position>
 
         this.ka = ka;
         this.kd = kd;
         this.ks = ks;
         this.ke = ke;
         this.se = se;
-    }
-
-    compile(renderer: Renderer, attributePlaceholders: Object, uniformPlaceholders: Object) {
-        super.compile(renderer, {
-            aVertexPosition: "aVertexPosition",
-            aVertexNormal: "aVertexNormal",
-        }, {
-            uModelMatrix: "uModelMatrix",
-            uViewMatrix: "uViewMatrix",
-            uProjectionMatrix: "uProjectionMatrix",
-            uLightAbsolutePosition: "uLightAbsolutePosition",
-            uLightIa: "uLightIa",
-            uLightId: "uLightId",
-            uLightIs: "uLightIs",
-            uMaterialKa: "uMaterialKa",
-            uMaterialKd: "uMaterialKd",
-            uMaterialKs: "uMaterialKs",
-            uMaterialKe: "uMaterialKe",
-            uMaterialSe: "uMaterialSe",
-        });
     }
 }
 
@@ -876,6 +920,8 @@ export class Renderer {
         height: number,
     }
 
+    private lightPositionMapping: Map<Light, Array<number>>;
+
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         let gl = canvas.getContext("webgl2");
@@ -894,6 +940,8 @@ export class Renderer {
             width: canvas.width,
             height: canvas.height,
         };
+
+        this.lightPositionMapping = new Map();
     }
 
     clear(color = [0, 0, 0, 1]) {
@@ -904,7 +952,35 @@ export class Renderer {
 
     render(world: Sprite, camera: Camera) {
         this.gl.viewport(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
+
+        // In shader program, we need to know the absolute position of every light.
+        // so update light list here
+        this.lightPositionMapping.clear();
+        this.updateLightPositionMapping(world, mat4.create());
+
+        // do the real rendering
         this.renderWithMatrices(world, mat4.create(), camera.viewMatrix, camera.projectionMatrix);
+    }
+
+    private updateLightPositionMapping(sprite: Sprite, modelMatrix: mat4) {
+        let self = this;
+        let realMatrix = mat4.create();
+        mat4.multiply(realMatrix, modelMatrix, sprite.modelMatrix);
+
+        if (sprite instanceof Light) {
+            let lightAbsolutePosition = vec3.create();
+            mat4.getTranslation(lightAbsolutePosition, realMatrix);
+            this.lightPositionMapping.set(sprite, [
+                lightAbsolutePosition[0],
+                lightAbsolutePosition[1],
+                lightAbsolutePosition[2],
+                1,
+            ]);
+        }
+
+        sprite.children.forEach(function (child) {
+            self.updateLightPositionMapping(child, realMatrix);
+        })
     }
 
     renderWithMatrices(sprite: Sprite, modelMatrix: mat4, viewMatrix: mat4, projectionMatrix: mat4) {
@@ -947,6 +1023,43 @@ export class Renderer {
                 sprite.material.programInfo.uniformLocations["uProjectionMatrix"],
                 false,
                 projectionMatrix,
+            );
+
+            // uLightAbsolutePositions: "uLightAbsolutePositions",
+            // uLightIas: "uLightIas",
+            // uLightIds: "uLightIds",
+            // uLightIss: "uLightIss",
+
+            let lightAbsolutePositions: Array<Array<number>> = [];
+            let lightIas: Array<Array<number>> = [];
+            let lightIds: Array<Array<number>> = [];
+            let lightIss: Array<Array<number>> = [];
+
+            this.lightPositionMapping.forEach(function (v, k) {
+                lightAbsolutePositions.push(v);
+                lightIas.push(k.ia);
+                lightIds.push(k.id);
+                lightIss.push(k.is);
+            })
+
+            gl.uniform4fv(
+                sprite.material.programInfo.uniformLocations["uLightAbsolutePositions"],
+                new Float32Array(lightAbsolutePositions.flat()),
+            );
+
+            gl.uniform4fv(
+                sprite.material.programInfo.uniformLocations["uLightIas"],
+                new Float32Array(lightIas.flat()),
+            );
+
+            gl.uniform4fv(
+                sprite.material.programInfo.uniformLocations["uLightIds"],
+                new Float32Array(lightIds.flat()),
+            );
+
+            gl.uniform4fv(
+                sprite.material.programInfo.uniformLocations["uLightIss"],
+                new Float32Array(lightIss.flat()),
             );
         }
 
