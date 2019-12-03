@@ -571,7 +571,7 @@ export class Material {
         };
     }
 
-    compile(renderer: Renderer, attributePlaceholders: Object, uniformPlaceholders: Object) {
+    compile(renderer: Renderer, attributePlaceholders?: Object, uniformPlaceholders?: Object) {
         let self = this;
         let gl = renderer.gl;
         if (this.vertexShaderSource && this.fragmentShaderSource) {
@@ -1129,9 +1129,13 @@ export class Renderer {
         mat4.multiply(realMatrix, modelMatrix, sprite.modelMatrix);
 
         if (sprite.material) {
+            if (sprite.material.programInfo.program === undefined) { // if material has not been compiled
+                sprite.material.compile(this);
+            }
             gl.useProgram(sprite.material.programInfo.program);
             // sprite.material.placeholderValueMapping.attributes.aVertexPosition = new Float32Array(sprite.geometry.vertexPositions);
             // sprite.material.placeholderValueMapping.attributes.aVertexNormal = new Float32Array(sprite.geometry.normalVectors.flat());
+            sprite.material.bindGeometry(sprite.geometry); // automatically bind geometry
             sprite.material.bindPlaceholders(self, sprite.material.placeholderValueMapping.attributes, sprite.material.placeholderValueMapping.uniforms);
             gl.uniformMatrix4fv(
                 sprite.material.programInfo.uniformLocations["uModelMatrix"],

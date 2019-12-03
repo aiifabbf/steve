@@ -143,12 +143,6 @@ function main() {
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let yAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 1, 0]), new ColorMaterial([0, 1, 0, 1]));
     let zAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0, 1]), new ColorMaterial([0, 0, 1, 1]));
-    [xAxis, yAxis, zAxis].forEach(function (axis) {
-        axis.material.compile(renderer);
-        axis.material.bindPlaceholders(renderer, {
-            aVertexPosition: new Float32Array(axis.geometry.vertexPositions)
-        }, {});
-    });
 
     world.add(xAxis);
     world.add(yAxis);
@@ -159,16 +153,7 @@ function main() {
 
     for (let i = 0; i < 501; i++) {
         let xGround = new Sprite(new LineGeometry([-100, -100 + i, 0], [100, -100 + i, 0]), groundMaterial);
-        xGround.material.compile(renderer);
-        xGround.material.bindPlaceholders(renderer, {
-            aVertexPosition: new Float32Array(xGround.geometry.vertexPositions)
-        }, {});
-
         let yGround = new Sprite(new LineGeometry([-100 + i, -100, 0], [-100 + i, 100, 0]), groundMaterial);
-        yGround.material.compile(renderer);
-        yGround.material.bindPlaceholders(renderer, {
-            aVertexPosition: new Float32Array(yGround.geometry.vertexPositions)
-        }, {});
 
         world.add(xGround);
         world.add(yGround);
@@ -218,8 +203,6 @@ function main() {
 
     let light = new Light([1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]);
     let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
-    lightIndicator.material.compile(renderer);
-    lightIndicator.material.bindGeometry(lightIndicator.geometry);
     lightIndicator.add(light);
     world.add(lightIndicator);
 
@@ -229,8 +212,8 @@ function main() {
         [0.702, 0.482, 0.384, 1],
         [0.628281, 0.555802, 0.366065, 1.0],
         [0, 0, 0, 1],
-        [51.2, 51.2, 51.2, 51.2]
-    )
+        [51.2, 51.2, 51.2, 51.2],
+    );
 
     for (let i = 0; i < 20; i++) {
         for (let j = 0; j < 20; j++) {
@@ -239,14 +222,10 @@ function main() {
                 if (random < 3) {
                     // let grass = new Sprite(new CubeGeometry(1, 1, 1), new ColorMaterial([0.702, 0.482, 0.384, 1]));
                     let grass = new Sprite(new CubeGeometry(1, 1, 1), grassMaterial);
-                    grass.material.compile(renderer);
-                    grass.material.bindGeometry(grass.geometry);
                     mat4.translate(grass.modelMatrix, grass.modelMatrix, [-10.5 + i, -10.5 + j, 0.5]);
                     world.add(grass);
                     if (random < 2) {
                         let grass2 = new Sprite(new CubeGeometry(1, 1, 1), grassMaterial);
-                        grass2.material.compile(renderer);
-                        grass2.material.bindGeometry(grass.geometry);
                         mat4.translate(grass2.modelMatrix, grass2.modelMatrix, [-10.5 + i, -10.5 + j, 1.5]);
                         world.add(grass2);
                     }
@@ -1031,7 +1010,7 @@ function main() {
             mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [cloudAnimations[cloudIndex].yield()["translateX"], cloudPosition[1], cloudPosition[2]]);
         }
 
-        renderer.clear([0.1,0.1,0.1]);
+        renderer.clear([0, 0, 0, 0]);
         renderer.render(world, camera);
 
         //miniMapRenderer.clear();
