@@ -1,18 +1,10 @@
-import { mat4, vec3, quat, vec2 } from "gl-matrix";
-import { Light, GouraudShadingMaterial, Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy, FrustumGeometry } from "./engine";
-import * as engine from "./engine";
+import { mat4, vec3, quat } from "gl-matrix";
+import { Light, Renderer, Material, Sprite, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, PerspectiveCamera, OrthogonalCamera, radians, deepCopy, FrustumGeometry, PhongShadingMaterial, GouraudShadingMaterial } from "./engine";
+import * as engine from "./engine.ts";
 
 let canvas = document.querySelector("canvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
-
-function deg2rad(deg) {
-    return deg / 360 * 2 * Math.PI;
-}
-
-function rad2deg(rad) {
-    return rad / (2 * Math.PI) * 360;
-}
 
 function getRandomNodePositionColorMapping(nodePositions) {
     let nodePositionColorMapping = {};
@@ -98,7 +90,6 @@ function main() {
         1000,
     );
 
-    let firstPersonCameraPosition = [5, 5, 5];
     let firstPersonCameraTheta = 90;
     let firstPersonCameraPhi = 90;
     let firstPersonCameraRadius = 10;
@@ -247,10 +238,6 @@ function main() {
                     let w = Math.floor(1 + Math.random() * 8);
                     let l = Math.floor(1 + Math.random() * 8);
                     let cloud = new Sprite(new CubeGeometry(w, l, 1), cloudMaterial);
-                    cloud.material.compile(renderer);
-                    cloud.material.bindPlaceholders(renderer, {
-                        aVertexPosition: new Float32Array(cloud.geometry.vertexPositions),
-                    }, {});
                     mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [-49.5 + i, -49.5 + j, 10]);
                     world.add(cloud);
                     clouds.push(cloud);
@@ -282,33 +269,17 @@ function main() {
 
     let bodyJoint = new Sprite(null, null);
     let body = new Sprite(new CubeGeometry(0.48, 0.24, 0.72), new ColorMaterial([0, 0.686, 0.686, 1]));
-    body.material.compile(renderer);
-    body.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(body.geometry.vertexPositions),
-    }, {});
 
     let headJoint = new Sprite(null, null);
     let head = new Sprite(new CubeGeometry(0.48, 0.48, 0.48), new ColorMaterial([0.702, 0.482, 0.384, 1]));
-    head.material.compile(renderer);
-    head.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(head.geometry.vertexPositions),
-    }, {});
 
     let larmJoint = new Sprite(null, null);
     let larm = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), new ColorMaterial([0.588, 0.372, 0.255, 1]));
-    larm.material.compile(renderer);
-    larm.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(larm.geometry.vertexPositions),
-    }, {});
 
     let armxAxis = new Sprite(new LineGeometry([0, 0, 0], [0.5, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let armyAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0.5, 0]), new ColorMaterial([0, 1, 0, 1]));
     let armzAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0, 0.5]), new ColorMaterial([0, 0, 1, 1]));
     [armxAxis, armyAxis, armzAxis].forEach(function (axis) {
-        axis.material.compile(renderer);
-        axis.material.bindPlaceholders(renderer, {
-            aVertexPosition: new Float32Array(axis.geometry.vertexPositions)
-        }, {});
         larmJoint.add(axis);
     });
     // sphere on left hand
@@ -351,10 +322,6 @@ function main() {
 
     let rarmJoint = new Sprite(null, null);
     let rarm = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), new ColorMaterial([0.588, 0.372, 0.255, 1]));
-    rarm.material.compile(renderer);
-    rarm.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(rarm.geometry.vertexPositions),
-    }, {});
 
     // shield on right hand
     let shield = new Sprite(new SphereGeometry(0.5, 16, 8, 2 * Math.PI, Math.PI / 3), new Material(vertexShaderSource, fragmentShaderSource));
@@ -366,17 +333,9 @@ function main() {
 
     let llegJoint = new Sprite(null, null);
     let lleg = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), new ColorMaterial([0.275, 0.228, 0.647, 1]));
-    lleg.material.compile(renderer);
-    lleg.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(lleg.geometry.vertexPositions),
-    }, {});
 
     let rlegJoint = new Sprite(null, null);
     let rleg = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), new ColorMaterial([0.275, 0.228, 0.5, 1]));
-    rleg.material.compile(renderer);
-    rleg.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(rleg.geometry.vertexPositions),
-    }, {});
 
     let capeJoint = new Sprite(null, null);
     let cape = new Sprite(new CubeGeometry(0.48, 0.06, 1.08), new Material(vertexShaderSource, fragmentShaderSource));
@@ -418,11 +377,9 @@ function main() {
         }).flat()),
     }, {});
 
+    console.log(cape);
+
     let angelRing = new Sprite(new engine.TorusGeometry(0.24, 0.06, 32, 32), new ColorMaterial([1, 1, 0, 1]));
-    angelRing.material.compile(renderer);
-    angelRing.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(angelRing.geometry.vertexPositions),
-    }, {});
 
     mat4.translate(hip.modelMatrix, hip.modelMatrix, [0, 0, 0.72]);
     world.add(hip);
@@ -437,26 +394,11 @@ function main() {
     body.add(larmJoint);
     larmJoint.add(larm);
 
-    // sphere on left hand
-    // mat4.translate(sphere.modelMatrix, sphere.modelMatrix, [0, -0.09, -0.45]);
-    // larm.add(sphere);
-
-    // sword on left hand
-    mat4.translate(sword.modelMatrix, sword.modelMatrix, [0, -0.09, -0.45 + 0.1]);
-    mat4.rotateX(sword.modelMatrix, sword.modelMatrix, radians(180));
-    larm.add(sword);
-
     // rarm
     mat4.translate(rarmJoint.modelMatrix, rarmJoint.modelMatrix, [-0.36, 0, 0.24]);
     mat4.translate(rarm.modelMatrix, rarm.modelMatrix, [0, 0, -0.24]);
     body.add(rarmJoint);
     rarmJoint.add(rarm);
-
-    // shield on right hand
-    mat4.rotateZ(shield.modelMatrix, shield.modelMatrix, radians(160));
-    // mat4.rotateY(shield.modelMatrix, shield.modelMatrix, radians(20));
-    mat4.translate(shield.modelMatrix, shield.modelMatrix, [0, -0.09, 0]);
-    rarm.add(shield);
 
     // lleg
     mat4.translate(llegJoint.modelMatrix, llegJoint.modelMatrix, [-0.12, 0, 0]);
@@ -493,88 +435,40 @@ function main() {
     // Start build cat
 
     let catBody = new Sprite(new CubeGeometry(0.24, 0.96, 0.36), new ColorMaterial([0.6, 0.6, 0.6, 1]));
-    catBody.material.compile(renderer);
-    catBody.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catBody.geometry.vertexPositions),
-    }, {});
 
     let catxAxis = new Sprite(new LineGeometry([0, 0, 0], [0.5, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let catyAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 2, 0]), new ColorMaterial([0, 1, 0, 1]));
     let catzAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0, 0.5]), new ColorMaterial([0, 0, 1, 1]));
     [catxAxis, catyAxis, catzAxis].forEach(function (axis) {
-        axis.material.compile(renderer);
-        axis.material.bindPlaceholders(renderer, {
-            aVertexPosition: new Float32Array(axis.geometry.vertexPositions)
-        }, {});
         catBody.add(axis);
     });
 
     let catHeadJoint = new Sprite(null, null);
     let catHead = new Sprite(new CubeGeometry(0.3, 0.3, 0.24), new ColorMaterial([0.6, 0.6, 0.6, 1]));
-    catHead.material.compile(renderer);
-    catHead.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catHead.geometry.vertexPositions),
-    }, {});
 
     let catMouth = new Sprite(new CubeGeometry(0.18, 0.06, 0.12), new ColorMaterial([0.4, 0.4, 0.4, 1]));
-    catMouth.material.compile(renderer);
-    catMouth.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catMouth.geometry.vertexPositions),
-    }, {});
 
     let catEarL = new Sprite(new CubeGeometry(0.06, 0.12, 0.06), new ColorMaterial([0.3, 0.3, 0.3, 1]));
-    catEarL.material.compile(renderer);
-    catEarL.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catEarL.geometry.vertexPositions),
-    }, {});
 
     let catEarR = new Sprite(new CubeGeometry(0.06, 0.12, 0.06), new ColorMaterial([0.3, 0.3, 0.3, 1]));
-    catEarR.material.compile(renderer);
-    catEarR.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catEarR.geometry.vertexPositions),
-    }, {});
 
     let catFrontFootLJoint = new Sprite(null, null);
     let catFrontFootL = new Sprite(new CubeGeometry(0.12, 0.12, 0.6), new ColorMaterial([0.6, 0.6, 0.6, 1]));
-    catFrontFootL.material.compile(renderer);
-    catFrontFootL.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catFrontFootL.geometry.vertexPositions),
-    }, {});
 
     let catFrontFootRJoint = new Sprite(null, null);
     let catFrontFootR = new Sprite(new CubeGeometry(0.12, 0.12, 0.6), new ColorMaterial([0.6, 0.6, 0.6, 1]));
-    catFrontFootR.material.compile(renderer);
-    catFrontFootR.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catFrontFootR.geometry.vertexPositions),
-    }, {});
 
     let catRearFootLJoint = new Sprite(null, null);
     let catRearFootL = new Sprite(new CubeGeometry(0.12, 0.12, 0.36), new ColorMaterial([0.6, 0.6, 0.6, 1]));
-    catRearFootL.material.compile(renderer);
-    catRearFootL.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catRearFootL.geometry.vertexPositions),
-    }, {});
 
     let catRearFootRJoint = new Sprite(null, null);
     let catRearFootR = new Sprite(new CubeGeometry(0.12, 0.12, 0.36), new ColorMaterial([0.6, 0.6, 0.6, 1]));
-    catRearFootR.material.compile(renderer);
-    catRearFootR.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catRearFootR.geometry.vertexPositions),
-    }, {});
 
     let catTailFrontJoint = new Sprite(null, null);
     let catTailFront = new Sprite(new CubeGeometry(0.06, 0.48, 0.06), new ColorMaterial([0.6, 0.6, 0.6, 1]));
-    catTailFront.material.compile(renderer);
-    catTailFront.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catTailFront.geometry.vertexPositions),
-    }, {});
 
     let catTailRearJoint = new Sprite(null, null);
     let catTailRear = new Sprite(new CubeGeometry(0.06, 0.48, 0.06), new ColorMaterial([0.6, 0.6, 0.6, 1]));
-    catTailRear.material.compile(renderer);
-    catTailRear.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(catTailRear.geometry.vertexPositions),
-    }, {});
 
     mat4.translate(catBody.modelMatrix, catBody.modelMatrix, [0, 0, 0.7]);
     // add cat head
@@ -1010,7 +904,7 @@ function main() {
             mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [cloudAnimations[cloudIndex].yield()["translateX"], cloudPosition[1], cloudPosition[2]]);
         }
 
-        renderer.clear([0, 0, 0, 0]);
+        renderer.clear([0, 0, 0, 1]);
         renderer.render(world, camera);
 
         //miniMapRenderer.clear();
@@ -1059,7 +953,7 @@ function main() {
         mat4.multiply(gyro.modelMatrix, gyroTranslationMatrix, gyroRotationMatrix);
     }
 
-    window.addEventListener("resize", function (event) {
+    window.addEventListener("resize", function () {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight * 0.8;
 

@@ -45,19 +45,25 @@ export class PointLight extends Light {
 }
 
 export class Geometry {
-    vertexPositions: Array<Number>;
+    readonly vertexPositions: Array<number>;
     mode: number;
 
-    constructor(vertexPositions: Array<Number>) {
+    private cachedNormalVectors: Array<Array<number>>;
+    private cachedNodePositions: Array<Array<number>>;
+
+    constructor(vertexPositions: Array<number>) {
         this.vertexPositions = vertexPositions;
     }
 
     // get vertex positions in Array<vec4>-like form. Equivalent to reshaping vertexPositions to (-1, 4)
     get nodePositions(): Array<Array<number>> {
-        let nodePositions = [];
+        if (this.cachedNodePositions) {
+            return this.cachedNodePositions;
+        }
+        this.cachedNodePositions = [];
 
         for (let i = 0; i < this.vertexPositions.length / 4; i++) {
-            nodePositions.push([
+            this.cachedNodePositions.push([
                 this.vertexPositions[i * 4 + 0],
                 this.vertexPositions[i * 4 + 1],
                 this.vertexPositions[i * 4 + 2],
@@ -65,12 +71,15 @@ export class Geometry {
             ]);
         }
 
-        return nodePositions;
+        return this.cachedNodePositions;
     }
 
     // compute normalized, normal vector in Array<vec4>-like form for every node
     // sub-types can have their own specialized, more accurate normal vectors.
     get normalVectors(): Array<Array<number>> {
+        if (this.cachedNormalVectors) {
+            return this.cachedNormalVectors;
+        }
         let nodePositions = this.nodePositions;
         let normalVectors: Array<Array<number>> = [];
         let normalVector = vec3.create();
@@ -96,6 +105,8 @@ export class Geometry {
 
         normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
         normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
+
+        this.cachedNormalVectors = normalVectors;
 
         return normalVectors;
     }
@@ -330,6 +341,8 @@ export class SphereGeometry extends Geometry {
     maxTheta: number;
     maxPhi: number;
 
+    private cachedNormalVectors: Array<Array<number>>;
+
     constructor(radius: number = 1, horizontalSegmentCount: number = 16, verticalSegmentCount: number = 32, maxTheta: number = 2 * Math.PI, maxPhi: number = Math.PI) {
         let vertexPositions = [];
         let deltaPhi = maxPhi / verticalSegmentCount;
@@ -367,11 +380,16 @@ export class SphereGeometry extends Geometry {
 
     // override Geometry.normalVectors. This is more accurate, because we already know what the normal vector should be precisely on every point.
     get normalVectors() {
-        return this.nodePositions.map(v => {
+        if (this.cachedNormalVectors) {
+            return this.cachedNormalVectors;
+        }
+        this.cachedNormalVectors = this.nodePositions.map(v => {
             let normalVector = vec4.create();
             vec4.normalize(normalVector, [v[0], v[1], v[2], 0]);
             return Array.from(normalVector);
         }).flat();
+
+        return this.cachedNormalVectors;
     }
 }
 
@@ -1129,7 +1147,7 @@ export class Renderer {
         mat4.multiply(realMatrix, modelMatrix, sprite.modelMatrix);
 
         if (sprite.material) {
-            if (sprite.material.programInfo.program === undefined) { // if material has not been compiled
+            if (sprite.material.programInfo === undefined) { // if material has not been compiled
                 sprite.material.compile(this);
             }
             gl.useProgram(sprite.material.programInfo.program);
