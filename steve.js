@@ -1,5 +1,5 @@
 import { mat4, vec3, quat, vec2 } from "gl-matrix";
-import { Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy, FrustumGeometry } from "./engine";
+import { Light, GouraudShadingMaterial, Renderer, TriangleGeometry, Material, Sprite, TetrahedronGeometry, Geometry, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, Camera, PerspectiveCamera, OrthogonalCamera, radians, degrees, deepCopy, FrustumGeometry } from "./engine";
 import * as engine from "./engine";
 
 let canvas = document.querySelector("canvas");
@@ -216,27 +216,37 @@ function main() {
     // mat4.translate(gyro.modelMatrix, gyro.modelMatrix, [0, -10, 0]);
     world.add(gyro);
 
+    let light = new Light([1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]);
+    let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
+    lightIndicator.material.compile(renderer);
+    lightIndicator.material.bindGeometry(lightIndicator.geometry);
+    lightIndicator.add(light);
+    world.add(lightIndicator);
+
     // random grass block
+    let grassMaterial = new GouraudShadingMaterial(
+        [0.35, 0.24, 0.19, 1.0],
+        [0.702, 0.482, 0.384, 1],
+        [0.628281, 0.555802, 0.366065, 1.0],
+        [0, 0, 0, 1],
+        [51.2, 51.2, 51.2, 51.2]
+    )
+
     for (let i = 0; i < 20; i++) {
         for (let j = 0; j < 20; j++) {
             let random = Math.floor(Math.random() * 10);
             if (i < 9 || i > 11) {
                 if (random < 3) {
                     // let grass = new Sprite(new CubeGeometry(1, 1, 1), new ColorMaterial([0.702, 0.482, 0.384, 1]));
-                    let grass = new Sprite(new CubeGeometry(1, 1, 1), new Material(vertexShaderSource, fragmentShaderSource));
-                    grass.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-                    grass.material.bindPlaceholders(renderer, {
-                        aVertexPosition: new Float32Array(grass.geometry.vertexPositions),
-                        aVertexColor: new Float32Array(getRandomColors(grass.geometry.nodePositions).flat()),
-                    }, {});
+                    let grass = new Sprite(new CubeGeometry(1, 1, 1), grassMaterial);
+                    grass.material.compile(renderer);
+                    grass.material.bindGeometry(grass.geometry);
                     mat4.translate(grass.modelMatrix, grass.modelMatrix, [-10.5 + i, -10.5 + j, 0.5]);
                     world.add(grass);
                     if (random < 2) {
-                        let grass2 = new Sprite(new CubeGeometry(1, 1, 1), new ColorMaterial([0.702, 0.482, 0.384, 1]));
+                        let grass2 = new Sprite(new CubeGeometry(1, 1, 1), grassMaterial);
                         grass2.material.compile(renderer);
-                        grass2.material.bindPlaceholders(renderer, {
-                            aVertexPosition: new Float32Array(grass2.geometry.vertexPositions),
-                        }, {});
+                        grass2.material.bindGeometry(grass.geometry);
                         mat4.translate(grass2.modelMatrix, grass2.modelMatrix, [-10.5 + i, -10.5 + j, 1.5]);
                         world.add(grass2);
                     }
@@ -244,7 +254,7 @@ function main() {
             }
         }
     }
-
+    
     // random cloud
     let clouds = [];
     let cloudAnimations = [];
@@ -879,10 +889,13 @@ function main() {
         } else if (event.code === "KeyV") {
             if (camera === thirdPersonCamera) {
                 camera = firstPersonCamera;
+                document.querySelector("#which-camera").textContent = "first person";
             } else if (camera === firstPersonCamera) {
                 camera = freeCamera;
+                document.querySelector("#which-camera").textContent = "free fly";
             } else {
                 camera = thirdPersonCamera;
+                document.querySelector("#which-camera").textContent = "third person";
             }
         }
     });
@@ -1018,7 +1031,7 @@ function main() {
             mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [cloudAnimations[cloudIndex].yield()["translateX"], cloudPosition[1], cloudPosition[2]]);
         }
 
-        renderer.clear();
+        renderer.clear([0.1,0.1,0.1]);
         renderer.render(world, camera);
 
         //miniMapRenderer.clear();
@@ -1065,15 +1078,6 @@ function main() {
         mat4.fromRotation(gyroRotationMatrix, rotationAngle, axis);
 
         mat4.multiply(gyro.modelMatrix, gyroTranslationMatrix, gyroRotationMatrix);
-
-        // update user interface camera position
-        if (camera === firstPersonCamera) {
-            document.querySelector("#which-camera").textContent = "first person, position: " + camera.position.map(v => v.toFixed(2));
-        } else if (camera === freeCamera) {
-            document.querySelector("#which-camera").textContent = "free fly, position: " + camera.position.map(v => v.toFixed(2));
-        } else {
-            document.querySelector("#which-camera").textContent = "third person, position: " + camera.position.map(v => v.toFixed(2));
-        }
     }
 
     window.addEventListener("resize", function (event) {
