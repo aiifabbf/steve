@@ -834,7 +834,7 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
     ke: Array<Number>; // emissive term
     se: Array<Number>; // shininess, specular exponent
 
-    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>, lighting: string) {
+    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>, lighting: string = "phong") {
         let specularTemplate: string;
         if (lighting.toLowerCase() === "phong") {
             specularTemplate = `
