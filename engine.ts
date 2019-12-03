@@ -827,6 +827,125 @@ export class GouraudShadingBlinnPhongLightingMaterial extends GouraudShadingMate
     }
 }
 
+export class PhongShadingMaterial extends ReflectiveMaterial {
+    ka: Array<Number>; // ambient reflectance
+    kd: Array<Number>; // diffuse reflectance
+    ks: Array<Number>; // specular reflectance
+    ke: Array<Number>; // emissive term
+    se: Array<Number>; // shininess, specular exponent
+
+    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>, lighting: string) {
+        let specularTemplate: string;
+        if (lighting.toLowerCase() === "phong") {
+            specularTemplate = `
+                float specularColorR = lightIs.x * uMaterialKs.x * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.x);
+                float specularColorG = lightIs.y * uMaterialKs.y * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.y);
+                float specularColorB = lightIs.z * uMaterialKs.z * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.z);
+                float specularColorA = lightIs.w * uMaterialKs.w * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.w);
+            `
+        } else if (lighting.toLowerCase() === "blinn-phong") {
+            specularTemplate = `
+                vec4 halfVector = normalize(lightVector + normalVector);
+
+                float specularColorR = lightIs.x * uMaterialKs.x * pow(max(0.0, dot(halfVector, normalVector)), uMaterialSe.x);
+                float specularColorG = lightIs.y * uMaterialKs.y * pow(max(0.0, dot(halfVector, normalVector)), uMaterialSe.y);
+                float specularColorB = lightIs.z * uMaterialKs.z * pow(max(0.0, dot(halfVector, normalVector)), uMaterialSe.z);
+                float specularColorA = lightIs.w * uMaterialKs.w * pow(max(0.0, dot(halfVector, normalVector)), uMaterialSe.w);
+            `
+        } else {
+            throw new Error("Lighting method not supported. Should be 'Phong' or 'Blinn-Phong'.");
+        }
+        super(`
+            attribute vec4 aVertexPosition;
+            attribute vec4 aVertexNormal;
+
+            uniform mat4 uModelMatrix;
+            uniform mat4 uModelMatrixInvertedTransposed;
+            uniform mat4 uViewMatrix;
+            uniform mat4 uViewMatrixInverted;
+            uniform mat4 uProjectionMatrix;
+
+            uniform vec4 uLightAbsolutePositions[8];
+
+            varying vec4 vLightVector[8];
+            varying vec4 vNormalVector[8];
+            varying vec4 vViewVector[8];
+            varying vec4 vReflectedLightVector[8];
+
+            void main() {
+                vec4 absoluteVertexPosition = uModelMatrix * aVertexPosition;
+                vec4 absoluteCameraPosition = vec4(uViewMatrixInverted[3].xyz, 1.0);
+
+                for (int i = 0; i < 32; i++) {
+                    vec4 lightAbsolutePosition = uLightAbsolutePositions[i];
+
+                    vec4 lightVector = vec4(normalize(lightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
+                    vec4 normalVector = vec4(normalize((uModelMatrixInvertedTransposed * aVertexNormal).xyz), 0.0);
+                    vec4 viewVector = vec4(normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz), 0.0);
+                    vec4 reflectedLightVector = reflect(-lightVector, normalVector);
+
+                    vLightVector[i] = lightVector;
+                    vNormalVector[i] = normalVector;
+                    vViewVector[i] = viewVector;
+                    vReflectedLightVector[i] = reflectedLightVector;
+                }
+
+                gl_Position = uProjectionMatrix * uViewMatrix * absoluteVertexPosition;
+            }
+        `, `
+            precision mediump float;
+
+            uniform vec4 uLightIas[8];
+            uniform vec4 uLightIds[8];
+            uniform vec4 uLightIss[8];
+
+            uniform vec4 uMaterialKa;
+            uniform vec4 uMaterialKd;
+            uniform vec4 uMaterialKs;
+            uniform vec4 uMaterialKe;
+            uniform vec4 uMaterialSe;
+
+            varying vec4 vLightVector[8];
+            varying vec4 vNormalVector[8];
+            varying vec4 vViewVector[8];
+            varying vec4 vReflectedLightVector[8];
+
+            void main() {
+                vec4 fragmentColor;
+                fragmentColor = vec4(0.0, 0.0, 0.0, 0.0);
+
+                for (int i = 0; i < 32; i++) {
+                    vec4 lightIa = uLightIas[i];
+                    vec4 lightId = uLightIds[i];
+                    vec4 lightIs = uLightIss[i];
+
+                    vec4 lightVector = normalize(vLightVector[i]);
+                    vec4 normalVector = normalize(vNormalVector[i]);
+                    vec4 viewVector = normalize(vViewVector[i]);
+                    vec4 reflectedLightVector = normalize(vReflectedLightVector[i]);
+
+                    vec4 ambientColor = lightIa * uMaterialKa;
+                    vec4 diffuseColor = lightId * uMaterialKd * max(0.0, dot(normalVector, lightVector));
+        ` + specularTemplate + `
+                    vec4 specularColor = vec4(specularColorR, specularColorG, specularColorB, specularColorA);
+        
+                    vec4 emissiveColor = uMaterialKe;
+
+                    fragmentColor += ambientColor + diffuseColor + specularColor + emissiveColor;
+                }
+
+                gl_FragColor = fragmentColor;
+            }
+        `);
+
+        this.ka = ka;
+        this.kd = kd;
+        this.ks = ks;
+        this.ke = ke;
+        this.se = se;
+    }
+}
+
 export interface Camera {
     viewMatrix: mat4;
     projectionMatrix: mat4;
