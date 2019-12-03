@@ -1,5 +1,5 @@
 import { vec3, mat4 } from "gl-matrix";
-import { Renderer, Sprite, LineGeometry, ColorMaterial, PerspectiveCamera, radians, SphereGeometry, Animation, linear, PlaneGeometry, Light, GouraudShadingMaterial } from "./engine";
+import { Renderer, Sprite, LineGeometry, ColorMaterial, PerspectiveCamera, radians, SphereGeometry, Animation, linear, PlaneGeometry, Light, GouraudShadingMaterial, PhongShadingMaterial } from "./engine";
 
 let canvas = document.querySelector("canvas");
 canvas.width = window.innerWidth;
@@ -113,12 +113,12 @@ function main() {
     // }
 
     let sphereContainer = new Sprite(null, null);
-    let anotherSphereMaterial = new GouraudShadingMaterial(
+    let anotherSphereMaterial = new PhongShadingMaterial(
         [0.24725, 0.1995, 0.0745, 1.0],
         [0.75164, 0.60648, 0.22648, 1.0],
         [0.628281, 0.555802, 0.366065, 1.0],
         [0, 0, 0, 1],
-        [51.2, 51.2, 51.2, 51.2].map(v => 10 * v),
+        [51.2, 51.2, 51.2, 51.2],
         "phong",
     )
     let anotherSphere = new Sprite(new SphereGeometry(1, 32, 16), anotherSphereMaterial);
