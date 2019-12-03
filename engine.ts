@@ -721,7 +721,27 @@ export class GouraudShadingMaterial extends ReflectiveMaterial implements Reflec
     ke: Array<Number>; // emissive term
     se: Array<Number>; // shininess, specular exponent
 
-    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>) {
+    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>, lighting: string = "phong") {
+        let specularTemplate: string;
+        if (lighting.toLowerCase() === "phong") {
+            specularTemplate = `
+                float specularColorR = lightIs.x * uMaterialKs.x * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.x);
+                float specularColorG = lightIs.y * uMaterialKs.y * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.y);
+                float specularColorB = lightIs.z * uMaterialKs.z * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.z);
+                float specularColorA = lightIs.w * uMaterialKs.w * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.w);
+            `
+        } else if (lighting.toLowerCase() === "blinn-phong") {
+            specularTemplate = `
+                vec4 halfVector = normalize(lightVector + normalVector);
+
+                float specularColorR = lightIs.x * uMaterialKs.x * pow(max(0.0, dot(halfVector, normalVector)), uMaterialSe.x);
+                float specularColorG = lightIs.y * uMaterialKs.y * pow(max(0.0, dot(halfVector, normalVector)), uMaterialSe.y);
+                float specularColorB = lightIs.z * uMaterialKs.z * pow(max(0.0, dot(halfVector, normalVector)), uMaterialSe.z);
+                float specularColorA = lightIs.w * uMaterialKs.w * pow(max(0.0, dot(halfVector, normalVector)), uMaterialSe.w);
+            `
+        } else {
+            throw new Error("Lighting method not supported. Should be 'Phong' or 'Blinn-Phong'.");
+        }
         super(`
             attribute vec4 aVertexPosition;
             attribute vec4 aVertexNormal;
@@ -764,11 +784,7 @@ export class GouraudShadingMaterial extends ReflectiveMaterial implements Reflec
         
                     vec4 ambientColor = lightIa * uMaterialKa;
                     vec4 diffuseColor = lightId * uMaterialKd * max(0.0, dot(normalVector, lightVector));
-        
-                    float specularColorR = lightIs.x * uMaterialKs.x * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.x);
-                    float specularColorG = lightIs.y * uMaterialKs.y * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.y);
-                    float specularColorB = lightIs.z * uMaterialKs.z * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.z);
-                    float specularColorA = lightIs.w * uMaterialKs.w * pow(max(0.0, dot(reflectedLightVector, viewVector)), uMaterialSe.w);
+        ` + specularTemplate + `
                     vec4 specularColor = vec4(specularColorR, specularColorG, specularColorB, specularColorA);
         
                     vec4 emissiveColor = uMaterialKe;
@@ -799,12 +815,16 @@ export class GouraudShadingMaterial extends ReflectiveMaterial implements Reflec
     }
 }
 
-export class PhongShadingMaterial extends Material {
-
+export class GouraudShadingPhongLightingMaterial extends GouraudShadingMaterial {
+    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>) {
+        super(ka, kd, ks, ke, se, "phong");
+    }
 }
 
-export class PhongLightingGourandShadingMaterial extends Material {
-
+export class GouraudShadingBlinnPhongLightingMaterial extends GouraudShadingMaterial {
+    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>) {
+        super(ka, kd, ks, ke, se, "blinn-phong");
+    }
 }
 
 export interface Camera {

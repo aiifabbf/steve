@@ -118,7 +118,8 @@ function main() {
         [0.75164, 0.60648, 0.22648, 1.0],
         [0.628281, 0.555802, 0.366065, 1.0],
         [0, 0, 0, 1],
-        [51.2, 51.2, 51.2, 51.2]
+        [51.2, 51.2, 51.2, 51.2].map(v => 10 * v),
+        "phong",
     )
     let anotherSphere = new Sprite(new SphereGeometry(1, 32, 16), anotherSphereMaterial);
     anotherSphere.material.compile(renderer);
