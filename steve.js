@@ -131,6 +131,15 @@ function main() {
         100,
     );
 
+    // materials
+    let goldMaterial = new GouraudShadingMaterial(
+        [0.35, 0.24, 0.19, 1.0],
+        [0.702, 0.482, 0.384, 1],
+        [0.628281, 0.555802, 0.366065, 1.0],
+        [0, 0, 0, 1],
+        [51.2, 51.2, 51.2, 51.2],
+    );
+
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let yAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 1, 0]), new ColorMaterial([0, 1, 0, 1]));
     let zAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0, 1]), new ColorMaterial([0, 0, 1, 1]));
@@ -142,13 +151,13 @@ function main() {
     // Start building ground grid
     let groundMaterial = new ColorMaterial([0.5, 0.5, 0.5, 1]);
 
-    for (let i = 0; i < 501; i++) {
-        let xGround = new Sprite(new LineGeometry([-100, -100 + i, 0], [100, -100 + i, 0]), groundMaterial);
-        let yGround = new Sprite(new LineGeometry([-100 + i, -100, 0], [-100 + i, 100, 0]), groundMaterial);
+    // for (let i = 0; i < 501; i++) {
+    //     let xGround = new Sprite(new LineGeometry([-100, -100 + i, 0], [100, -100 + i, 0]), groundMaterial);
+    //     let yGround = new Sprite(new LineGeometry([-100 + i, -100, 0], [-100 + i, 100, 0]), groundMaterial);
 
-        world.add(xGround);
-        world.add(yGround);
-    }
+    //     world.add(xGround);
+    //     world.add(yGround);
+    // }
 
     // alter
     let ring2 = new Sprite(new RingGeometry(2, 2.5, 1, 32), new Material(vertexShaderSource, fragmentShaderSource));
@@ -181,12 +190,7 @@ function main() {
     world.add(tree);
 
     // let gyro = new Sprite(new RotationGeometry(0.1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04]), new ColorMaterial([1, 0.2, 0.2, 1]));
-    let gyro = new Sprite(new RotationGeometry(1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04].map(v => 10 * v)), new Material(vertexShaderSource, fragmentShaderSource));
-    gyro.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    gyro.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(gyro.geometry.vertexPositions),
-        aVertexColor: new Float32Array(getRandomColors(gyro.geometry.nodePositions).flat()),
-    }, {});
+    let gyro = new Sprite(new RotationGeometry(1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04].map(v => 10 * v)), goldMaterial);
     let gyroTranslationMatrix = mat4.create();
     mat4.fromTranslation(gyroTranslationMatrix, [0, -10, 0]);
     // mat4.translate(gyro.modelMatrix, gyro.modelMatrix, [0, -10, 0]);
@@ -195,16 +199,10 @@ function main() {
     let light = new Light([1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]);
     let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
     lightIndicator.add(light);
+    mat4.translate(lightIndicator.modelMatrix, lightIndicator.modelMatrix, [0, 0, 5]);
     world.add(lightIndicator);
 
     // random grass block
-    let grassMaterial = new GouraudShadingMaterial(
-        [0.35, 0.24, 0.19, 1.0],
-        [0.702, 0.482, 0.384, 1],
-        [0.628281, 0.555802, 0.366065, 1.0],
-        [0, 0, 0, 1],
-        [51.2, 51.2, 51.2, 51.2],
-    );
 
     for (let i = 0; i < 20; i++) {
         for (let j = 0; j < 20; j++) {
@@ -212,11 +210,11 @@ function main() {
             if (i < 9 || i > 11) {
                 if (random < 3) {
                     // let grass = new Sprite(new CubeGeometry(1, 1, 1), new ColorMaterial([0.702, 0.482, 0.384, 1]));
-                    let grass = new Sprite(new CubeGeometry(1, 1, 1), grassMaterial);
+                    let grass = new Sprite(new CubeGeometry(1, 1, 1), goldMaterial);
                     mat4.translate(grass.modelMatrix, grass.modelMatrix, [-10.5 + i, -10.5 + j, 0.5]);
                     world.add(grass);
                     if (random < 2) {
-                        let grass2 = new Sprite(new CubeGeometry(1, 1, 1), grassMaterial);
+                        let grass2 = new Sprite(new CubeGeometry(1, 1, 1), goldMaterial);
                         mat4.translate(grass2.modelMatrix, grass2.modelMatrix, [-10.5 + i, -10.5 + j, 1.5]);
                         world.add(grass2);
                     }
@@ -224,45 +222,45 @@ function main() {
             }
         }
     }
-    
+
     // random cloud
     let clouds = [];
     let cloudAnimations = [];
     let cloudMaterial = new ColorMaterial([1, 1, 1, 1])
 
-    for (let i = 0; i < 100; i++) {
-        for (let j = 0; j < 100; j++) {
-            let random = Math.floor(Math.random() * 70);
-            if (i < 9 || i > 11) {
-                if (random < 1) {
-                    let w = Math.floor(1 + Math.random() * 8);
-                    let l = Math.floor(1 + Math.random() * 8);
-                    let cloud = new Sprite(new CubeGeometry(w, l, 1), cloudMaterial);
-                    mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [-49.5 + i, -49.5 + j, 10]);
-                    world.add(cloud);
-                    clouds.push(cloud);
-                    let cloudAnimation = new engine.Animation(
-                        {
-                            0: {
-                                translateX: -49.5 + i,
-                            },
-                            0.5: {
-                                translateX: -49.5 + i + 100,
-                            },
-                            0.5000000001: { // go back to start point immediately
-                                translateX: -49.5 + i - 100,
-                            },
-                            1.0: {
-                                translateX: -49.5 + i,
-                            }
-                        }, 50 / Math.random(), engine.linear, 0, Infinity
-                    );
-                    cloudAnimation.start();
-                    cloudAnimations.push(cloudAnimation);
-                }
-            }
-        }
-    }
+    // for (let i = 0; i < 100; i++) {
+    //     for (let j = 0; j < 100; j++) {
+    //         let random = Math.floor(Math.random() * 70);
+    //         if (i < 9 || i > 11) {
+    //             if (random < 1) {
+    //                 let w = Math.floor(1 + Math.random() * 8);
+    //                 let l = Math.floor(1 + Math.random() * 8);
+    //                 let cloud = new Sprite(new CubeGeometry(w, l, 1), cloudMaterial);
+    //                 mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [-49.5 + i, -49.5 + j, 10]);
+    //                 world.add(cloud);
+    //                 clouds.push(cloud);
+    //                 let cloudAnimation = new engine.Animation(
+    //                     {
+    //                         0: {
+    //                             translateX: -49.5 + i,
+    //                         },
+    //                         0.5: {
+    //                             translateX: -49.5 + i + 100,
+    //                         },
+    //                         0.5000000001: { // go back to start point immediately
+    //                             translateX: -49.5 + i - 100,
+    //                         },
+    //                         1.0: {
+    //                             translateX: -49.5 + i,
+    //                         }
+    //                     }, 50 / Math.random(), engine.linear, 0, Infinity
+    //                 );
+    //                 cloudAnimation.start();
+    //                 cloudAnimations.push(cloudAnimation);
+    //             }
+    //         }
+    //     }
+    // }
 
     // Start building steve
     let hip = new Sprite(null, null);
@@ -376,8 +374,6 @@ function main() {
             return nodePositionColorMapping[nodePosition];
         }).flat()),
     }, {});
-
-    console.log(cape);
 
     let angelRing = new Sprite(new engine.TorusGeometry(0.24, 0.06, 32, 32), new ColorMaterial([1, 1, 0, 1]));
 
@@ -653,7 +649,6 @@ function main() {
 
             let rightVector = vec3.create();
             vec3.cross(rightVector, viewVector, upVector);
-            // console.log(rightVector);
 
             let deltaQuaternion = quat.create();
 

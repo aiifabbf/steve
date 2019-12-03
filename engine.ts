@@ -48,8 +48,8 @@ export class Geometry {
     readonly vertexPositions: Array<number>;
     mode: number;
 
-    private cachedNormalVectors: Array<Array<number>>;
-    private cachedNodePositions: Array<Array<number>>;
+    cachedNormalVectors: Array<Array<number>>;
+    cachedNodePositions: Array<Array<number>>;
 
     constructor(vertexPositions: Array<number>) {
         this.vertexPositions = vertexPositions;
@@ -341,7 +341,7 @@ export class SphereGeometry extends Geometry {
     maxTheta: number;
     maxPhi: number;
 
-    private cachedNormalVectors: Array<Array<number>>;
+    cachedNormalVectors: Array<Array<number>>;
 
     constructor(radius: number = 1, horizontalSegmentCount: number = 16, verticalSegmentCount: number = 32, maxTheta: number = 2 * Math.PI, maxPhi: number = Math.PI) {
         let vertexPositions = [];
@@ -365,7 +365,6 @@ export class SphereGeometry extends Geometry {
                 ];
                 vertexPositions = vertexPositions.concat(a).concat(b);
             }
-
         }
 
         super(vertexPositions);
@@ -457,38 +456,44 @@ export class CubeGeometry extends Geometry {
     height: number;
     depth: number;
 
+    cachedNormalVectors: Array<Array<number>>;
+
     constructor(width: number, height: number, depth: number) {
-        let upperA = [width / 2, height / 2, depth / 2];
-        let upperB = [width / 2, height / 2, - depth / 2];
-        let upperC = [- width / 2, height / 2, - depth / 2];
-        let upperD = [- width / 2, height / 2, depth / 2];
-        let lowerA = [width / 2, - height / 2, depth / 2];
-        let lowerB = [width / 2, - height / 2, - depth / 2];
-        let lowerC = [- width / 2, - height / 2, - depth / 2];
-        let lowerD = [- width / 2, - height / 2, depth / 2];
+        let rightTopFront = [width / 2, height / 2, depth / 2, 1];
+        let rightTopBack = [width / 2, height / 2, - depth / 2, 1];
+        let leftTopFront = [- width / 2, height / 2, depth / 2, 1];
+        let leftTopBack = [- width / 2, height / 2, - depth / 2, 1];
+        let rightBottomFront = [width / 2, - height / 2, depth / 2, 1];
+        let rightBottomBack = [width / 2, - height / 2, - depth / 2, 1];
+        let leftBottomFront = [- width / 2, - height / 2, depth / 2, 1];
+        let leftBottomBack = [- width / 2, - height / 2, - depth / 2, 1];
 
         super([
-            upperC[0], upperC[1], upperC[2], 1,
-            upperB[0], upperB[1], upperB[2], 1,
-            upperD[0], upperD[1], upperD[2], 1,
-            upperA[0], upperA[1], upperA[2], 1,
-            lowerD[0], lowerD[1], lowerD[2], 1,
-            lowerA[0], lowerA[1], lowerA[2], 1,
-            lowerC[0], lowerC[1], lowerC[2], 1,
-            lowerB[0], lowerB[1], lowerB[2], 1,
-            lowerA[0], lowerA[1], lowerA[2], 1,
-            upperA[0], upperA[1], upperA[2], 1,
-            lowerB[0], lowerB[1], lowerB[2], 1,
-            upperB[0], upperB[1], upperB[2], 1,
-            lowerC[0], lowerC[1], lowerC[2], 1,
-            upperC[0], upperC[1], upperC[2], 1,
-            lowerD[0], lowerD[1], lowerD[2], 1,
-            upperD[0], upperD[1], upperD[2], 1,
-        ]);
-        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+            rightTopFront, leftTopFront, leftBottomFront, leftBottomFront, rightBottomFront, rightTopFront, // front face
+            rightTopBack, rightTopFront, rightBottomFront, rightBottomFront, rightBottomBack, rightTopBack, // right face
+            leftTopBack, rightTopBack, rightBottomBack, rightBottomBack, leftBottomBack, leftTopBack, // back face
+            leftTopFront, leftTopBack, leftBottomBack, leftBottomBack, leftBottomFront, leftTopFront, // left face
+            leftTopBack, leftTopFront, rightTopBack, rightTopBack, leftTopFront, rightTopFront,
+            leftBottomBack, rightBottomBack, rightBottomFront, rightBottomFront, leftBottomFront, leftBottomBack, // bottom face
+        ].flat());
+
+        this.cachedNormalVectors = [
+            [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], // front face
+            [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], // right face
+            [0, 0, -1, 0], [0, 0, -1, 0], [0, 0, -1, 0], [0, 0, -1, 0], [0, 0, -1, 0], [0, 0, -1, 0], // back face
+            [-1, 0, 0, 0], [-1, 0, 0, 0], [-1, 0, 0, 0], [-1, 0, 0, 0], [-1, 0, 0, 0], [-1, 0, 0, 0], // left face
+            [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], // top face
+            [0, -1, 0, 0], [0, -1, 0, 0], [0, -1, 0, 0], [0, -1, 0, 0], [0, -1, 0, 0], [0, -1, 0, 0], // bottom face
+        ];
+
+        this.mode = WebGL2RenderingContext.TRIANGLES; // use TRIANGLES, life becomes easier
         this.width = width;
         this.height = height;
         this.depth = depth;
+    }
+
+    get normalVectors() {
+        return this.cachedNormalVectors;
     }
 }
 
@@ -1088,7 +1093,7 @@ export class Renderer {
         this.gl = gl;
 
         gl.enable(gl.DEPTH_TEST);
-        // gl.enable(gl.CULL_FACE);
+        gl.enable(gl.CULL_FACE);
         // gl.cullFace(gl.FRONT_AND_BACK);
 
         this.viewport = {
