@@ -1,5 +1,5 @@
 import { mat4, vec3, quat } from "gl-matrix";
-import { Light, Renderer, Material, Sprite, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, PerspectiveCamera, OrthogonalCamera, radians, deepCopy, FrustumGeometry, PhongShadingMaterial, GouraudShadingMaterial, Animation, easeInOut, AmbientLight, PointLight } from "./engine";
+import { Light, Renderer, Material, Sprite, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, PerspectiveCamera, OrthogonalCamera, radians, deepCopy, FrustumGeometry, PhongShadingMaterial, GouraudShadingMaterial, Animation, easeInOut, AmbientLight, PointLight, PhongShadingPhongLightingMaterial, PhongShadingBlinnPhongLightingMaterial, GouraudShadingPhongLightingMaterial, GouraudShadingBlinnPhongLightingMaterial, MaterialMultiplexer } from "./engine";
 import * as engine from "./engine.ts";
 
 let canvas = document.querySelector("canvas");
@@ -111,14 +111,57 @@ function main() {
     );
     let camera = thirdPersonCamera;
 
+    // initial shading method set to gouraud
+    let shadingMethod = "gouraud";
+    // initial lighting method set to phong
+    let lightingMethod = "phong"
+    
+    // callback for material multiplexer
+    function whichMaterial() {
+        // choose shading and lighting method
+        if (shadingMethod === "gouraud" && lightingMethod === "phong") {
+            return "gouraudShadingPhongLighting";
+        } else if (shadingMethod === "gouraud" && lightingMethod === "blinn-phong") {
+            return "gouraudShadingBlinnPhongLighting";
+        } else if (shadingMethod === "phong" && lightingMethod === "phong") {
+            return "phongShadingPhongLighting";
+        } else {
+            return "phongShadingBlinnPhongLighting";
+        }
+    }
+
     // materials
-    let goldMaterial = new PhongShadingMaterial(
-        [0.35, 0.24, 0.19, 1.0],
-        [0.702, 0.482, 0.384, 1],
-        [0.628281, 0.555802, 0.366065, 1.0],
-        [0, 0, 0, 1],
-        [51.2, 51.2, 51.2, 51.2],
-    );
+    let goldMaterials = {
+        phongShadingPhongLighting: new PhongShadingPhongLightingMaterial(
+            [0.35, 0.24, 0.19, 1.0],
+            [0.702, 0.482, 0.384, 1],
+            [0.628281, 0.555802, 0.366065, 1.0],
+            [0, 0, 0, 1],
+            [51.2, 51.2, 51.2, 51.2],
+        ),
+        phongShadingBlinnPhongLighting: new PhongShadingBlinnPhongLightingMaterial(
+            [0.35, 0.24, 0.19, 1.0],
+            [0.702, 0.482, 0.384, 1],
+            [0.628281, 0.555802, 0.366065, 1.0],
+            [0, 0, 0, 1],
+            [51.2, 51.2, 51.2, 51.2],
+        ),
+        gouraudShadingPhongLighting: new GouraudShadingPhongLightingMaterial(
+            [0.35, 0.24, 0.19, 1.0],
+            [0.702, 0.482, 0.384, 1],
+            [0.628281, 0.555802, 0.366065, 1.0],
+            [0, 0, 0, 1],
+            [51.2, 51.2, 51.2, 51.2],
+        ),
+        gouraudShadingBlinnPhongLighting: new GouraudShadingBlinnPhongLightingMaterial(
+            [0.35, 0.24, 0.19, 1.0],
+            [0.702, 0.482, 0.384, 1],
+            [0.628281, 0.555802, 0.366065, 1.0],
+            [0, 0, 0, 1],
+            [51.2, 51.2, 51.2, 51.2],
+        ),
+    };
+    let goldMaterial = new MaterialMultiplexer(goldMaterials, whichMaterial);
 
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let yAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 1, 0]), new ColorMaterial([0, 1, 0, 1]));
@@ -181,12 +224,12 @@ function main() {
     let ambientLight = new AmbientLight([0.5, 0.5, 0.5, 1]);
     world.add(ambientLight);
 
-    let light = new PointLight([1, 1, 1, 1], [1, 1, 1, 1]);
+    let light = new PointLight([5, 5, 5, 5], [5, 5, 5, 1]);
     let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
     lightIndicator.add(light);
 
     // camera light
-    let cameraLight = new PointLight([1, 1, 1, 1], [1, 1, 1, 1]);
+    let cameraLight = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
     world.add(cameraLight);
 
     let lightAnimation = new Animation({
@@ -959,6 +1002,27 @@ function main() {
         // update gl.viewport
         renderer.viewport.width = canvas.width;
         renderer.viewport.height = canvas.height;
+    });
+
+    // reset shading method and lighting method
+    document.querySelector("#shading-method-gouraud").click();
+    document.querySelector("#lighting-method-phong").click();
+
+    // handlers for changing shading and lighting methods
+    document.querySelector("#shading-method-phong").addEventListener("click", function (event) {
+        shadingMethod = "phong";
+    });
+
+    document.querySelector("#shading-method-gouraud").addEventListener("click", function (event) {
+        shadingMethod = "gouraud";
+    });
+
+    document.querySelector("#lighting-method-phong").addEventListener("click", function (event) {
+        lightingMethod = "phong";
+    });
+
+    document.querySelector("#lighting-method-blinn-phong").addEventListener("click", function (event) {
+        lightingMethod = "blinn-phong";
     });
 
     onDraw();

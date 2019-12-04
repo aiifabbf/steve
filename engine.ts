@@ -893,6 +893,8 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
             varying vec4 vNormalVector[4];
             varying vec4 vViewVector[4];
 
+            varying float vDistance[4];
+
             void main() {
                 vec4 absoluteVertexPosition = uModelMatrix * aVertexPosition;
                 vec4 absoluteCameraPosition = vec4(uViewMatrixInverted[3].xyz, 1.0);
@@ -907,6 +909,8 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
                     vLightVector[i] = lightVector;
                     vNormalVector[i] = normalVector;
                     vViewVector[i] = viewVector;
+
+                    vDistance[i] = length(lightAbsolutePosition.xyz - absoluteVertexPosition.xyz);
                 }
 
                 gl_Position = uProjectionMatrix * uViewMatrix * absoluteVertexPosition;
@@ -927,6 +931,8 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
             varying vec4 vLightVector[4];
             varying vec4 vNormalVector[4];
             varying vec4 vViewVector[4];
+
+            varying float vDistance[4];
 
             void main() {
                 vec4 fragmentColor;
@@ -949,7 +955,7 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
         
                     vec4 emissiveColor = uMaterialKe;
 
-                    fragmentColor += ambientColor + diffuseColor + specularColor + emissiveColor;
+                    fragmentColor += ambientColor + (diffuseColor + specularColor) / vDistance[i] + emissiveColor;
                 }
 
                 gl_FragColor = fragmentColor;
@@ -961,6 +967,54 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
         this.ks = ks;
         this.ke = ke;
         this.se = se;
+    }
+}
+
+export class PhongShadingBlinnPhongLightingMaterial extends PhongShadingMaterial {
+    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>) {
+        super(ka, kd, ks, ke, se, "blinn-phong");
+    }
+}
+
+export class PhongShadingPhongLightingMaterial extends PhongShadingMaterial {
+    constructor(ka: Array<Number>, kd: Array<Number>, ks: Array<Number>, ke: Array<Number>, se: Array<Number>) {
+        super(ka, kd, ks, ke, se, "phong");
+    }
+}
+
+// Dynamically choose between different materials
+export class MaterialMultiplexer extends Material {
+    nameMaterialMapping: Map<any, Material>;
+    nameCallback: () => string;
+
+    constructor(nameMaterialMapping: Map<any, Material>, nameCallback: () => string) {
+        super(null, null);
+        this.nameMaterialMapping = nameMaterialMapping;
+        this.nameCallback = nameCallback;
+    }
+
+    compile(renderer: Renderer, attributeLocations?: Object, uniformLocations?: Object) {
+        return this.nameMaterialMapping[this.nameCallback()].compile(renderer, attributeLocations, uniformLocations);
+    }
+
+    bindGeometry(geometry: Geometry) {
+        return this.nameMaterialMapping[this.nameCallback()].bindGeometry(geometry);
+    }
+
+    bindPlaceholders(renderer: Renderer, attributePlaceholderValueMapping?: Object, uniformPlaceholderValueMapping?: Object) {
+        return this.nameMaterialMapping[this.nameCallback()].bindPlaceholders(renderer, attributePlaceholderValueMapping, uniformPlaceholderValueMapping);
+    }
+
+    get programInfo() {
+        return this.nameMaterialMapping[this.nameCallback()].programInfo;
+    }
+
+    get buffers() {
+        return this.nameMaterialMapping[this.nameCallback()].buffers;
+    }
+
+    get placeholderValueMapping() {
+        return this.nameMaterialMapping[this.nameCallback()].placeholderValueMapping;
     }
 }
 

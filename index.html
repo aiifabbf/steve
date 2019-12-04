@@ -10,7 +10,15 @@
     <canvas width="500" height="500"></canvas>
     <div style="position: fixed; top: 0; left: 0; z-index: 1;" id="which-camera"></div>
     <div style="max-height: 20vh; overflow: auto; padding: 20px;">
-        <span><kbd>v</kbd> to switch camera</span>
+        <div>
+            Shading method <input type="radio" name="shading-method" id="shading-method-gouraud" checked> Gouraud <input type="radio" name="shading-method" id="shading-method-phong"> Phong
+        </div>
+        <div>
+            Lighting method <input type="radio" name="lighting-method" id="lighting-method-phong" checked> Phong <input type="radio" name="lighting-method" id="lighting-method-blinn-phong"> Blinn-Phong
+        </div>
+        <div>
+            <span><kbd>v</kbd> to switch camera</span>
+        </div>
         <div>
             under third person camera:
             <ul>
