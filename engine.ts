@@ -897,7 +897,7 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
                 vec4 absoluteVertexPosition = uModelMatrix * aVertexPosition;
                 vec4 absoluteCameraPosition = vec4(uViewMatrixInverted[3].xyz, 1.0);
 
-                for (int i = 0; i < 32; i++) {
+                for (int i = 0; i < 4; i++) {
                     vec4 lightAbsolutePosition = uLightAbsolutePositions[i];
 
                     vec4 lightVector = vec4(normalize(lightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
@@ -932,7 +932,7 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
                 vec4 fragmentColor;
                 fragmentColor = vec4(0.0, 0.0, 0.0, 0.0);
 
-                for (int i = 0; i < 32; i++) {
+                for (int i = 0; i < 4; i++) {
                     vec4 lightIa = uLightIas[i];
                     vec4 lightId = uLightIds[i];
                     vec4 lightIs = uLightIss[i];
