@@ -811,7 +811,7 @@ export class GouraudShadingMaterial extends ReflectiveMaterial implements Reflec
         
                     vec4 emissiveColor = uMaterialKe;
 
-                    vVertexColor += ambientColor + diffuseColor + specularColor + emissiveColor;
+                    vVertexColor += ambientColor + (diffuseColor + specularColor) / length(vec3(lightAbsolutePosition.xyz - absoluteVertexPosition.xyz)) + emissiveColor;
                 }
 
                 gl_Position = uProjectionMatrix * uViewMatrix * absoluteVertexPosition;
@@ -1368,7 +1368,7 @@ export function getShaderProgram(gl: WebGL2RenderingContext, vertexShaderSource:
     gl.linkProgram(shaderProgram);
 
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        throw new Error("Link error");
+        throw new Error("Link error: " + gl.getProgramInfoLog(shaderProgram));
     }
 
     return shaderProgram;
