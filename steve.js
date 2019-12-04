@@ -386,7 +386,6 @@ function main() {
     let gyroTranslationMatrix = mat4.create();
     mat4.fromTranslation(gyroTranslationMatrix, [0, -10, 0]);
     world.add(gyro);
-    console.log(gyro);
 
     // ambient light
     let ambientLight = new AmbientLight([0.1, 0.1, 0.1, 1]);
@@ -512,14 +511,6 @@ function main() {
 
     let rarmJoint = new Sprite(null, null);
     let rarm = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), skinMaterial);
-
-    // shield on right hand
-    let shield = new Sprite(new SphereGeometry(0.5, 16, 8, 2 * Math.PI, Math.PI / 3), chromeMaterial);
-    shield.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    shield.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(shield.geometry.vertexPositions),
-        aVertexColor: new Float32Array(getRandomColors(shield.geometry.nodePositions).flat()),
-    }, {});
 
     let llegJoint = new Sprite(null, null);
     let lleg = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), trousersMaterial);
