@@ -1,65 +1,12 @@
 import { mat4, vec3, quat } from "gl-matrix";
-import { Light, Renderer, Material, Sprite, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, PerspectiveCamera, OrthogonalCamera, radians, deepCopy, FrustumGeometry, PhongShadingMaterial, GouraudShadingMaterial, Animation, easeInOut, AmbientLight, PointLight, PhongShadingPhongLightingMaterial, PhongShadingBlinnPhongLightingMaterial, GouraudShadingPhongLightingMaterial, GouraudShadingBlinnPhongLightingMaterial, MaterialMultiplexer } from "./engine";
+import { Light, Renderer, Material, Sprite, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, PerspectiveCamera, OrthogonalCamera, radians, deepCopy, FrustumGeometry, PhongShadingMaterial, GouraudShadingMaterial, Animation, easeInOut, AmbientLight, PointLight, PhongShadingPhongLightingMaterial, PhongShadingBlinnPhongLightingMaterial, GouraudShadingPhongLightingMaterial, GouraudShadingBlinnPhongLightingMaterial, MaterialMultiplexer, PlaneGeometry } from "./engine";
 import * as engine from "./engine.ts";
 
 let canvas = document.querySelector("canvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
 
-function getRandomNodePositionColorMapping(nodePositions) {
-    let nodePositionColorMapping = {};
-    nodePositions.forEach(function (nodePosition) {
-        if (!(nodePosition in nodePositionColorMapping)) {
-            nodePositionColorMapping[nodePosition] = [
-                Math.random(),
-                Math.random(),
-                Math.random(),
-                1,
-            ];
-        }
-    });
-    return nodePositionColorMapping;
-}
-
-function getRandomColors(nodePositions) {
-    let nodePositionColorMapping = getRandomNodePositionColorMapping(nodePositions);
-    return nodePositions.map(function (nodePosition) {
-        return nodePositionColorMapping[nodePosition];
-    });
-}
-
-let defaultAttributePlaceholders = {
-    aVertexPosition: "aVertexPosition",
-    aVertexColor: "aVertexColor",
-};
-let defaultUniformPlaceholders = {
-    uModelViewProjectionMatrix: "uModelViewProjectionMatrix",
-};
-
 function main() {
-    let vertexShaderSource = `
-        attribute vec4 aVertexPosition;
-        attribute vec4 aVertexColor;
-
-        uniform mat4 uModelViewProjectionMatrix;
-
-        varying vec4 vVertexColor;
-
-        void main() {
-            gl_Position = uModelViewProjectionMatrix * aVertexPosition;
-            vVertexColor = aVertexColor;
-        }
-    `;
-    let fragmentShaderSource = `
-        precision mediump float;
-
-        varying vec4 vVertexColor;
-
-        void main() {
-            gl_FragColor = vVertexColor;
-        }
-    `;
-
     let renderer = new Renderer(canvas);
     renderer.viewport = {
         x: 0,
@@ -347,6 +294,69 @@ function main() {
             [76.8, 76.8, 76.8, 76.8],
         ),
     };
+
+    let pewterMaterials = {
+        phongShadingPhongLighting: new PhongShadingPhongLightingMaterial(
+            [0.105882, 0.058824, 0.113725, 1],
+            [0.427451, 0.470588, 0.541176, 1],
+            [0.33333, 0.33333, 0.521569, 1],
+            [0, 0, 0, 1],
+            [9.84615, 9.84615, 9.84615, 9.84615],
+        ),
+        phongShadingBlinnPhongLighting: new PhongShadingBlinnPhongLightingMaterial(
+            [0.105882, 0.058824, 0.113725, 1],
+            [0.427451, 0.470588, 0.541176, 1],
+            [0.33333, 0.33333, 0.521569, 1],
+            [0, 0, 0, 1],
+            [9.84615, 9.84615, 9.84615, 9.84615],
+        ),
+        gouraudShadingPhongLighting: new GouraudShadingPhongLightingMaterial(
+            [0.105882, 0.058824, 0.113725, 1],
+            [0.427451, 0.470588, 0.541176, 1],
+            [0.33333, 0.33333, 0.521569, 1],
+            [0, 0, 0, 1],
+            [9.84615, 9.84615, 9.84615, 9.84615],
+        ),
+        gouraudShadingBlinnPhongLighting: new GouraudShadingBlinnPhongLightingMaterial(
+            [0.105882, 0.058824, 0.113725, 1],
+            [0.427451, 0.470588, 0.541176, 1],
+            [0.33333, 0.33333, 0.521569, 1],
+            [0, 0, 0, 1],
+            [9.84615, 9.84615, 9.84615, 9.84615],
+        ),
+    };
+
+    let silverMaterials = {
+        phongShadingPhongLighting: new PhongShadingPhongLightingMaterial(
+            [0.23125, 0.23125, 0.23125, 1],
+            [0.2775, 0.2775, 0.2775, 1],
+            [0.773911, 0.773911, 0.773911, 1],
+            [0, 0, 0, 1],
+            [89.6, 89.6, 89.6, 89.6],
+        ),
+        phongShadingBlinnPhongLighting: new PhongShadingBlinnPhongLightingMaterial(
+            [0.23125, 0.23125, 0.23125, 1],
+            [0.2775, 0.2775, 0.2775, 1],
+            [0.773911, 0.773911, 0.773911, 1],
+            [0, 0, 0, 1],
+            [89.6, 89.6, 89.6, 89.6],
+        ),
+        gouraudShadingPhongLighting: new GouraudShadingPhongLightingMaterial(
+            [0.23125, 0.23125, 0.23125, 1],
+            [0.2775, 0.2775, 0.2775, 1],
+            [0.773911, 0.773911, 0.773911, 1],
+            [0, 0, 0, 1],
+            [89.6, 89.6, 89.6, 89.6],
+        ),
+        gouraudShadingBlinnPhongLighting: new GouraudShadingBlinnPhongLightingMaterial(
+            [0.23125, 0.23125, 0.23125, 1],
+            [0.2775, 0.2775, 0.2775, 1],
+            [0.773911, 0.773911, 0.773911, 1],
+            [0, 0, 0, 1],
+            [89.6, 89.6, 89.6, 89.6],
+        ),
+    };
+
     let goldMaterial = new MaterialMultiplexer(goldMaterials, whichMaterial);
     let skinMaterial = new MaterialMultiplexer(skinMaterials, whichMaterial);
     let clothMaterial = new MaterialMultiplexer(clothMaterials, whichMaterial);
@@ -354,6 +364,9 @@ function main() {
     let catMaterial = new MaterialMultiplexer(catMaterials, whichMaterial);
     let catSecondMaterial = new MaterialMultiplexer(catSecondMaterials, whichMaterial);
     let chromeMaterial = new MaterialMultiplexer(chromeMaterials, whichMaterial);
+    let pewterMaterial = new MaterialMultiplexer(pewterMaterials, whichMaterial);
+    let silverMaterial = new MaterialMultiplexer(silverMaterials, whichMaterial);
+    // material parameters taken from Ayerdi's lib
 
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let yAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 1, 0]), new ColorMaterial([0, 1, 0, 1]));
@@ -372,8 +385,8 @@ function main() {
     // let groundMaterial = new ColorMaterial([0.5, 0.5, 0.5, 1]);
 
     for (let i = 0; i < 100; i++) {
-        let xGround = new Sprite(new LineGeometry([-50, -50 + i, 0], [50, -50 + i, 0]), new ColorMaterial([0.1, 0.1, 0.1, 1]));
-        let yGround = new Sprite(new LineGeometry([-50 + i, -50, 0], [-50 + i, 50, 0]), new ColorMaterial([0.1, 0.1, 0.1, 1]));
+        let xGround = new Sprite(new LineGeometry([-50, -50 + i, 0], [50, -50 + i, 0]), new ColorMaterial([0.5, 0.5, 0.5, 1]));
+        let yGround = new Sprite(new LineGeometry([-50 + i, -50, 0], [-50 + i, 50, 0]), new ColorMaterial([0.5, 0.5, 0.5, 1]));
 
         world.add(xGround);
         world.add(yGround);
@@ -384,9 +397,9 @@ function main() {
     mat4.translate(tree.modelMatrix, tree.modelMatrix, [0, 10, 0]);
     world.add(tree);
 
-    let gyro = new Sprite(new RotationGeometry(0.2, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04].map(v => 2 * v)), goldMaterial);
+    let gyro = new Sprite(new RotationGeometry(1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04].map(v => 10 * v)), silverMaterial);
     let gyroTranslationMatrix = mat4.create();
-    mat4.fromTranslation(gyroTranslationMatrix, [0, -10, 0]);
+    mat4.fromTranslation(gyroTranslationMatrix, [0, -20, 0]);
     world.add(gyro);
 
     // ambient light
@@ -399,34 +412,33 @@ function main() {
 
     let skyLight1 = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
     let skyLight2 = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
-    let skyLightIndecator1 = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
-    let skyLightIndecator2 = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
-    skyLightIndecator1.add(skyLight1);
-    skyLightIndecator2.add(skyLight2);
-    mat4.translate(skyLightIndecator1.modelMatrix, skyLightIndecator1.modelMatrix, [10, 0, 0]);
-    mat4.translate(skyLightIndecator2.modelMatrix, skyLightIndecator2.modelMatrix, [-10, 0, 0]);
+    let skyLightIndicator1 = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
+    let skyLightIndicator2 = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
+    skyLightIndicator1.add(skyLight1);
+    skyLightIndicator2.add(skyLight2);
+    mat4.translate(skyLightIndicator1.modelMatrix, skyLightIndicator1.modelMatrix, [10, 0, 0]);
+    mat4.translate(skyLightIndicator2.modelMatrix, skyLightIndicator2.modelMatrix, [-5, 0, 0]);
     let lightCenter = new Sprite(null, null);
     mat4.translate(lightCenter.modelMatrix, lightCenter.modelMatrix, [0, 2, 5]);
-    lightCenter.add(skyLightIndecator1);
-    lightCenter.add(skyLightIndecator2);
+    lightCenter.add(skyLightIndicator1);
+    lightCenter.add(skyLightIndicator2);
     world.add(lightCenter);
 
     // camera light
-    // let cameraLight = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
-    // world.add(cameraLight);
-
+    let cameraLight = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
+    world.add(cameraLight);
 
     // random grass block
 
-    for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 20; j++) {
             let random = Math.floor(Math.random() * 10);
             if (i < 4 || i > 6) {
                 if (random < 1) {
                     let grass2 = new Sprite(new CubeGeometry(1, 1, 2), goldMaterial);
                     mat4.translate(grass2.modelMatrix, grass2.modelMatrix, [-5.5 + i, -5.5 + j, 1]);
                     world.add(grass2);
-                }else if (random < 3) {
+                } else if (random < 3) {
                     let grass = new Sprite(new CubeGeometry(1, 1, 1), goldMaterial);
                     mat4.translate(grass.modelMatrix, grass.modelMatrix, [-5.5 + i, -5.5 + j, 0.5]);
                     world.add(grass);
@@ -438,41 +450,41 @@ function main() {
     // random cloud
     let clouds = [];
     let cloudAnimations = [];
-    let cloudMaterial = new ColorMaterial([1, 1, 1, 1])
+    let cloudMaterial = pewterMaterial;
 
-    // for (let i = 0; i < 100; i++) {
-    //     for (let j = 0; j < 100; j++) {
-    //         let random = Math.floor(Math.random() * 70);
-    //         if (i < 9 || i > 11) {
-    //             if (random < 1) {
-    //                 let w = Math.floor(1 + Math.random() * 8);
-    //                 let l = Math.floor(1 + Math.random() * 8);
-    //                 let cloud = new Sprite(new CubeGeometry(w, l, 1), cloudMaterial);
-    //                 mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [-49.5 + i, -49.5 + j, 10]);
-    //                 world.add(cloud);
-    //                 clouds.push(cloud);
-    //                 let cloudAnimation = new engine.Animation(
-    //                     {
-    //                         0: {
-    //                             translateX: -49.5 + i,
-    //                         },
-    //                         0.5: {
-    //                             translateX: -49.5 + i + 100,
-    //                         },
-    //                         0.5000000001: { // go back to start point immediately
-    //                             translateX: -49.5 + i - 100,
-    //                         },
-    //                         1.0: {
-    //                             translateX: -49.5 + i,
-    //                         }
-    //                     }, 50 / Math.random(), engine.linear, 0, Infinity
-    //                 );
-    //                 cloudAnimation.start();
-    //                 cloudAnimations.push(cloudAnimation);
-    //             }
-    //         }
-    //     }
-    // }
+    for (let i = 0; i < 100; i++) {
+        for (let j = 0; j < 100; j++) {
+            let random = Math.floor(Math.random() * 70);
+            if (i < 9 || i > 11) {
+                if (random < 1) {
+                    let w = Math.floor(1 + Math.random() * 8);
+                    let l = Math.floor(1 + Math.random() * 8);
+                    let cloud = new Sprite(new CubeGeometry(w, l, 1), cloudMaterial);
+                    mat4.translate(cloud.modelMatrix, cloud.modelMatrix, [-49.5 + i, -49.5 + j, 10 + 5 * Math.random()]);
+                    world.add(cloud);
+                    clouds.push(cloud);
+                    let cloudAnimation = new engine.Animation(
+                        {
+                            0: {
+                                translateX: -49.5 + i,
+                            },
+                            0.5: {
+                                translateX: -49.5 + i + 100,
+                            },
+                            0.5000000001: { // go back to start point immediately
+                                translateX: -49.5 + i - 100,
+                            },
+                            1.0: {
+                                translateX: -49.5 + i,
+                            }
+                        }, 50 / Math.random(), engine.linear, 0, Infinity
+                    );
+                    cloudAnimation.start();
+                    cloudAnimations.push(cloudAnimation);
+                }
+            }
+        }
+    }
 
     // Start building steve
     let hip = new Sprite(null, null);
@@ -492,15 +504,8 @@ function main() {
     [armxAxis, armyAxis, armzAxis].forEach(function (axis) {
         larmJoint.add(axis);
     });
-    // sphere on left hand
-    // let sphere = new Sprite(new SphereGeometry(0.15, 32, 16), new ColorMaterial([1, 0, 0, 1]));
-    // sphere.material.compile(renderer);
-    // sphere.material.bindPlaceholders(renderer, {
-    //     aVertexPosition: new Float32Array(sphere.geometry.vertexPositions)
-    // }, {});
-    // sphere.geometry.mode = WebGL2RenderingContext.LINE_STRIP;
 
-    // sword on left hand
+    // torch on left hand
     let torch = new Sprite(new RotationGeometry(0.5, 20, [0.05, 0.10]), goldMaterial);
     mat4.rotateX(torch.modelMatrix, torch.modelMatrix, 1.57);
     mat4.translate(torch.modelMatrix, torch.modelMatrix, [0, -0.24, 0]);
@@ -520,8 +525,6 @@ function main() {
 
     let capeJoint = new Sprite(null, null);
     let cape = new Sprite(new CubeGeometry(0.48, 0.06, 1.08), trousersMaterial);
-    let nodePositionColorMapping = {}; // color for each node
-
 
     let angelRing = new Sprite(new engine.TorusGeometry(0.24, 0.06, 32, 32), new ColorMaterial([1, 1, 0, 1]));
 
@@ -1004,8 +1007,8 @@ function main() {
         );
 
         // set camera light position
-        // mat4.identity(cameraLight.modelMatrix);
-        // mat4.translate(cameraLight.modelMatrix, cameraLight.modelMatrix, camera.position);
+        mat4.identity(cameraLight.modelMatrix);
+        mat4.translate(cameraLight.modelMatrix, cameraLight.modelMatrix, camera.position);
 
         mat4.identity(hip.modelMatrix);
         mat4.translate(hip.modelMatrix, hip.modelMatrix, stevePosition);
@@ -1046,7 +1049,7 @@ function main() {
         // light animation
         //mat4.identity(lightIndicator.modelMatrix);
         //mat4.translate(lightIndicator.modelMatrix, lightIndicator.modelMatrix, [0, 0, lightAnimation.yield()["translate"]]);
-        mat4.rotateZ(lightCenter.modelMatrix, lightCenter.modelMatrix, 0.01);
+        mat4.rotateZ(lightCenter.modelMatrix, lightCenter.modelMatrix, 0.02);
 
         renderer.clear([0, 0, 0, 1]);
         renderer.render(world, camera);

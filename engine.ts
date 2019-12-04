@@ -194,14 +194,31 @@ export class PlaneGeometry extends Geometry {
 
     constructor(width: number, height: number) {
         super([
-            - width / 2, height / 2, 0, 1,
+            - width / 2, - height / 2, 0, 1,
+            width / 2, - height / 2, 0, 1,
             width / 2, height / 2, 0, 1,
             - width / 2, - height / 2, 0, 1,
-            width / 2, - height / 2, 0, 1
+            width / 2, height / 2, 0, 1,
+            - width / 2, height / 2, 0, 1,
         ])
-        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+        this.mode = WebGL2RenderingContext.TRIANGLES;
         this.width = width;
         this.height = height;
+    }
+
+    get normalVectors() {
+        if (this.cachedNormalVectors) {
+            return this.cachedNormalVectors;
+        }
+        this.cachedNormalVectors = [
+            [0, 1, 0, 0],
+            [0, 1, 0, 0],
+            [0, 1, 0, 0],
+            [0, 1, 0, 0],
+            [0, 1, 0, 0],
+            [0, 1, 0, 0]
+        ];
+        return this.cachedNormalVectors;
     }
 }
 
@@ -887,19 +904,19 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
             uniform mat4 uViewMatrixInverted;
             uniform mat4 uProjectionMatrix;
 
-            uniform vec4 uLightAbsolutePositions[4];
+            uniform vec4 uLightAbsolutePositions[6];
 
-            varying vec4 vLightVector[4];
-            varying vec4 vNormalVector[4];
-            varying vec4 vViewVector[4];
+            varying vec4 vLightVector[6];
+            varying vec4 vNormalVector[6];
+            varying vec4 vViewVector[6];
 
-            varying float vDistance[4];
+            varying float vDistance[6];
 
             void main() {
                 vec4 absoluteVertexPosition = uModelMatrix * aVertexPosition;
                 vec4 absoluteCameraPosition = vec4(uViewMatrixInverted[3].xyz, 1.0);
 
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < 6; i++) {
                     vec4 lightAbsolutePosition = uLightAbsolutePositions[i];
 
                     vec4 lightVector = vec4(normalize(lightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
@@ -918,9 +935,9 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
         `, `
             precision mediump float;
 
-            uniform vec4 uLightIas[4];
-            uniform vec4 uLightIds[4];
-            uniform vec4 uLightIss[4];
+            uniform vec4 uLightIas[6];
+            uniform vec4 uLightIds[6];
+            uniform vec4 uLightIss[6];
 
             uniform vec4 uMaterialKa;
             uniform vec4 uMaterialKd;
@@ -928,17 +945,17 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
             uniform vec4 uMaterialKe;
             uniform vec4 uMaterialSe;
 
-            varying vec4 vLightVector[4];
-            varying vec4 vNormalVector[4];
-            varying vec4 vViewVector[4];
+            varying vec4 vLightVector[6];
+            varying vec4 vNormalVector[6];
+            varying vec4 vViewVector[6];
 
-            varying float vDistance[4];
+            varying float vDistance[6];
 
             void main() {
                 vec4 fragmentColor;
                 fragmentColor = vec4(0.0, 0.0, 0.0, 0.0);
 
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < 6; i++) {
                     vec4 lightIa = uLightIas[i];
                     vec4 lightId = uLightIds[i];
                     vec4 lightIs = uLightIss[i];
