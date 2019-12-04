@@ -363,13 +363,13 @@ export class SphereGeometry extends Geometry {
         for (let phiIndex = 0; phiIndex <= verticalSegmentCount - 1; phiIndex++) {
 
             for (let thetaIndex = 0; thetaIndex <= horizontalSegmentCount; thetaIndex++) {
-                let a = [
+                let b = [
                     radius * Math.cos(thetaIndex * deltaTheta) * Math.sin(phiIndex * deltaPhi),
                     radius * Math.cos(phiIndex * deltaPhi),
                     radius * Math.sin(thetaIndex * deltaTheta) * Math.sin(phiIndex * deltaPhi),
                     1,
                 ];
-                let b = [
+                let a = [
                     radius * Math.cos(thetaIndex * deltaTheta) * Math.sin((phiIndex + 1) * deltaPhi),
                     radius * Math.cos((phiIndex + 1) * deltaPhi),
                     radius * Math.sin(thetaIndex * deltaTheta) * Math.sin((phiIndex + 1) * deltaPhi),
