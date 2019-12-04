@@ -115,7 +115,7 @@ function main() {
     let shadingMethod = "gouraud";
     // initial lighting method set to phong
     let lightingMethod = "phong"
-    
+
     // callback for material multiplexer
     function whichMaterial() {
         // choose shading and lighting method
@@ -161,7 +161,199 @@ function main() {
             [51.2, 51.2, 51.2, 51.2],
         ),
     };
+
+    let skinMaterials = {
+        phongShadingPhongLighting: new PhongShadingPhongLightingMaterial(
+            [0.2125, 0.1275, 0.054, 1.0],
+            [0.714, 0.4284, 0.18144, 1.0],
+            [0.393548, 0.271906, 0.166721, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [25.6, 25.6, 25.6, 25.6],
+        ),
+        phongShadingBlinnPhongLighting: new PhongShadingBlinnPhongLightingMaterial(
+            [0.2125, 0.1275, 0.054, 1.0],
+            [0.714, 0.4284, 0.18144, 1.0],
+            [0.393548, 0.271906, 0.166721, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [25.6, 25.6, 25.6, 25.6],
+        ),
+        gouraudShadingPhongLighting: new GouraudShadingPhongLightingMaterial(
+            [0.2125, 0.1275, 0.054, 1.0],
+            [0.714, 0.4284, 0.18144, 1.0],
+            [0.393548, 0.271906, 0.166721, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [25.6, 25.6, 25.6, 25.6],
+        ),
+        gouraudShadingBlinnPhongLighting: new GouraudShadingBlinnPhongLightingMaterial(
+            [0.2125, 0.1275, 0.054, 1.0],
+            [0.714, 0.4284, 0.18144, 1.0],
+            [0.393548, 0.271906, 0.166721, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [25.6, 25.6, 25.6, 25.6],
+        ),
+    };
+
+    let clothMaterials = {
+        phongShadingPhongLighting: new PhongShadingPhongLightingMaterial(
+            [0.05, 0.05, 0.05, 1.0],
+            [0.0, 0.2, 0.6, 1.0],
+            [0.1, 0.2, 0.3, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [5, 5, 5, 5],
+        ),
+        phongShadingBlinnPhongLighting: new PhongShadingBlinnPhongLightingMaterial(
+            [0.05, 0.05, 0.05, 1.0],
+            [0.0, 0.2, 0.6, 1.0],
+            [0.1, 0.2, 0.3, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [5, 5, 5, 5],
+        ),
+        gouraudShadingPhongLighting: new GouraudShadingPhongLightingMaterial(
+            [0.05, 0.05, 0.05, 1.0],
+            [0.0, 0.2, 0.6, 1.0],
+            [0.1, 0.2, 0.3, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [5, 5, 5, 5],
+        ),
+        gouraudShadingBlinnPhongLighting: new GouraudShadingBlinnPhongLightingMaterial(
+            [0.05, 0.05, 0.05, 1.0],
+            [0.0, 0.2, 0.6, 1.0],
+            [0.1, 0.2, 0.3, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [5, 5, 5, 5],
+        ),
+    };
+
+    let trousersMaterials = {
+        phongShadingPhongLighting: new PhongShadingPhongLightingMaterial(
+            [0.1, 0.1, 0.1, 1.0],
+            [0.6, 0.0, 0.0, 1.0],
+            [0.6, 0.6, 0.6, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [100, 100, 100, 100],
+        ),
+        phongShadingBlinnPhongLighting: new PhongShadingBlinnPhongLightingMaterial(
+            [0.1, 0.1, 0.1, 1.0],
+            [0.6, 0.0, 0.0, 1.0],
+            [0.6, 0.6, 0.6, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [100, 100, 100, 100],
+        ),
+        gouraudShadingPhongLighting: new GouraudShadingPhongLightingMaterial(
+            [0.1, 0.1, 0.1, 1.0],
+            [0.6, 0.0, 0.0, 1.0],
+            [0.6, 0.6, 0.6, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [100, 100, 100, 100],
+        ),
+        gouraudShadingBlinnPhongLighting: new GouraudShadingBlinnPhongLightingMaterial(
+            [0.1, 0.1, 0.1, 1.0],
+            [0.6, 0.0, 0.0, 1.0],
+            [0.6, 0.6, 0.6, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [100, 100, 100, 100],
+        ),
+    };
+
+    let catMaterials = {
+        phongShadingPhongLighting: new PhongShadingPhongLightingMaterial(
+            [0.19225, 0.19225, 0.19225, 1.0],
+            [0.50754, 0.50754, 0.50754, 1.0],
+            [0.508273, 0.508273, 0.508273, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [51.2, 51.2, 51.2, 51.2],
+        ),
+        phongShadingBlinnPhongLighting: new PhongShadingBlinnPhongLightingMaterial(
+            [0.19225, 0.19225, 0.19225, 1.0],
+            [0.50754, 0.50754, 0.50754, 1.0],
+            [0.508273, 0.508273, 0.508273, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [51.2, 51.2, 51.2, 51.2],
+        ),
+        gouraudShadingPhongLighting: new GouraudShadingPhongLightingMaterial(
+            [0.19225, 0.19225, 0.19225, 1.0],
+            [0.50754, 0.50754, 0.50754, 1.0],
+            [0.508273, 0.508273, 0.508273, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [51.2, 51.2, 51.2, 51.2],
+        ),
+        gouraudShadingBlinnPhongLighting: new GouraudShadingBlinnPhongLightingMaterial(
+            [0.19225, 0.19225, 0.19225, 1.0],
+            [0.50754, 0.50754, 0.50754, 1.0],
+            [0.508273, 0.508273, 0.508273, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [51.2, 51.2, 51.2, 51.2],
+        ),
+    };
+
+    let catSecondMaterials = {
+        phongShadingPhongLighting: new PhongShadingPhongLightingMaterial(
+            [0.1745, 0.01175, 0.01175, 0.55],
+            [0.61424, 0.04136, 0.04136, 0.55],
+            [0.727811, 0.626959, 0.626959, 0.55],
+            [0.0, 0.0, 0.0, 1.0],
+            [76.8, 76.8, 76.8, 76.8],
+        ),
+        phongShadingBlinnPhongLighting: new PhongShadingBlinnPhongLightingMaterial(
+            [0.1745, 0.01175, 0.01175, 0.55],
+            [0.61424, 0.04136, 0.04136, 0.55],
+            [0.727811, 0.626959, 0.626959, 0.55],
+            [0.0, 0.0, 0.0, 1.0],
+            [76.8, 76.8, 76.8, 76.8],
+        ),
+        gouraudShadingPhongLighting: new GouraudShadingPhongLightingMaterial(
+            [0.1745, 0.01175, 0.01175, 0.55],
+            [0.61424, 0.04136, 0.04136, 0.55],
+            [0.727811, 0.626959, 0.626959, 0.55],
+            [0.0, 0.0, 0.0, 1.0],
+            [76.8, 76.8, 76.8, 76.8],
+        ),
+        gouraudShadingBlinnPhongLighting: new GouraudShadingBlinnPhongLightingMaterial(
+            [0.1745, 0.01175, 0.01175, 0.55],
+            [0.61424, 0.04136, 0.04136, 0.55],
+            [0.727811, 0.626959, 0.626959, 0.55],
+            [0.0, 0.0, 0.0, 1.0],
+            [76.8, 76.8, 76.8, 76.8],
+        ),
+    };
+
+    let chromeMaterials = {
+        phongShadingPhongLighting: new PhongShadingPhongLightingMaterial(
+            [0.25, 0.25, 0.25, 1.0],
+            [0.4, 0.4, 0.4, 1.0],
+            [0.774597, 0.774597, 0.774597, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [76.8, 76.8, 76.8, 76.8],
+        ),
+        phongShadingBlinnPhongLighting: new PhongShadingBlinnPhongLightingMaterial(
+            [0.25, 0.25, 0.25, 1.0],
+            [0.4, 0.4, 0.4, 1.0],
+            [0.774597, 0.774597, 0.774597, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [76.8, 76.8, 76.8, 76.8],
+        ),
+        gouraudShadingPhongLighting: new GouraudShadingPhongLightingMaterial(
+            [0.25, 0.25, 0.25, 1.0],
+            [0.4, 0.4, 0.4, 1.0],
+            [0.774597, 0.774597, 0.774597, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [76.8, 76.8, 76.8, 76.8],
+        ),
+        gouraudShadingBlinnPhongLighting: new GouraudShadingBlinnPhongLightingMaterial(
+            [0.25, 0.25, 0.25, 1.0],
+            [0.4, 0.4, 0.4, 1.0],
+            [0.774597, 0.774597, 0.774597, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [76.8, 76.8, 76.8, 76.8],
+        ),
+    };
     let goldMaterial = new MaterialMultiplexer(goldMaterials, whichMaterial);
+    let skinMaterial = new MaterialMultiplexer(skinMaterials, whichMaterial);
+    let clothMaterial = new MaterialMultiplexer(clothMaterials, whichMaterial);
+    let trousersMaterial = new MaterialMultiplexer(trousersMaterials, whichMaterial);
+    let catMaterial = new MaterialMultiplexer(catMaterials, whichMaterial);
+    let catSecondMaterial = new MaterialMultiplexer(catSecondMaterials, whichMaterial);
+    let chromeMaterial = new MaterialMultiplexer(chromeMaterials, whichMaterial);
 
     let xAxis = new Sprite(new LineGeometry([0, 0, 0], [1, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let yAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 1, 0]), new ColorMaterial([0, 1, 0, 1]));
@@ -171,81 +363,57 @@ function main() {
     world.add(yAxis);
     world.add(zAxis);
 
-    // Start building ground grid
-    let groundMaterial = new ColorMaterial([0.5, 0.5, 0.5, 1]);
+    // reference ball
+    let ball = new Sprite(new SphereGeometry(2, 32, 32), goldMaterial);
+    mat4.translate(ball.modelMatrix, ball.modelMatrix, [0, 0, 5]);
+    world.add(ball);
 
-    // for (let i = 0; i < 501; i++) {
-    //     let xGround = new Sprite(new LineGeometry([-100, -100 + i, 0], [100, -100 + i, 0]), groundMaterial);
-    //     let yGround = new Sprite(new LineGeometry([-100 + i, -100, 0], [-100 + i, 100, 0]), groundMaterial);
-
-    //     world.add(xGround);
-    //     world.add(yGround);
+    // // Start building ground plain
+    // for (let i = 0; i < 20; i++) {
+    //     for (let j = 0; j < 20; j++) {
+    //         let ground = new Sprite(new CubeGeometry(1,1, 0.1), chromeMaterial);
+    //         mat4.translate(ground.modelMatrix, ground.modelMatrix, [-10.5 + i, -10.5 + j, 0.5]);
+    //         world.add(ground);
+    //     }
     // }
 
-    // alter
-    let ring2 = new Sprite(new RingGeometry(2, 2.5, 1, 32), new Material(vertexShaderSource, fragmentShaderSource));
-    ring2.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    ring2.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(ring2.geometry.vertexPositions),
-        aVertexColor: new Float32Array(getRandomColors(ring2.geometry.nodePositions).flat()),
-    }, {});
-    mat4.translate(ring2.modelMatrix, ring2.modelMatrix, [0, 15, 0.5]);
-    world.add(ring2);
-
-    let cylinder = new Sprite(new CylinderGeometry(0.5, 3, 16), new Material(vertexShaderSource, fragmentShaderSource));
-    cylinder.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    cylinder.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(cylinder.geometry.vertexPositions),
-        aVertexColor: new Float32Array(getRandomColors(cylinder.geometry.nodePositions).flat()),
-    }, {});
-    mat4.translate(cylinder.modelMatrix, cylinder.modelMatrix, [0, 15, 1.5]);
-    world.add(cylinder);
-
     // tree
-
-    let tree = new Sprite(new RotationGeometry(0.2, 16, [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]), new Material(vertexShaderSource, fragmentShaderSource));
-    tree.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    tree.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(tree.geometry.vertexPositions),
-        aVertexColor: new Float32Array(getRandomColors(tree.geometry.nodePositions).flat()),
-    }, {});
+    let tree = new Sprite(new RotationGeometry(0.2, 16, [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]), chromeMaterial);
     mat4.translate(tree.modelMatrix, tree.modelMatrix, [0, 10, 0]);
     world.add(tree);
 
-    // let gyro = new Sprite(new RotationGeometry(0.1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04]), new ColorMaterial([1, 0.2, 0.2, 1]));
-    let gyro = new Sprite(new RotationGeometry(1, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04].map(v => 10 * v)), goldMaterial);
+    let gyro = new Sprite(new RotationGeometry(0.2, 20, [0.01, 0.2, 0.4, 0.6, 0.8, 0.6, 0.4, 0.2, 0.1, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04].map(v => 2 * v)), goldMaterial);
     let gyroTranslationMatrix = mat4.create();
     mat4.fromTranslation(gyroTranslationMatrix, [0, -10, 0]);
-    // mat4.translate(gyro.modelMatrix, gyro.modelMatrix, [0, -10, 0]);
     world.add(gyro);
     console.log(gyro);
 
     // ambient light
-    let ambientLight = new AmbientLight([0.5, 0.5, 0.5, 1]);
+    let ambientLight = new AmbientLight([0.1, 0.1, 0.1, 1]);
     world.add(ambientLight);
 
-    let light = new PointLight([5, 5, 5, 5], [5, 5, 5, 1]);
+    let light = new PointLight([3, 3, 0, 1], [3, 3, 0, 1]);
     let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
     lightIndicator.add(light);
 
+    let skyLight1 = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
+    let skyLight2 = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
+    let skyLightIndecator1 = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
+    let skyLightIndecator2 = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
+    skyLightIndecator1.add(skyLight1);
+    skyLightIndecator2.add(skyLight2);
+    mat4.translate(skyLightIndecator1.modelMatrix, skyLightIndecator1.modelMatrix, [5, 0, 0]);
+    mat4.translate(skyLightIndecator2.modelMatrix, skyLightIndecator2.modelMatrix, [-5, 0, 0]);
+    let lightCenter = new Sprite(null, null);
+    mat4.translate(lightCenter.modelMatrix, lightCenter.modelMatrix, [0, 0, 5]);
+    lightCenter.add(skyLightIndecator1);
+    lightCenter.add(skyLightIndecator2);
+    world.add(lightCenter);
+
     // camera light
-    let cameraLight = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
-    world.add(cameraLight);
+    // let cameraLight = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
+    // world.add(cameraLight);
 
-    let lightAnimation = new Animation({
-        0: {
-            translate: -5,
-        },
-        0.5: {
-            translate: 5,
-        },
-        1: {
-            translate: -5,
-        },
-    }, 3, easeInOut, 0, Infinity);
-    lightAnimation.start();
-
-    world.add(lightIndicator);
 
     // random grass block
 
@@ -311,13 +479,13 @@ function main() {
     let hip = new Sprite(null, null);
 
     let bodyJoint = new Sprite(null, null);
-    let body = new Sprite(new CubeGeometry(0.48, 0.24, 0.72), new ColorMaterial([0, 0.686, 0.686, 1]));
+    let body = new Sprite(new CubeGeometry(0.48, 0.24, 0.72), clothMaterial);
 
     let headJoint = new Sprite(null, null);
-    let head = new Sprite(new CubeGeometry(0.48, 0.48, 0.48), new ColorMaterial([0.702, 0.482, 0.384, 1]));
+    let head = new Sprite(new CubeGeometry(0.48, 0.48, 0.48), skinMaterial);
 
     let larmJoint = new Sprite(null, null);
-    let larm = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), new ColorMaterial([0.588, 0.372, 0.255, 1]));
+    let larm = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), skinMaterial);
 
     let armxAxis = new Sprite(new LineGeometry([0, 0, 0], [0.5, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let armyAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 0.5, 0]), new ColorMaterial([0, 1, 0, 1]));
@@ -334,40 +502,19 @@ function main() {
     // sphere.geometry.mode = WebGL2RenderingContext.LINE_STRIP;
 
     // sword on left hand
-    let handler = new Sprite(new FrustumGeometry(0.01, 0.01, 0.2, 16), new Material(vertexShaderSource, fragmentShaderSource));
-    handler.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    handler.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(handler.geometry.vertexPositions),
-        aVertexColor: new Float32Array(getRandomColors(handler.geometry.vertexPositions).flat()),
-    }, {});
+    let torch = new Sprite(new RotationGeometry(0.5, 20, [0.05, 0.10]), goldMaterial);
+    mat4.rotateX(torch.modelMatrix, torch.modelMatrix, 1.57);
+    mat4.translate(torch.modelMatrix, torch.modelMatrix, [0, -0.24, 0]);
+    larm.add(torch);
 
-    let bladeBottom = new Sprite(new FrustumGeometry(0.05, 0.05, 0.005, 16), new Material(vertexShaderSource, fragmentShaderSource));
-    bladeBottom.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    bladeBottom.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(bladeBottom.geometry.vertexPositions),
-        aVertexColor: new Float32Array(getRandomColors(bladeBottom.geometry.vertexPositions).flat())
-    }, {});
-
-    let blade = new Sprite(new FrustumGeometry(0.02, 0, 1.2, 16), new Material(vertexShaderSource, fragmentShaderSource));
-    blade.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
-    blade.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(blade.geometry.vertexPositions),
-        aVertexColor: new Float32Array(getRandomColors(blade.geometry.nodePositions).flat()),
-    }, {});
-
-    mat4.translate(blade.modelMatrix, blade.modelMatrix, [0, 0.6 + 0.0025 + 0.1, 0]);
-    mat4.translate(bladeBottom.modelMatrix, bladeBottom.modelMatrix, [0, 0.1, 0]);
-
-    let sword = new Sprite(null, null);
-    sword.add(handler);
-    sword.add(bladeBottom);
-    sword.add(blade);
+    mat4.translate(lightIndicator.modelMatrix, lightIndicator.modelMatrix, [0, 0, 0.5]);
+    torch.add(lightIndicator);
 
     let rarmJoint = new Sprite(null, null);
-    let rarm = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), new ColorMaterial([0.588, 0.372, 0.255, 1]));
+    let rarm = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), skinMaterial);
 
     // shield on right hand
-    let shield = new Sprite(new SphereGeometry(0.5, 16, 8, 2 * Math.PI, Math.PI / 3), new Material(vertexShaderSource, fragmentShaderSource));
+    let shield = new Sprite(new SphereGeometry(0.5, 16, 8, 2 * Math.PI, Math.PI / 3), chromeMaterial);
     shield.material.compile(renderer, defaultAttributePlaceholders, defaultUniformPlaceholders);
     shield.material.bindPlaceholders(renderer, {
         aVertexPosition: new Float32Array(shield.geometry.vertexPositions),
@@ -375,50 +522,15 @@ function main() {
     }, {});
 
     let llegJoint = new Sprite(null, null);
-    let lleg = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), new ColorMaterial([0.275, 0.228, 0.647, 1]));
+    let lleg = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), trousersMaterial);
 
     let rlegJoint = new Sprite(null, null);
-    let rleg = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), new ColorMaterial([0.275, 0.228, 0.5, 1]));
+    let rleg = new Sprite(new CubeGeometry(0.24, 0.24, 0.72), trousersMaterial);
 
     let capeJoint = new Sprite(null, null);
-    let cape = new Sprite(new CubeGeometry(0.48, 0.06, 1.08), new Material(vertexShaderSource, fragmentShaderSource));
+    let cape = new Sprite(new CubeGeometry(0.48, 0.06, 1.08), trousersMaterial);
     let nodePositionColorMapping = {}; // color for each node
-    let capeNodePositions = []; // reshape vertexPositions into (-1, 4)
 
-    for (let i = 0; i < cape.geometry.vertexPositions.length / 4; i++) {
-        let vertexPosition = cape.geometry.vertexPositions;
-        capeNodePositions.push([
-            vertexPosition[4 * i],
-            vertexPosition[4 * i + 1],
-            vertexPosition[4 * i + 2],
-            vertexPosition[4 * i + 3],
-        ]);
-    }
-
-    capeNodePositions.forEach(function (nodePosition) {
-        if (!(nodePosition in nodePositionColorMapping)) {
-            nodePositionColorMapping[nodePosition] = [
-                Math.random() > 0.5 ? 1 : 0,
-                Math.random() > 0.5 ? 1 : 0,
-                Math.random() > 0.5 ? 1 : 0,
-                1,
-            ];
-        }
-    });
-
-    cape.material.compile(renderer, {
-        aVertexPosition: "aVertexPosition",
-        aVertexColor: "aVertexColor"
-    }, {
-        uModelViewProjectionMatrix: "uModelViewProjectionMatrix"
-    })
-
-    cape.material.bindPlaceholders(renderer, {
-        aVertexPosition: new Float32Array(cape.geometry.vertexPositions),
-        aVertexColor: new Float32Array(capeNodePositions.map(function (nodePosition) {
-            return nodePositionColorMapping[nodePosition];
-        }).flat()),
-    }, {});
 
     let angelRing = new Sprite(new engine.TorusGeometry(0.24, 0.06, 32, 32), new ColorMaterial([1, 1, 0, 1]));
 
@@ -475,7 +587,7 @@ function main() {
 
     // Start build cat
 
-    let catBody = new Sprite(new CubeGeometry(0.24, 0.96, 0.36), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    let catBody = new Sprite(new CubeGeometry(0.24, 0.96, 0.36), catMaterial);
 
     let catxAxis = new Sprite(new LineGeometry([0, 0, 0], [0.5, 0, 0]), new ColorMaterial([1, 0, 0, 1]));
     let catyAxis = new Sprite(new LineGeometry([0, 0, 0], [0, 2, 0]), new ColorMaterial([0, 1, 0, 1]));
@@ -485,31 +597,31 @@ function main() {
     });
 
     let catHeadJoint = new Sprite(null, null);
-    let catHead = new Sprite(new CubeGeometry(0.3, 0.3, 0.24), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    let catHead = new Sprite(new CubeGeometry(0.3, 0.3, 0.24), catMaterial);
 
-    let catMouth = new Sprite(new CubeGeometry(0.18, 0.06, 0.12), new ColorMaterial([0.4, 0.4, 0.4, 1]));
+    let catMouth = new Sprite(new CubeGeometry(0.18, 0.06, 0.12), catSecondMaterial);
 
-    let catEarL = new Sprite(new CubeGeometry(0.06, 0.12, 0.06), new ColorMaterial([0.3, 0.3, 0.3, 1]));
+    let catEarL = new Sprite(new CubeGeometry(0.06, 0.12, 0.06), catSecondMaterial);
 
-    let catEarR = new Sprite(new CubeGeometry(0.06, 0.12, 0.06), new ColorMaterial([0.3, 0.3, 0.3, 1]));
+    let catEarR = new Sprite(new CubeGeometry(0.06, 0.12, 0.06), catSecondMaterial);
 
     let catFrontFootLJoint = new Sprite(null, null);
-    let catFrontFootL = new Sprite(new CubeGeometry(0.12, 0.12, 0.6), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    let catFrontFootL = new Sprite(new CubeGeometry(0.12, 0.12, 0.6), catMaterial);
 
     let catFrontFootRJoint = new Sprite(null, null);
-    let catFrontFootR = new Sprite(new CubeGeometry(0.12, 0.12, 0.6), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    let catFrontFootR = new Sprite(new CubeGeometry(0.12, 0.12, 0.6), catMaterial);
 
     let catRearFootLJoint = new Sprite(null, null);
-    let catRearFootL = new Sprite(new CubeGeometry(0.12, 0.12, 0.36), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    let catRearFootL = new Sprite(new CubeGeometry(0.12, 0.12, 0.36), catMaterial);
 
     let catRearFootRJoint = new Sprite(null, null);
-    let catRearFootR = new Sprite(new CubeGeometry(0.12, 0.12, 0.36), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    let catRearFootR = new Sprite(new CubeGeometry(0.12, 0.12, 0.36), catMaterial);
 
     let catTailFrontJoint = new Sprite(null, null);
-    let catTailFront = new Sprite(new CubeGeometry(0.06, 0.48, 0.06), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    let catTailFront = new Sprite(new CubeGeometry(0.06, 0.48, 0.06), catMaterial);
 
     let catTailRearJoint = new Sprite(null, null);
-    let catTailRear = new Sprite(new CubeGeometry(0.06, 0.48, 0.06), new ColorMaterial([0.6, 0.6, 0.6, 1]));
+    let catTailRear = new Sprite(new CubeGeometry(0.06, 0.48, 0.06), catMaterial);
 
     mat4.translate(catBody.modelMatrix, catBody.modelMatrix, [0, 0, 0.7]);
     // add cat head
@@ -901,8 +1013,8 @@ function main() {
         );
 
         // set camera light position
-        mat4.identity(cameraLight.modelMatrix);
-        mat4.translate(cameraLight.modelMatrix, cameraLight.modelMatrix, camera.position);
+        // mat4.identity(cameraLight.modelMatrix);
+        // mat4.translate(cameraLight.modelMatrix, cameraLight.modelMatrix, camera.position);
 
         mat4.identity(hip.modelMatrix);
         mat4.translate(hip.modelMatrix, hip.modelMatrix, stevePosition);
@@ -941,8 +1053,9 @@ function main() {
         }
 
         // light animation
-        mat4.identity(lightIndicator.modelMatrix);
-        mat4.translate(lightIndicator.modelMatrix, lightIndicator.modelMatrix, [0, 0, lightAnimation.yield()["translate"]]);
+        //mat4.identity(lightIndicator.modelMatrix);
+        //mat4.translate(lightIndicator.modelMatrix, lightIndicator.modelMatrix, [0, 0, lightAnimation.yield()["translate"]]);
+        mat4.rotateZ(lightCenter.modelMatrix, lightCenter.modelMatrix, 0.01);
 
         renderer.clear([0, 0, 0, 1]);
         renderer.render(world, camera);
