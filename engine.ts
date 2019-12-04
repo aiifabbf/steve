@@ -84,28 +84,49 @@ export class Geometry {
         let normalVectors: Array<Array<number>> = [];
         let normalVector = vec3.create();
 
-        for (let i = 0; i < nodePositions.length - 2; i++) {
-            let a = nodePositions[i];
-            let b = nodePositions[i + 1];
-            let c = nodePositions[i + 2];
+        if (this.mode === WebGL2RenderingContext.TRIANGLE_STRIP) { // if drawing mode is TRIANGLE_STRIP
 
-            let ab = vec3.create();
-            vec3.subtract(ab, b, a); // ab = b - a
+            for (let i = 0; i < nodePositions.length - 2; i++) {
+                let a = nodePositions[i];
+                let b = nodePositions[i + 1];
+                let c = nodePositions[i + 2];
 
-            let bc = vec3.create();
-            vec3.subtract(bc, c, b); // bc = c - b
-            if (i % 2 == 0) {
-                vec3.cross(normalVector, bc, ab); // for even-indexed triangles, surface normal vector is bc x ab
-            } else {
-                vec3.cross(normalVector, ab, bc); // for odd-indexed triangles, surface normal vector is ab x bc
+                let ab = vec3.create();
+                vec3.subtract(ab, b, a); // ab = b - a
+
+                let bc = vec3.create();
+                vec3.subtract(bc, c, b); // bc = c - b
+                if (i % 2 == 0) {
+                    vec3.cross(normalVector, bc, ab); // for even-indexed triangles, surface normal vector is bc x ab
+                } else {
+                    vec3.cross(normalVector, ab, bc); // for odd-indexed triangles, surface normal vector is ab x bc
+                }
+                vec3.normalize(normalVector, normalVector);
+                normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
             }
-            vec3.normalize(normalVector, normalVector);
+
             normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
+            normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
+        } else if (this.mode === WebGL2RenderingContext.TRIANGLES) { // if drawing mode is TRIANGLES
+
+            for (let i = 0; i < nodePositions.length; i += 3) {
+                let a = nodePositions[i];
+                let b = nodePositions[i + 1];
+                let c = nodePositions[i + 2];
+
+                let ab = vec3.create();
+                vec3.subtract(ab, b, a); // ab = b - a
+
+                let bc = vec3.create();
+                vec3.subtract(bc, c, b); // bc = c - b
+                vec3.cross(normalVector, ab, bc);
+                vec3.normalize(normalVector, normalVector);
+
+                for (let _ = 0; _ < 3; _++) {
+                    normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
+                }
+            }
         }
-
-        normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
-        normalVectors.push([normalVector[0], normalVector[1], normalVector[2], 0]);
-
         this.cachedNormalVectors = normalVectors;
 
         return normalVectors;
@@ -287,50 +308,41 @@ export class RotationGeometry extends Geometry {
         let total = define.length;
         let totalHeight = 0;
 
+        // bottom face
         for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
-            let a = [
-                define[0] * Math.cos(thetaIndex * deltaTheta),
-                define[0] * Math.sin(thetaIndex * deltaTheta),
-                0,
-                1
-            ]
-            let b = [0, 0, 0, 1]
-            vertexPositions = vertexPositions.concat(a).concat(b);
+            vertexPositions.push(
+                0, 0, 0, 1, // b
+                define[0] * Math.cos((thetaIndex + 1) * deltaTheta), define[0] * Math.sin((thetaIndex + 1) * deltaTheta), 0, 1, // a
+                define[0] * Math.cos(thetaIndex * deltaTheta), define[0] * Math.sin(thetaIndex * deltaTheta), 0, 1, // c
+            );
         }
 
+        // side face
         for (let i = 1; i < total; i++) {
             for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
-                let a = [
-                    define[i - 1] * Math.cos(thetaIndex * deltaTheta),
-                    define[i - 1] * Math.sin(thetaIndex * deltaTheta),
-                    totalHeight,
-                    1
-                ]
-                let b = [
-                    define[i] * Math.cos(thetaIndex * deltaTheta),
-                    define[i] * Math.sin(thetaIndex * deltaTheta),
-                    totalHeight + height,
-                    1
-                ]
-                // console.log(a);
-                vertexPositions = vertexPositions.concat(a).concat(b);
+                vertexPositions.push(
+                    define[i - 1] * Math.cos(thetaIndex * deltaTheta), define[i - 1] * Math.sin(thetaIndex * deltaTheta), totalHeight, 1, // b
+                    define[i - 1] * Math.cos((thetaIndex + 1) * deltaTheta), define[i - 1] * Math.sin((thetaIndex + 1) * deltaTheta), totalHeight, 1, // a
+                    define[i] * Math.cos((thetaIndex + 1) * deltaTheta), define[i] * Math.sin((thetaIndex + 1) * deltaTheta), totalHeight + height, 1, // d
+                    define[i - 1] * Math.cos(thetaIndex * deltaTheta), define[i - 1] * Math.sin(thetaIndex * deltaTheta), totalHeight, 1, // a
+                    define[i] * Math.cos((thetaIndex + 1) * deltaTheta), define[i] * Math.sin((thetaIndex + 1) * deltaTheta), totalHeight + height, 1, // c
+                    define[i] * Math.cos(thetaIndex * deltaTheta), define[i] * Math.sin(thetaIndex * deltaTheta), totalHeight + height, 1, // c
+                );
             }
             totalHeight += height;
         }
 
+        // top face
         for (let thetaIndex = 0; thetaIndex <= segment; thetaIndex++) {
-            let a = [
-                define[define.length - 1] * Math.cos(thetaIndex * deltaTheta),
-                define[define.length - 1] * Math.sin(thetaIndex * deltaTheta),
-                totalHeight,
-                1
-            ]
-            let b = [0, 0, totalHeight, 1]
-            vertexPositions = vertexPositions.concat(a).concat(b);
+            vertexPositions.push(
+                0, 0, totalHeight, 1, // b
+                define[define.length - 1] * Math.cos(thetaIndex * deltaTheta), define[define.length - 1] * Math.sin(thetaIndex * deltaTheta), totalHeight, 1, // c
+                define[define.length - 1] * Math.cos((thetaIndex + 1) * deltaTheta), define[define.length - 1] * Math.sin((1 + thetaIndex) * deltaTheta), totalHeight, 1, // a
+            );
         }
 
         super(vertexPositions);
-        this.mode = WebGL2RenderingContext.TRIANGLE_STRIP;
+        this.mode = WebGL2RenderingContext.TRIANGLES;
     }
 }
 
@@ -477,23 +489,10 @@ export class CubeGeometry extends Geometry {
             leftBottomBack, rightBottomBack, rightBottomFront, rightBottomFront, leftBottomFront, leftBottomBack, // bottom face
         ].flat());
 
-        this.cachedNormalVectors = [
-            [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], // front face
-            [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], // right face
-            [0, 0, -1, 0], [0, 0, -1, 0], [0, 0, -1, 0], [0, 0, -1, 0], [0, 0, -1, 0], [0, 0, -1, 0], // back face
-            [-1, 0, 0, 0], [-1, 0, 0, 0], [-1, 0, 0, 0], [-1, 0, 0, 0], [-1, 0, 0, 0], [-1, 0, 0, 0], // left face
-            [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], // top face
-            [0, -1, 0, 0], [0, -1, 0, 0], [0, -1, 0, 0], [0, -1, 0, 0], [0, -1, 0, 0], [0, -1, 0, 0], // bottom face
-        ];
-
         this.mode = WebGL2RenderingContext.TRIANGLES; // use TRIANGLES, life becomes easier
         this.width = width;
         this.height = height;
         this.depth = depth;
-    }
-
-    get normalVectors() {
-        return this.cachedNormalVectors;
     }
 }
 
