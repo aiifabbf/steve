@@ -368,14 +368,25 @@ function main() {
     mat4.translate(ball.modelMatrix, ball.modelMatrix, [0, 0, 5]);
     world.add(ball);
 
-    // // Start building ground plain
-    // for (let i = 0; i < 20; i++) {
-    //     for (let j = 0; j < 20; j++) {
-    //         let ground = new Sprite(new CubeGeometry(1,1, 0.1), chromeMaterial);
-    //         mat4.translate(ground.modelMatrix, ground.modelMatrix, [-10.5 + i, -10.5 + j, 0.5]);
-    //         world.add(ground);
-    //     }
-    // }
+    // Start building ground grid
+    let groundMaterial = new ColorMaterial([0.5, 0.5, 0.5, 1]);
+
+    for (let i = 0; i < 100; i++) {
+        let xGround = new Sprite(new LineGeometry([-50, -50 + i, 0], [50, -50 + i, 0]), groundMaterial);
+        xGround.material.compile(renderer);
+        xGround.material.bindPlaceholders(renderer, {
+            aVertexPosition: new Float32Array(xGround.geometry.vertexPositions)
+        }, {});
+
+        let yGround = new Sprite(new LineGeometry([-50 + i, -50, 0], [-50 + i, 50, 0]), groundMaterial);
+        yGround.material.compile(renderer);
+        yGround.material.bindPlaceholders(renderer, {
+            aVertexPosition: new Float32Array(yGround.geometry.vertexPositions)
+        }, {});
+
+        world.add(xGround);
+        world.add(yGround);
+    }
 
     // tree
     let tree = new Sprite(new RotationGeometry(0.2, 16, [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]), chromeMaterial);
@@ -393,7 +404,7 @@ function main() {
     world.add(ambientLight);
 
     let light = new PointLight([3, 3, 0, 1], [3, 3, 0, 1]);
-    let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
+    let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 0, 1]));
     lightIndicator.add(light);
 
     let skyLight1 = new PointLight([5, 5, 5, 1], [5, 5, 5, 1]);
@@ -402,10 +413,10 @@ function main() {
     let skyLightIndecator2 = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
     skyLightIndecator1.add(skyLight1);
     skyLightIndecator2.add(skyLight2);
-    mat4.translate(skyLightIndecator1.modelMatrix, skyLightIndecator1.modelMatrix, [5, 0, 0]);
-    mat4.translate(skyLightIndecator2.modelMatrix, skyLightIndecator2.modelMatrix, [-5, 0, 0]);
+    mat4.translate(skyLightIndecator1.modelMatrix, skyLightIndecator1.modelMatrix, [10, 0, 0]);
+    mat4.translate(skyLightIndecator2.modelMatrix, skyLightIndecator2.modelMatrix, [-10, 0, 0]);
     let lightCenter = new Sprite(null, null);
-    mat4.translate(lightCenter.modelMatrix, lightCenter.modelMatrix, [0, 0, 5]);
+    mat4.translate(lightCenter.modelMatrix, lightCenter.modelMatrix, [0, 2, 5]);
     lightCenter.add(skyLightIndecator1);
     lightCenter.add(skyLightIndecator2);
     world.add(lightCenter);
