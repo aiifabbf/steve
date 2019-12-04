@@ -887,12 +887,11 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
             uniform mat4 uViewMatrixInverted;
             uniform mat4 uProjectionMatrix;
 
-            uniform vec4 uLightAbsolutePositions[8];
+            uniform vec4 uLightAbsolutePositions[4];
 
-            varying vec4 vLightVector[8];
-            varying vec4 vNormalVector[8];
-            varying vec4 vViewVector[8];
-            varying vec4 vReflectedLightVector[8];
+            varying vec4 vLightVector[4];
+            varying vec4 vNormalVector[4];
+            varying vec4 vViewVector[4];
 
             void main() {
                 vec4 absoluteVertexPosition = uModelMatrix * aVertexPosition;
@@ -904,12 +903,10 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
                     vec4 lightVector = vec4(normalize(lightAbsolutePosition.xyz - absoluteVertexPosition.xyz), 0.0);
                     vec4 normalVector = vec4(normalize((uModelMatrixInvertedTransposed * aVertexNormal).xyz), 0.0);
                     vec4 viewVector = vec4(normalize(absoluteCameraPosition.xyz - absoluteVertexPosition.xyz), 0.0);
-                    vec4 reflectedLightVector = reflect(-lightVector, normalVector);
 
                     vLightVector[i] = lightVector;
                     vNormalVector[i] = normalVector;
                     vViewVector[i] = viewVector;
-                    vReflectedLightVector[i] = reflectedLightVector;
                 }
 
                 gl_Position = uProjectionMatrix * uViewMatrix * absoluteVertexPosition;
@@ -917,9 +914,9 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
         `, `
             precision mediump float;
 
-            uniform vec4 uLightIas[8];
-            uniform vec4 uLightIds[8];
-            uniform vec4 uLightIss[8];
+            uniform vec4 uLightIas[4];
+            uniform vec4 uLightIds[4];
+            uniform vec4 uLightIss[4];
 
             uniform vec4 uMaterialKa;
             uniform vec4 uMaterialKd;
@@ -927,10 +924,9 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
             uniform vec4 uMaterialKe;
             uniform vec4 uMaterialSe;
 
-            varying vec4 vLightVector[8];
-            varying vec4 vNormalVector[8];
-            varying vec4 vViewVector[8];
-            varying vec4 vReflectedLightVector[8];
+            varying vec4 vLightVector[4];
+            varying vec4 vNormalVector[4];
+            varying vec4 vViewVector[4];
 
             void main() {
                 vec4 fragmentColor;
@@ -944,7 +940,7 @@ export class PhongShadingMaterial extends ReflectiveMaterial {
                     vec4 lightVector = normalize(vLightVector[i]);
                     vec4 normalVector = normalize(vNormalVector[i]);
                     vec4 viewVector = normalize(vViewVector[i]);
-                    vec4 reflectedLightVector = normalize(vReflectedLightVector[i]);
+                    vec4 reflectedLightVector = reflect(-lightVector, normalVector);
 
                     vec4 ambientColor = lightIa * uMaterialKa;
                     vec4 diffuseColor = lightId * uMaterialKd * max(0.0, dot(normalVector, lightVector));

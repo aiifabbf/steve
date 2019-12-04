@@ -1,5 +1,5 @@
 import { mat4, vec3, quat } from "gl-matrix";
-import { Light, Renderer, Material, Sprite, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, PerspectiveCamera, OrthogonalCamera, radians, deepCopy, FrustumGeometry, PhongShadingMaterial, GouraudShadingMaterial, Animation, easeInOut } from "./engine";
+import { Light, Renderer, Material, Sprite, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, PerspectiveCamera, OrthogonalCamera, radians, deepCopy, FrustumGeometry, PhongShadingMaterial, GouraudShadingMaterial, Animation, easeInOut, AmbientLight, PointLight } from "./engine";
 import * as engine from "./engine.ts";
 
 let canvas = document.querySelector("canvas");
@@ -112,7 +112,7 @@ function main() {
     let camera = thirdPersonCamera;
 
     // materials
-    let goldMaterial = new GouraudShadingMaterial(
+    let goldMaterial = new PhongShadingMaterial(
         [0.35, 0.24, 0.19, 1.0],
         [0.702, 0.482, 0.384, 1],
         [0.628281, 0.555802, 0.366065, 1.0],
@@ -177,9 +177,17 @@ function main() {
     world.add(gyro);
     console.log(gyro);
 
-    let light = new Light([1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]);
+    // ambient light
+    let ambientLight = new AmbientLight([0.5, 0.5, 0.5, 1]);
+    world.add(ambientLight);
+
+    let light = new PointLight([1, 1, 1, 1], [1, 1, 1, 1]);
     let lightIndicator = new Sprite(new SphereGeometry(0.1, 6, 3), new ColorMaterial([1, 1, 1, 1]));
     lightIndicator.add(light);
+
+    // camera light
+    let cameraLight = new PointLight([1, 1, 1, 1], [1, 1, 1, 1]);
+    world.add(cameraLight);
 
     let lightAnimation = new Animation({
         0: {
@@ -848,6 +856,10 @@ function main() {
             radians(freeCameraPhi),
             freeCameraRadius,
         );
+
+        // set camera light position
+        mat4.identity(cameraLight.modelMatrix);
+        mat4.translate(cameraLight.modelMatrix, cameraLight.modelMatrix, camera.position);
 
         mat4.identity(hip.modelMatrix);
         mat4.translate(hip.modelMatrix, hip.modelMatrix, stevePosition);
