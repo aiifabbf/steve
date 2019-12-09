@@ -1051,6 +1051,10 @@ function main() {
         //mat4.translate(lightIndicator.modelMatrix, lightIndicator.modelMatrix, [0, 0, lightAnimation.yield()["translate"]]);
         mat4.rotateZ(lightCenter.modelMatrix, lightCenter.modelMatrix, 0.02);
 
+        // ball rotation
+        mat4.rotateX(ball.modelMatrix, ball.modelMatrix, 0.05);
+        // mat4.translate(ball.modelMatrix, ball.modelMatrix, [0, 0, 5]);
+
         renderer.clear([0, 0, 0, 1]);
         renderer.render(world, camera);
 
@@ -1095,6 +1099,24 @@ function main() {
         mat4.fromRotation(gyroRotationMatrix, rotationAngle, axis);
 
         mat4.multiply(gyro.modelMatrix, gyroTranslationMatrix, gyroRotationMatrix);
+
+        ambientLight.ia[0] = parseFloat(document.querySelector("#ambient-light-power-r").value);
+        ambientLight.ia[1] = parseFloat(document.querySelector("#ambient-light-power-g").value);
+        ambientLight.ia[2] = parseFloat(document.querySelector("#ambient-light-power-b").value);
+
+        let rgb = parseFloat(document.querySelector("#head-light-power-diffuse").value);
+        cameraLight.id = [rgb, rgb, rgb, 1];
+
+        rgb = parseFloat(document.querySelector("#head-light-power-specular").value);
+        cameraLight.is = [rgb, rgb, rgb, 1];
+
+        if (document.querySelector("#torch-switch-on").checked) {
+            light.id = [3, 3, 0, 1];
+            light.is = [3, 3, 0, 1];
+        } else if (document.querySelector("#torch-switch-off").checked) {
+            light.id = [0, 0, 0, 1];
+            light.is = [0, 0, 0, 1];
+        }
     }
 
     window.addEventListener("resize", function () {
