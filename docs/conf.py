@@ -132,7 +132,7 @@ numfig = True
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'steve.tex', 'Project B: steve again',
+    (master_doc, 'steve.tex', 'Project C: lit steve',
      'Yuchen Shi ysi5420, Yifeng Chen yct2284', 'howto'),
 ]
 

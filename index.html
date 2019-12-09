@@ -1,15 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Steve</title>
 </head>
+
 <body>
     <canvas width="500" height="500"></canvas>
     <div style="position: fixed; top: 0; left: 0; z-index: 1;" id="which-camera"></div>
-    <div style="max-height: 20vh; overflow: auto; padding: 20px; column-count: 2;">
+    <div style="max-height: 20vh; overflow: auto; padding: 20px;">
+        <div>
+            Shading method <input type="radio" name="shading-method" id="shading-method-gouraud" checked><label
+                for="shading-method-gouraud">Gouraud</label><input type="radio" name="shading-method"
+                id="shading-method-phong"><label for="shading-method-phong">Phong</label>
+        </div>
+        <div>
+            Lighting method <input type="radio" name="lighting-method" id="lighting-method-phong" checked><label
+                for="lighting-method-phong">Phong</label><input type="radio" name="lighting-method"
+                id="lighting-method-blinn-phong"><label for="lighting-method-blinn-phong">Blinn-Phong</label>
+        </div>
+        <h2>Ambient light power</h2>
+        <div style="display: flex; justify-content: space-between;">
+            <div>
+                red: 0<input type="range" name="ambient-light-power-r" id="ambient-light-power-r" min="0" max="1"
+                    step="0.01" value="0.1">1
+            </div>
+            <div>
+                green: 0<input type="range" name="ambient-light-power-g" id="ambient-light-power-g" min="0" max="1"
+                    step="0.01" value="0.1">1
+            </div>
+            <div>
+                blue: 0<input type="range" name="ambient-light-power-b" id="ambient-light-power-b" min="0" max="1"
+                    step="0.01" value="0.1">1
+            </div>
+        </div>
+        <h2>Head light power</h2>
+        <div>
+            <div>
+                diffuse: 0 <input type="range" name="head-light-power-diffuse" id="head-light-power-diffuse" min="0"
+                    max="10" step="0.1" value="5"> 10
+            </div>
+            <div>
+                specular: 0 <input type="range" name="head-light-power-specular" id="head-light-power-specular" min="0"
+                    max="10" step="0.1" value="5"> 10
+            </div>
+        </div>
+        <h2>Torch</h2>
+        <div>
+            <input type="radio" name="torch-switch" id="torch-switch-on" checked><label for="torch-switch-on">On</label> <input type="radio" name="torch-switch" id="torch-switch-off"><label for="torch-switch-off">Off</label>
+        </div>
+        <h2>Guide</h2>
+        <div>
+            <span><kbd>v</kbd> to switch camera</span>
+        </div>
+        <div>
+            under third person camera:
+            <ul>
+                <li>mouse wheel to scale</li>
+                <li>drag with LEFT mouse button down to see around</li>
+                <li><kbd>W, S</kbd> to walk</li>
+                <li><kbd>Shift</kbd> to bow</li>
+            </ul>
+        </div>
+        <div>
+            under first person camera:
+            <ul>
+                <li>mouse dragging to see around</li>
+            </ul>
+        </div>
         <div>
             under free camera:
             <ul>
@@ -19,13 +80,12 @@
             </ul>
         </div>
         <div>
-            <button id="toggle-ground-plane">toggle ground plane</button>
-            <button id="toggle-sphere">toggle random-colored sphere</button>
-            <button id="toggle-another-sphere">toggle red-white sphere</button>
+            drag with RIGHT mouse button down to rotate the gyro
         </div>
     </div>
     <style>
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -35,4 +95,5 @@
     </style>
     <script src="./steve.js"></script>
 </body>
+
 </html>

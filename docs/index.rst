@@ -1,5 +1,5 @@
 =======================
-Project B Documentation
+Project C Documentation
 =======================
 
 Quick start
@@ -30,37 +30,39 @@ Demo
 .. figure:: fig-original.png
     :width: 100%
 
-    Initial scene. The canvas is split into two evenly-separated viewports: left viewport is a perspective camera's view, and right viewport is an orthographical camera's view. The canvas's height is strictly 80% of the browser window. On the upper-left corner, there is a tag saying ``third person, position: x, y, z`` indicating that current camera is a third person camera that rotates and is centered round steve and wherever Steve goes, third camera will always follow him. Hold down left mouse button and drag, third camera will rotate view angles but do not change look-at position. On the bottom 20%, user instructions are presented. A nearly infinite ground grid that extends to the horizon can be seen easily. World axes are fixed at origin. On steve's shoulder, a joint axes are placed to help clarify model transforms.
+    Initial scene. The canvas's height is strictly 80% of the browser window. A nearly infinite ground grid with white lines that extends to the horizon can be seen easily. There are more than 3 objects in the scene: a rotating gold sphere at the center to reveal the correctness of surface normals, a mouse-rotatable, pewter gyro, Steve, cat, silver clouds and randomly generated gold cubes.
 
-.. _fig-walk:
-.. figure:: fig-walk.png
+.. _fig-shading-lighting-method-switch:
+.. figure:: fig-shading-lighting-method-switch.png
     :width: 100%
 
-    Press ``W`` and Steve will walk forward. His arms and legs will rotate around the joint naturally. Press ``S`` to let Steve walk backward. Steve now holds a shield and sword in his hands. Behind his back, there is a custom-designed tree and an altar. The shield and sword is painted with per-vertex varying colors. Also notice that right orthographical view does not change when current camera is a third person or a first person camera: it will only change according to left view angles when current camera is a free-fly camera.
+    On the lower 20% of the browser window, you can control shading methods and lighting methods, on the go, without interrupting the program [#interrupt]_ or requiring restarting the program. The figure shows the scene in Phong shading and Phong lighting. Also in this figure, a highlight spot, on the sphere, caused by camera head light, can be seen.
 
-.. _fig-first-person-camera:
-.. figure:: fig_first_person_camera.png
+.. _fig-ambient-light-switch:
+.. figure:: fig-ambient-light-switch.png
     :width: 100%
 
-    When in third person camera, press ``V`` and current camera will become a first person camera. It is like attaching the camera to Steve's eyes.
+    Ambient light power is adjustable independently on each RGB channel.
 
-.. _fig-first-person-camera-looking-down:
-.. figure:: fig-first-person-camera-looking-down.png
+.. _fig-head-light-switch:
+.. figure:: fig-head-light-switch.png
     :width: 100%
 
-    You can look down in the first person camera, and see how Steve walks.
+    Head light power is adjustable independently on the diffuse term and specular term.
 
-.. _fig-quaternion:
-.. figure:: fig-quaternion.png
+.. _fig-torch:
+.. figure:: fig-torch.svg
     :width: 100%
 
-    In any camera, you can always hold right mouse button down and drag to rotate the gyro. Rotation of gyro is done using quaternion multiplication and the rotation is always with respect to current view plane. Try pulling the gyro down and rotate.
+    Torch can be turned on and off.
 
-.. _fig-free-fly:
-.. figure:: fig_free_fly.png
+.. _fig-steve-waving:
+.. figure:: fig-steve-waving.svg
     :width: 100%
 
-    Free-fly camera mode. Orthographical view on the right side will change accordingly when you change view angles.
+    Torch light position is user-adjustable. It is exactly attached to the top of the torch, so you can make Steve walk to change its position. The upper sub-figure shows that when Steve's left hand is on the back side, torch light will be obscured by his body, so his head and the cat before him are in dark. The lower sub-figure shows that when Steve's left hand is on the forward side, torch light is not obscured, and his whole body is lit. This reflects the fact that torch light is indeed attached to the top of the torch, conforming reality.
+
+.. [#interrupt] Changing the shading method or lighting method actually requires switching shaders. The project takes a lazy-load, load-on-demand approach: unless you explicitly change to a different shading or lighting method, new shaders will never be compiled, in order to save initial loading time. Once compiled, shader programs will stay cached, and next time you switch to that shading or lighting method, no re-compilation is needed any more. Depending on your PC's hardware, compilation might take noticeable time to complete, during which you may notice a 1-2 second unresponsive freeze.
 
 Behind the scene
 ================
