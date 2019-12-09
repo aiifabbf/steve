@@ -1,11 +1,16 @@
+// engine.ts: a simple wrapper around WebGL's drawing primitives
 import { mat4, vec3, vec4 } from "gl-matrix";
 
+// Sprite class
+// A Sprite represents some object that can be painted in the scene, or an invisible or visible container that contains other Sprites.
+// A Sprite's absolute transform is calculated cumulatively along the path from root (world sprite that contains everything) to this Sprite.
 export class Sprite {
-    geometry: Geometry;
-    material: Material;
+    geometry: Geometry; // holds geometric information
+    material: Material; // holds material information
     children: Array<Sprite>;
-    modelMatrix: mat4;
+    modelMatrix: mat4; // transform relative to parent
 
+    // for abstract containers, set geometry and material to null
     constructor(geometry: Geometry, material: Material) {
         this.geometry = geometry;
         this.material = material;
@@ -14,11 +19,15 @@ export class Sprite {
         this.modelMatrix = mat4.create();
     }
 
+    // attach a child Sprite to this Sprite
     add(child: Sprite) {
         this.children.push(child);
     }
 }
 
+// Light base class
+// Light is a Sprite. This means you can attach a Light to any other Sprite in the scene, just like attaching a Sprite to another Sprite
+// Renderer.render() will later scan through the scene tree, find all Lights and calculate their absolute positions, and transfer Light properties like Ia, Id, Is into shader programs
 export class Light extends Sprite {
     ia: Array<number>; // ambient light density for r, g, b, a
     id: Array<number>; // diffuse light density for r, g, b, a
@@ -32,24 +41,30 @@ export class Light extends Sprite {
     }
 }
 
+// AmbientLight only cares about ambient term
+// Realist lights do not have ambient term. That is why here I choose to separate ambient light and point light
 export class AmbientLight extends Light {
     constructor(ia: Array<number>) {
         super(ia, [0, 0, 0, 0], [0, 0, 0, 0]);
     }
 }
 
+// PointLight only cares about diffuse term and specular term
 export class PointLight extends Light {
     constructor(id: Array<number>, is: Array<number>) {
         super([0, 0, 0, 0], id, is);
     }
 }
 
+// Geometry class
+// A Geometry instance holds purely geometric information, e.g. vertex positions, normal vectors at each vertex, that is independent of material, sprite or rendering context.
+// A Sprite, at initialization, will refer to some Geometry instance to represent its geometric structure.
 export class Geometry {
-    readonly vertexPositions: Array<number>;
-    mode: number;
+    readonly vertexPositions: Array<number>; // vertex positions once set, can no longer be changed any more, for efficiency reason
+    mode: number; // drawing mode, e.g. TRIANGLE_STRIP, TRIANGLES, LINES
 
-    cachedNormalVectors: Array<Array<number>>;
-    cachedNodePositions: Array<Array<number>>;
+    cachedNormalVectors: Array<Array<number>>; // avoid duplicate computation
+    cachedNodePositions: Array<Array<number>>; // avoid duplicate computation
 
     constructor(vertexPositions: Array<number>) {
         this.vertexPositions = vertexPositions;
@@ -318,6 +333,7 @@ export class CylinderGeometry extends Geometry {
 
 }
 
+// Geometry that comes from rotating some cross section surface around Z axis
 export class RotationGeometry extends Geometry {
     constructor(height = 1, segment = 16, define = []) {
         let vertexPositions = [];
@@ -583,18 +599,21 @@ export class FrustumGeometry extends Geometry {
     }
 }
 
+// Material class
+// A Material instance holds information about the look and feel of an object's surface, independent of what shape or geometry the object has.
+// It is essentially a wrapper around WebGL shader programs.
 export class Material {
-    programInfo: ProgramInfo;
+    programInfo: ProgramInfo; // shader program objects, attribute name to attribute name in shader source mapping, uniform name to uniform name in shader source mapping
     vertexShaderSource: string;
     fragmentShaderSource: string;
     buffers: {
         attributes: {},
         uniforms: {},
-    };
+    }; // buffers for all attributes and uniforms
     placeholderValueMapping: {
         attributes: {},
         uniforms: {},
-    };
+    }; // attribute to real data mapping, uniform to real data mapping
 
     constructor(vertexShaderSource: string, fragmentShaderSource: string) {
         this.vertexShaderSource = vertexShaderSource;
@@ -610,6 +629,8 @@ export class Material {
         };
     }
 
+    // compile the Material, make it usable in rendering. Requiring a WebGL rendering context, hence the Renderer object here
+    // attributePlaceholders is a mapping, from attribute names used in JS (like vertexPositions, for JS naming conventions) to attribute names actually used in shader source (like aVertexPositions, for GLSL naming conventions). You can make them the same.
     compile(renderer: Renderer, attributePlaceholders?: Object, uniformPlaceholders?: Object) {
         let self = this;
         let gl = renderer.gl;
@@ -620,12 +641,14 @@ export class Material {
             throw new Error("No vertex shader source or fragment shader source.");
         }
 
+        // create a buffer for each attribute
         Object.entries(this.programInfo.attributeLocations).forEach(function (item) {
             let k = item[0];
             let v = item[1];
             self.buffers.attributes[k] = gl.createBuffer();
         })
 
+        // create a buffer for each uniform
         Object.entries(this.programInfo.uniformLocations).forEach(function (item) {
             let k = item[0];
             let v = item[1];
@@ -633,6 +656,8 @@ export class Material {
         })
     }
 
+    // transfer real data to each attribute and uniform
+    // Material will remember the data bound to it last time it is being used when rendering. But calling this method will override the previous data. Be sure to provide every data available. Do not provide partial data.
     bindPlaceholders(renderer: Renderer, attributePlaceholderValueMapping: Object, uniformPlaceholderValueMapping: Object) {
         let self = this;
         let gl = renderer.gl;
@@ -664,9 +689,15 @@ export class Material {
         });
     }
 
+    // abstract method for sub-classes to implement
+    // 2 advantages to have this method:
+    // - essentially free writers from having to call Material.compile() and Material.bindPlaceholders() every time, for every Sprite. 
+    // - enable Material re-use (and literally shader program re-use). Multiple Sprite objects can have the same Material.
+    // This method will be called automatically, by Renderer, on every non-light Sprite when rendering, to align geometry information with material information
     bindGeometry(geometry: Geometry) { }
 }
 
+// One color everywhere
 export class ColorMaterial extends Material {
     color: Array<number>;
 
@@ -706,6 +737,8 @@ export class ColorMaterial extends Material {
     }
 }
 
+// ReflectiveMaterial interface
+// Every reflective material should at least have Ka, Kd, Ks, Ke, Se defined, for each RGBA channel
 export interface ReflectiveMaterial {
     ka: Array<Number>; // ambient reflectance
     kd: Array<Number>; // diffuse reflectance
@@ -719,7 +752,7 @@ export class ReflectiveMaterial extends Material {
         super(vertexShaderSource, fragmentShaderSource);
     }
 
-    compile(renderer: Renderer, attributePlaceholders: Object, uniformPlaceholders: Object) {
+    compile(renderer: Renderer, attributePlaceholders?: Object, uniformPlaceholders?: Object) {
         super.compile(renderer, {
             aVertexPosition: "aVertexPosition",
             aVertexNormal: "aVertexNormal",
@@ -1000,6 +1033,8 @@ export class PhongShadingPhongLightingMaterial extends PhongShadingMaterial {
 }
 
 // Dynamically choose between different materials
+// Every time it is being asked for some property, it will call nameCallback() to get a string, and use that string as a key to find the right Material from nameMaterialMapping
+// This is how multiple shading, lighting method switching is implemented in Steve
 export class MaterialMultiplexer extends Material {
     nameMaterialMapping: Map<any, Material>;
     nameCallback: () => string;
@@ -1138,6 +1173,8 @@ export class OrthogonalCamera implements Camera {
     }
 }
 
+// Renderer class
+// This is essentially a wrapper around WebGL rendering context, providing viewport control, canvas binding and rendering.
 export class Renderer {
     canvas: HTMLCanvasElement;
     gl: WebGL2RenderingContext;
@@ -1148,7 +1185,7 @@ export class Renderer {
         height: number,
     }
 
-    private lightPositionMapping: Map<Light, Array<number>>;
+    private lightPositionMapping: Map<Light, Array<number>>; // record all Lights in the scene
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -1167,19 +1204,21 @@ export class Renderer {
             y: 0,
             width: canvas.width,
             height: canvas.height,
-        };
+        }; // viewport is the whole canvas by default
 
         this.lightPositionMapping = new Map();
     }
 
+    // clear canvas with a color
     clear(color = [0, 0, 0, 1]) {
         let gl = this.gl;
         gl.clearColor(color[0], color[1], color[2], color[3]);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
 
+    // render the whole scene to canvas from the Camera's view
     render(world: Sprite, camera: Camera) {
-        this.gl.viewport(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
+        this.gl.viewport(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height); // set viewport
 
         // In shader program, we need to know the absolute position of every light.
         // so update light list here
@@ -1190,6 +1229,7 @@ export class Renderer {
         this.renderWithMatrices(world, mat4.create(), camera.viewMatrix, camera.projectionMatrix);
     }
 
+    // recursively find all Lights in the scene, while updating their absolute positions, because lighting shaders will use them
     private updateLightPositionMapping(sprite: Sprite, modelMatrix: mat4) {
         let self = this;
         let realMatrix = mat4.create();
@@ -1211,6 +1251,7 @@ export class Renderer {
         })
     }
 
+    // recursively draw all non-light Sprite objects onto the canvas
     renderWithMatrices(sprite: Sprite, modelMatrix: mat4, viewMatrix: mat4, projectionMatrix: mat4) {
         let self = this;
         let gl = this.gl;
@@ -1225,7 +1266,7 @@ export class Renderer {
             // sprite.material.placeholderValueMapping.attributes.aVertexPosition = new Float32Array(sprite.geometry.vertexPositions);
             // sprite.material.placeholderValueMapping.attributes.aVertexNormal = new Float32Array(sprite.geometry.normalVectors.flat());
             sprite.material.bindGeometry(sprite.geometry); // automatically bind geometry
-            sprite.material.bindPlaceholders(self, sprite.material.placeholderValueMapping.attributes, sprite.material.placeholderValueMapping.uniforms);
+            sprite.material.bindPlaceholders(self, sprite.material.placeholderValueMapping.attributes, sprite.material.placeholderValueMapping.uniforms); // transfer real data
             gl.uniformMatrix4fv(
                 sprite.material.programInfo.uniformLocations["uModelMatrix"],
                 false,
@@ -1295,10 +1336,11 @@ export class Renderer {
             );
         }
 
-        if (sprite.geometry) {
-            gl.drawArrays(sprite.geometry.mode, 0, sprite.geometry.vertexPositions.length / 4);
+        if (sprite.geometry) { // if Sprite has real geometry (not an abstract container)
+            gl.drawArrays(sprite.geometry.mode, 0, sprite.geometry.vertexPositions.length / 4); // draw the Sprite according to its geometry's drawing mode
         }
 
+        // recursively draw all children
         sprite.children.forEach(function (child) {
             self.renderWithMatrices(child, realMatrix, viewMatrix, projectionMatrix);
         })
@@ -1309,6 +1351,9 @@ export interface CurveFunction {
     (percent: number): number;
 }
 
+// Simple timestamp-determined animation.
+// Define keyframes like in CSS, call start() to start animations (actually nothing happens here), and call yield() at some time in your requestAnimationFrame(), then it will calculate in-between frames absolute to the timestamp when it is being called.
+// This helps create smooth animations independent of frame rate, which is determined by your PC's hardware.
 export class Animation {
     keyframes: {
         number: {
@@ -1351,6 +1396,8 @@ export class Animation {
         this.playing = true;
     }
 
+    // All magic happens here
+    // This method will calculate the interpolated value for each parameter in keyframe definition, for the timestamp it is being called
     yield() {
         if (this.playing) {
             let currentTime = Date.now() / 1000;
@@ -1360,8 +1407,9 @@ export class Animation {
                 let currentFrame = deepCopy(this.keyframes[0]);
                 if (currentTime < this.startTime + this.delay + this.count * this.duration) {
                     let timePercentage = (currentTime - this.startTime - this.delay) % this.duration / this.duration;
-                    let index;
+                    let index: number;
 
+                    // find between which 2 keyframes current frame should be
                     for (index = 1; index < this.keyframePercents.length; index++) {
                         if (timePercentage < Number(this.keyframePercents[index])) {
                             index = index - 1;
@@ -1369,17 +1417,15 @@ export class Animation {
                         }
                     }
 
+                    // find how much percentage current frame is between the neighboring two keyframes, and then call curve function to get curved interpolated value
                     let x = (timePercentage - this.keyframePercents[index]) / (this.keyframePercents[Number(index) + 1] - this.keyframePercents[index]);
                     let y = this.curve(x);
-                    // console.log(y);
 
                     for (let [k, v] of Object.entries(this.keyframes[0])) {
                         let a = this.keyframes[this.keyframePercents[index]][k];
                         let b = this.keyframes[this.keyframePercents[Number(index) + 1]][k];
-                        // console.log([timePercentage, index, a, b, x, y]);
                         currentFrame[k] = (b - a) * y + a;
                     }
-                    // console.log(currentFrame);
                     return currentFrame;
                 } else {
                     return this.keyframes[0];
@@ -1395,6 +1441,7 @@ export class Animation {
     }
 }
 
+// Linear curve function.　Just give x and it returns x
 export function linear(percent: number) {
     return percent;
 }
@@ -1436,6 +1483,7 @@ export function getShaderProgram(gl: WebGL2RenderingContext, vertexShaderSource:
 
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
         throw new Error("Link error: " + gl.getProgramInfoLog(shaderProgram));
+        // displaying link error log is helpful. I used this to find that no more than 8 varying arrays are allowed on my computer
     }
 
     return shaderProgram;
