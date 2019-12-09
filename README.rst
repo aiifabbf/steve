@@ -79,7 +79,7 @@ Bind canvas
 
 .. code-block:: typescript
 
-    let canvas = document.querySelector("canvas")
+    let canvas = document.querySelector("canvas");
     let renderer = new Renderer(canvas);
 
 Create a gold sphere with Phong shading, Phong lighting
