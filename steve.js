@@ -1,5 +1,5 @@
 import { mat4, vec3, quat } from "gl-matrix";
-import { Light, Renderer, Material, Sprite, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, RingGeometry, CylinderGeometry, SphereGeometry, PerspectiveCamera, OrthogonalCamera, radians, deepCopy, FrustumGeometry, PhongShadingMaterial, GouraudShadingMaterial, Animation, easeInOut, AmbientLight, PointLight, PhongShadingPhongLightingMaterial, PhongShadingBlinnPhongLightingMaterial, GouraudShadingPhongLightingMaterial, GouraudShadingBlinnPhongLightingMaterial, MaterialMultiplexer, PlaneGeometry } from "./engine";
+import { Renderer, Sprite, LineGeometry, ColorMaterial, CubeGeometry, RotationGeometry, SphereGeometry, PerspectiveCamera, radians, deepCopy, AmbientLight, PointLight, PhongShadingPhongLightingMaterial, PhongShadingBlinnPhongLightingMaterial, GouraudShadingPhongLightingMaterial, GouraudShadingBlinnPhongLightingMaterial, MaterialMultiplexer } from "./engine.ts";
 import * as engine from "./engine.ts";
 
 let canvas = document.querySelector("canvas");
@@ -1138,19 +1138,19 @@ function main() {
     document.querySelector("#lighting-method-phong").click();
 
     // handlers for changing shading and lighting methods
-    document.querySelector("#shading-method-phong").addEventListener("click", function (event) {
+    document.querySelector("#shading-method-phong").addEventListener("click", function () {
         shadingMethod = "phong";
     });
 
-    document.querySelector("#shading-method-gouraud").addEventListener("click", function (event) {
+    document.querySelector("#shading-method-gouraud").addEventListener("click", function () {
         shadingMethod = "gouraud";
     });
 
-    document.querySelector("#lighting-method-phong").addEventListener("click", function (event) {
+    document.querySelector("#lighting-method-phong").addEventListener("click", function () {
         lightingMethod = "phong";
     });
 
-    document.querySelector("#lighting-method-blinn-phong").addEventListener("click", function (event) {
+    document.querySelector("#lighting-method-blinn-phong").addEventListener("click", function () {
         lightingMethod = "blinn-phong";
     });
 
